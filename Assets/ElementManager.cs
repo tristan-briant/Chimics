@@ -11,18 +11,18 @@ public class ElementManager : MonoBehaviour {
     public void selectElement()
     {
         bool s= isSelected;
+        GameObject[] goSameType;
 
-        Transform molecule = transform.parent;
-        for (int i = 0; i < molecule.childCount; i++)
+        goSameType = GameObject.FindGameObjectsWithTag(gameObject.tag); // Find all GO with same tag
+
+        foreach (GameObject go in goSameType) // and unselect them
         {
-            if (molecule.GetChild(i).GetComponent<ElementManager>()!=null)
-                molecule.GetChild(i).GetComponent<ElementManager>().isSelected = false;
+            go.GetComponent<ElementManager>().isSelected = false;
         }
 
         isSelected = !s; //toggle selection
 
-        molecule.GetComponent<MoleculeManager>().selected = isSelected;
-        molecule.GetComponent<MoleculeManager>().successfull = isSelected && success;
+        
     }
 
     private void Start()
@@ -30,12 +30,13 @@ public class ElementManager : MonoBehaviour {
         highlight = transform.FindChild("Highlight").gameObject;
         if (highlight.activeInHierarchy)
             success = true;
-        else
-            success = false;
-
+        highlight.SetActive(false);
+        isSelected = false;
     }
 
     void Update () {
-            highlight.SetActive(isSelected);
+        //highlight.SetActive(isSelected);
+        GetComponent<Animator>().SetBool("selected", isSelected);
+
     }
 }
