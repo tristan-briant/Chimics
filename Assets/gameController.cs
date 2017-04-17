@@ -3,17 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public class gameController : MonoBehaviour {
     GameObject[] accepteurs;
     GameObject[] doublets;
     public int failCount;
     public bool animPlaying = false;
     // Transform molecule = transform.parent;
-
+    levelManager LVM;
  
 
     // Use this for initialization
     void Start () {
+        LVM = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<levelManager>();
 
         var rect = GetComponent<RectTransform>();
         rect.localPosition = new Vector3(0, 0, 0);
@@ -23,6 +25,7 @@ public class gameController : MonoBehaviour {
         doublets = GameObject.FindGameObjectsWithTag("Doublet"); // Find all doublets
 
         failCount = 0;
+        resetElements();
     }
 	
 	
@@ -61,7 +64,13 @@ public class gameController : MonoBehaviour {
         if (doubletSuccess && accepteurSuccess)
         {
             animPlaying = true;
-            GetComponent<Animator>().SetBool("success", true);
+            //GetComponent<Animator>().SetBool("success", true);
+            GetComponent<Animator>().SetTrigger("successTrigger");
+            if (LVM.completedLevel < LVM.currentLevel+1)
+            {
+                LVM.completedLevel = LVM.currentLevel+1;
+                Debug.Log("level+1");
+            }
         }
         else if (accepteurSelected && doubletSelected) 
         {
@@ -83,7 +92,22 @@ public class gameController : MonoBehaviour {
             go.GetComponent<ElementManager>().isSelected = false;
     }
 
-   
+    
+    public void resetLevel() {
+        
+        //resetElements();
+        foreach (GameObject go in accepteurs)
+            go.GetComponent<ElementManager>().reset();
+        foreach (GameObject go in doublets)
+            go.GetComponent<ElementManager>().reset();
+
+        failCount = 0;
+        GetComponent<Animator>().SetTrigger("reset");
+        GetComponent<Animator>().ResetTrigger("successTrigger");
+        GetComponent<Animator>().ResetTrigger("failTrigger");
+        //GetComponent<Animator>().SetBool("success", false);
+        animPlaying = false;
+    }
 
 
 }

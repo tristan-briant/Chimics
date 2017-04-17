@@ -39,4 +39,15 @@ public class ElementManager : MonoBehaviour {
         GetComponent<Animator>().SetBool("selected", isSelected);
 
     }
+
+    public void reset()
+    {
+        GetComponent<Animator>().SetBool("selected", false);
+        isSelected = false;
+        GetComponent<Animator>().SetTrigger("reset");
+        GetComponent<Animator>().ResetTrigger("reset");
+
+    }
+
+
 }

@@ -9,13 +9,15 @@ public class menuManager : MonoBehaviour {
     public GameObject button;
     public GameObject Playground;
     public GameObject levelManager;
-
+    levelManager LVM;
 
     // Use this for initialization
     void Start()
     {
         var rect = GetComponent<RectTransform>();
         rect.localPosition = new Vector3(0, 0, 0);
+
+        LVM = levelManager.GetComponent<levelManager>();
 
         //GameObject button = levelList.transform.GetChild(0).gameObject;
 
@@ -34,7 +36,7 @@ public class menuManager : MonoBehaviour {
 
             int level = i;
             Button btn = go.GetComponent<Button>();
-            btn.onClick.AddListener(delegate () { loadLevel(level); });
+            btn.onClick.AddListener(delegate () { LVM.loadLevel(level); });
             
         }
 
@@ -42,10 +44,11 @@ public class menuManager : MonoBehaviour {
 
     public void Update()
     {
-        int cpLevel = levelManager.GetComponent<levelManager>().completedLevel;
+        int cpLevel = LVM.completedLevel;
+
         for (int i = 0; i < levelList.transform.childCount; i++)
         {
-            if (i < cpLevel)
+            if (LVM.debug || i < cpLevel+1)
                 levelList.transform.GetChild(i).GetComponent<Button>().interactable=true;
             else
                 levelList.transform.GetChild(i).GetComponent<Button>().interactable = false;
@@ -54,7 +57,7 @@ public class menuManager : MonoBehaviour {
     }
 
 
-    public void loadLevel(int levelNumber)
+   /* public void loadLevel(int levelNumber)
     {
         if (levelNumber >= Playground.transform.childCount)
             return;
@@ -72,7 +75,7 @@ public class menuManager : MonoBehaviour {
 
         levelManager.GetComponent<levelManager>().currentLevel = levelNumber;
 
-    }
+    }*/
 
 
 }
