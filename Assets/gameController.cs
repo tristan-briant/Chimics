@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class gameController : MonoBehaviour {
     GameObject[] accepteurs;
@@ -13,6 +14,11 @@ public class gameController : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+
+        var rect = GetComponent<RectTransform>();
+        rect.localPosition = new Vector3(0, 0, 0);
+        transform.GetComponent<Image>().enabled = false;
+
         accepteurs = GameObject.FindGameObjectsWithTag("Accepteur"); // Find all Accepteurs
         doublets = GameObject.FindGameObjectsWithTag("Doublet"); // Find all doublets
 
