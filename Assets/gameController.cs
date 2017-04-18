@@ -11,11 +11,13 @@ public class gameController : MonoBehaviour {
     public bool animPlaying = false;
     // Transform molecule = transform.parent;
     levelManager LVM;
- 
+    GameObject Tip;
 
     // Use this for initialization
     void Start () {
         LVM = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<levelManager>();
+        if (transform.FindChild("Tip") != null)
+            Tip = transform.FindChild("Tip").gameObject;
 
         var rect = GetComponent<RectTransform>();
         rect.localPosition = new Vector3(0, 0, 0);
@@ -31,7 +33,8 @@ public class gameController : MonoBehaviour {
 	
 	void LateUpdate () {
 
-        if (animPlaying == true) return;
+        //if (animPlaying == true) return;
+        GetComponent<Animator>().ResetTrigger("successTrigger");
 
         bool accepteurSelected, doubletSelected, accepteurSuccess, doubletSuccess;
 
@@ -66,21 +69,23 @@ public class gameController : MonoBehaviour {
             animPlaying = true;
             //GetComponent<Animator>().SetBool("success", true);
             GetComponent<Animator>().SetTrigger("successTrigger");
-            if (LVM.completedLevel < LVM.currentLevel+1)
-            {
-                LVM.completedLevel = LVM.currentLevel+1;
-                Debug.Log("level+1");
-            }
+           
         }
-        else if (accepteurSelected && doubletSelected) 
+        else if (accepteurSelected && doubletSelected)
         {
-            
             animPlaying = true;
             failCount++;
             GetComponent<Animator>().SetTrigger("failTrigger");
 
         }
+    }
 
+    public void WinLevel(){
+        if (LVM.completedLevel < LVM.currentLevel + 1)
+            {
+                LVM.completedLevel = LVM.currentLevel + 1;
+                Debug.Log("level+1");
+            }
 
     }
 
@@ -94,20 +99,25 @@ public class gameController : MonoBehaviour {
 
     
     public void resetLevel() {
-        
-        //resetElements();
+       
+        resetElements();
         foreach (GameObject go in accepteurs)
-            go.GetComponent<ElementManager>().reset();
+            if(go.activeInHierarchy)
+                go.GetComponent<ElementManager>().reset();
         foreach (GameObject go in doublets)
-            go.GetComponent<ElementManager>().reset();
+            if (go.activeInHierarchy)
+                go.GetComponent<ElementManager>().reset();
 
         failCount = 0;
         GetComponent<Animator>().SetTrigger("reset");
-        GetComponent<Animator>().ResetTrigger("successTrigger");
-        GetComponent<Animator>().ResetTrigger("failTrigger");
-        //GetComponent<Animator>().SetBool("success", false);
         animPlaying = false;
     }
 
+
+    public void ShowTip()
+    {
+        if (Tip!= null && failCount > 3)
+            Tip.SetActive(true);
+    }
 
 }

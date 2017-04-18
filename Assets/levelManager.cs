@@ -36,11 +36,16 @@ public class levelManager : MonoBehaviour {
         for (int i = 0; i < maxLevel; i++)
         {
             Transform child = Playground.transform.GetChild(i);
+
+            if (child.gameObject.activeInHierarchy == true)
+            {
+                Debug.Log("reset level " + i);
+                child.GetComponent<gameController>().resetLevel(); // On reset les levels actifs
+            }
+
             if (i == levelNumber)
             {
                 child.gameObject.SetActive(true);
-                child.GetComponent<gameController>().resetLevel();
-                Debug.Log("load");
             }
             else
                 child.gameObject.SetActive(false);

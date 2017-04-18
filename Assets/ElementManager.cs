@@ -28,8 +28,10 @@ public class ElementManager : MonoBehaviour {
     private void Start()
     {
         highlight = transform.FindChild("Highlight").gameObject;
+
         if (highlight.activeInHierarchy)
             success = true;
+
         highlight.SetActive(false);
         isSelected = false;
     }
@@ -45,8 +47,6 @@ public class ElementManager : MonoBehaviour {
         GetComponent<Animator>().SetBool("selected", false);
         isSelected = false;
         GetComponent<Animator>().SetTrigger("reset");
-        GetComponent<Animator>().ResetTrigger("reset");
-
     }
 
 
