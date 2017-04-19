@@ -54,6 +54,10 @@ public class menuManager : MonoBehaviour {
                 levelList.transform.GetChild(i).GetComponent<Button>().interactable = false;
 
         }
+
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+            Application.Quit();
     }
 
 

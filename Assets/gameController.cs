@@ -164,4 +164,12 @@ public class gameController : MonoBehaviour {
     {
         anim.SetFloat("winspeed", 1);
     }
+
+    public void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+            LVM.Menu.SetActive(true);
+    }
+
 }
+
