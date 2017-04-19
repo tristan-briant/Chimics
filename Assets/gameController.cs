@@ -12,6 +12,7 @@ public class gameController : MonoBehaviour {
     // Transform molecule = transform.parent;
     levelManager LVM;
     GameObject Tip;
+    Animator anim;
 
     // Use this for initialization
     void Start () {
@@ -22,6 +23,7 @@ public class gameController : MonoBehaviour {
         var rect = GetComponent<RectTransform>();
         rect.localPosition = new Vector3(0, 0, 0);
         transform.GetComponent<Image>().enabled = false;
+        anim = GetComponent<Animator>();
 
         accepteurs = GameObject.FindGameObjectsWithTag("Accepteur"); // Find all Accepteurs
         doublets = GameObject.FindGameObjectsWithTag("Doublet"); // Find all doublets
@@ -33,8 +35,8 @@ public class gameController : MonoBehaviour {
 	
 	void LateUpdate () {
 
-        //if (animPlaying == true) return;
-        GetComponent<Animator>().ResetTrigger("successTrigger");
+        if (animPlaying == true) return;
+        //GetComponent<Animator>().ResetTrigger("successTrigger");
 
         bool accepteurSelected, doubletSelected, accepteurSuccess, doubletSuccess;
 
@@ -67,7 +69,7 @@ public class gameController : MonoBehaviour {
         if (doubletSuccess && accepteurSuccess)
         {
             animPlaying = true;
-            //GetComponent<Animator>().SetBool("success", true);
+            resumeWinAnimation();
             GetComponent<Animator>().SetTrigger("successTrigger");
            
         }
@@ -110,7 +112,12 @@ public class gameController : MonoBehaviour {
 
         failCount = 0;
         GetComponent<Animator>().SetTrigger("reset");
+        GetComponent<Animator>().ResetTrigger("successTrigger");
+        GetComponent<Animator>().ResetTrigger("failTrigger");
         animPlaying = false;
+        Tip.SetActive(false);
+        ClickableEnable();
+        
     }
 
 
@@ -120,4 +127,41 @@ public class gameController : MonoBehaviour {
             Tip.SetActive(true);
     }
 
+    public void ClickableDisable()
+    {
+        GetComponent<CanvasGroup>().blocksRaycasts = false;
+    }
+
+    public void ClickableEnable()
+    {
+        GetComponent<CanvasGroup>().blocksRaycasts = true;
+        Debug.Log("click again");
+    }
+
+    public void PrepareNextSuccess()
+    {
+        foreach (GameObject go in accepteurs)
+            if (go.activeInHierarchy)
+                go.GetComponent<ElementManager>().success=false;
+        foreach (GameObject go in doublets)
+            if (go.activeInHierarchy)
+                go.GetComponent<ElementManager>().success = false;
+
+        failCount = 0;
+
+        if(transform.FindChild("Tip2")!=null)
+            Tip = transform.FindChild("Tip").gameObject;
+        animPlaying = false;
+    }
+
+    public void stopWinAnimation()
+    {
+        anim.SetFloat("winspeed",0);
+        animPlaying = false;
+    }
+
+    public void resumeWinAnimation()
+    {
+        anim.SetFloat("winspeed", 1);
+    }
 }
