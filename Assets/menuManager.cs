@@ -11,7 +11,6 @@ public class menuManager : MonoBehaviour {
     public GameObject levelManager;
     levelManager LVM;
 
-    // Use this for initialization
     void Start()
     {
         var rect = GetComponent<RectTransform>();
@@ -19,14 +18,13 @@ public class menuManager : MonoBehaviour {
 
         LVM = levelManager.GetComponent<levelManager>();
 
-        //GameObject button = levelList.transform.GetChild(0).gameObject;
-
         foreach (Transform child in levelList.transform)
         {
             GameObject.Destroy(child.gameObject);
         }
 
-        for (int i=0; i < Playground.transform.childCount; i++)
+        for (int i=0; i < LVM.maxLevel; i++)
+     
         {
             GameObject go=Instantiate(button);
             go.transform.SetParent(levelList.transform);
@@ -59,27 +57,6 @@ public class menuManager : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.Escape))
             Application.Quit();
     }
-
-
-   /* public void loadLevel(int levelNumber)
-    {
-        if (levelNumber >= Playground.transform.childCount)
-            return;
-
-        for (int i = 0; i < Playground.transform.childCount; i++) 
-        {
-            Transform child=Playground.transform.GetChild(i);
-            if (i == levelNumber)
-                child.gameObject.SetActive(true);
-            else
-                child.gameObject.SetActive(false);
-        }
-
-        gameObject.SetActive(false); // desactive le menu
-
-        levelManager.GetComponent<levelManager>().currentLevel = levelNumber;
-
-    }*/
 
 
 }

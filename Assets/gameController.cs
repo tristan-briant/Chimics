@@ -5,28 +5,36 @@ using UnityEngine.UI;
 
 
 public class gameController : MonoBehaviour {
-    GameObject[] accepteurs;
-    GameObject[] doublets;
+    List<GameObject> accepteurs = new List<GameObject>();
+    List<GameObject> doublets = new List<GameObject>();
     public int failCount;
     public bool animPlaying = false;
-    // Transform molecule = transform.parent;
     levelManager LVM;
     GameObject Tip;
     Animator anim;
 
-    // Use this for initialization
     void Start () {
         LVM = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<levelManager>();
         if (transform.FindChild("Tip") != null)
             Tip = transform.FindChild("Tip").gameObject;
 
-        var rect = GetComponent<RectTransform>();
-        rect.localPosition = new Vector3(0, 0, 0);
+
+        transform.localPosition = new Vector3(0, 0, 0);
+        transform.localScale = new Vector3(1, 1, 1);
+
         transform.GetComponent<Image>().enabled = false;
         anim = GetComponent<Animator>();
 
-        accepteurs = GameObject.FindGameObjectsWithTag("Accepteur"); // Find all Accepteurs
-        doublets = GameObject.FindGameObjectsWithTag("Doublet"); // Find all doublets
+        Transform[] children = GetComponentsInChildren<Transform>();
+        foreach (Transform child in children)
+        {
+            if (child.CompareTag("Accepteur"))
+                accepteurs.Add(child.gameObject);
+            
+            if (child.CompareTag("Doublet"))
+                doublets.Add(child.gameObject);
+            
+        }
 
         failCount = 0;
         resetElements();
@@ -36,14 +44,13 @@ public class gameController : MonoBehaviour {
 	void LateUpdate () {
 
         if (animPlaying == true) return;
-        //GetComponent<Animator>().ResetTrigger("successTrigger");
 
         bool accepteurSelected, doubletSelected, accepteurSuccess, doubletSuccess;
 
         accepteurSelected = false;
         accepteurSuccess = false;
 
-        foreach (GameObject go in accepteurs) 
+        foreach (GameObject go in accepteurs)
         {
             if (go.GetComponent<ElementManager>().isSelected)
             {
@@ -56,7 +63,7 @@ public class gameController : MonoBehaviour {
         doubletSelected = false;
         doubletSuccess = false;
 
-        foreach (GameObject go in doublets) 
+        foreach (GameObject go in doublets)
         {
             if (go.GetComponent<ElementManager>().isSelected)
             {
@@ -100,7 +107,7 @@ public class gameController : MonoBehaviour {
     }
 
     
-    public void resetLevel() {
+    /*public void resetLevel() {
        
         resetElements();
         foreach (GameObject go in accepteurs)
@@ -118,7 +125,7 @@ public class gameController : MonoBehaviour {
         Tip.SetActive(false);
         ClickableEnable();
         
-    }
+    }*/
 
 
     public void ShowTip()

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class levelManager : MonoBehaviour {
 
     public int currentLevel;
-    public int completedLevel=2;
+    public int completedLevel=0;
     public int maxLevel;
     public GameObject Playground;
     public GameObject Menu;
@@ -14,13 +14,18 @@ public class levelManager : MonoBehaviour {
     [Header("Debug Mode")]
     public bool debug = false;
 
-    //public bool success;
-    //public int failCount = 0;
-    //GameObject molecule1, molecule2, tip;
-
-    private void Start()
+    public List<GameObject> levels;
+    
+    private void Awake()
     {
-        maxLevel = Playground.transform.childCount;
+        levels = new List<GameObject>();
+ 
+        foreach (Transform child in Playground.transform)
+        {
+            levels.Add(Resources.Load<GameObject>("Level/"+ child.gameObject.name));
+        }
+   
+        maxLevel = levels.Count; 
     }
 
     public void loadNextLevel()
@@ -33,23 +38,11 @@ public class levelManager : MonoBehaviour {
         if (levelNumber >= maxLevel)
             return;
 
-        for (int i = 0; i < maxLevel; i++)
-        {
-            Transform child = Playground.transform.GetChild(i);
+        foreach (Transform child in Playground.transform)
+            GameObject.Destroy(child.gameObject);
 
-            if (child.gameObject.activeInHierarchy == true)
-            {
-                Debug.Log("reset level " + i);
-                child.GetComponent<gameController>().resetLevel(); // On reset les levels actifs
-            }
-
-            if (i == levelNumber)
-            {
-                child.gameObject.SetActive(true);
-            }
-            else
-                child.gameObject.SetActive(false);
-        }
+        GameObject lv=Instantiate(levels[levelNumber]);
+        lv.transform.SetParent(Playground.transform);
 
         Menu.SetActive(false); // desactive le menu
 
