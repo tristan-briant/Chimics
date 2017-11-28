@@ -15,8 +15,8 @@ public class gameController : MonoBehaviour {
 
     void Start () {
         LVM = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<levelManager>();
-        if (transform.FindChild("Tip") != null)
-            Tip = transform.FindChild("Tip").gameObject;
+        if (transform.Find("Tip") != null)
+            Tip = transform.Find("Tip").gameObject;
 
 
         transform.localPosition = new Vector3(0, 0, 0);
@@ -156,8 +156,8 @@ public class gameController : MonoBehaviour {
 
         failCount = 0;
 
-        if(transform.FindChild("Tip2")!=null)
-            Tip = transform.FindChild("Tip").gameObject;
+        if(transform.Find("Tip2")!=null)
+            Tip = transform.Find("Tip").gameObject;
         animPlaying = false;
     }
 

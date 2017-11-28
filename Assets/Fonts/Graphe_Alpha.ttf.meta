@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: dc71e3d6e2a66314e9c1f7501111689c
+timeCreated: 1511631014
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Graphe
+  fontNames:
+  - Graphe
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

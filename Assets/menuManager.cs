@@ -30,7 +30,7 @@ public class menuManager : MonoBehaviour {
             go.transform.SetParent(levelList.transform);
             go.transform.localPosition = new Vector3(0, 0, 0);
             go.transform.localScale = new Vector3(1, 1, 1);
-            go.transform.FindChild("Text").transform.GetComponent<Text>().text = "Réaction " + (i + 1);
+            go.transform.Find("Text").transform.GetComponent<Text>().text = "Réaction " + (i + 1);
 
             int level = i;
             Button btn = go.GetComponent<Button>();

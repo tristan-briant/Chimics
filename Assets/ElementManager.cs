@@ -28,7 +28,7 @@ public class ElementManager : MonoBehaviour {
 
     private void Start()
     {
-        highlight = transform.FindChild("Highlight").gameObject;
+        highlight = transform.Find("Highlight").gameObject;
 
         if (highlight.activeInHierarchy || firstsuccess)
             success = true;
