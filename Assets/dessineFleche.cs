@@ -3,54 +3,73 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class levelManager : MonoBehaviour {
+public class dessineFleche : MonoBehaviour
+{
 
-    public int currentLevel;
-    public int completedLevel=0;
-    public int maxLevel;
-    public GameObject Playground;
-    public GameObject Menu;
-    public GameObject Level;
+    Transform liaison, atome;
+    Transform liaisons, atomes;
 
-    [Header("Debug Mode")]
-    public bool debug = false;
-
-    public List<GameObject> levels;
-    
-    private void Awake()
+    void Start()
     {
-        levels = new List<GameObject>();
- 
-        foreach (Transform child in Playground.transform)
+
+        liaisons = transform.Find("Liaisons");
+        atomes = transform.Find("Atomes");
+
+    }
+
+    void Update()
+    {
+    }
+
+
+    public void Line()
+    {
+        Color c = new Color(0, 0, 0);
+
+
+        Transform line = transform.Find("line"); // élimine les lignes qui existent
+        while (line != null)
         {
-            levels.Add(Resources.Load<GameObject>("Level/"+ child.gameObject.name));
+            DestroyImmediate(line.gameObject);
+            line = transform.Find("line"); // élimine les lignes qui existent
         }
-   
-        maxLevel = levels.Count; 
+
+        liaison = null;
+        foreach (Transform child in liaisons)
+        {
+            if (child.GetComponent<Toggle>().isOn) { liaison = child; }
+        }
+
+        atome = null;
+        foreach (Transform child in atomes)
+        {
+            if (child.GetComponent<Toggle>().isOn) { atome = child; }
+        }
+
+        if (liaison && atome)
+        {
+
+            DrawCurvedArrowBetween(liaison, atome);
+
+        }
+
+
     }
 
-    public void LoadNextLevel()
+    void DrawLine(Vector3 start, Vector3 end, Color color) // Juste une ligne simple (mais ne sert à rien)
     {
-        LoadLevel(currentLevel+1);
-    }
+        GameObject myLine = new GameObject()
+        {
+            name = "line"
+        };
 
-    public void LoadLevel(int levelNumber)
-    {
-        if (levelNumber >= maxLevel)
-            return;
-
-        foreach (Transform child in Playground.transform)
-            GameObject.Destroy(child.gameObject);
-
-        GameObject lv=Instantiate(levels[levelNumber]);
-        lv.transform.SetParent(Playground.transform);
-
-        Menu.SetActive(false); // desactive le menu
-        Level.SetActive(true);
-
-        currentLevel = levelNumber;
-
-
+        myLine.AddComponent<LineRenderer>();
+        LineRenderer lr = myLine.GetComponent<LineRenderer>();
+        lr.material = new Material(Shader.Find("Particles/Alpha Blended Premultiply"));
+        lr.startColor = lr.endColor = color;
+        lr.startWidth = lr.endWidth = 0.1f;
+        lr.SetPosition(0, start + new Vector3(0, 0, -1));
+        lr.SetPosition(1, end + new Vector3(0, 0, -1));
     }
 
 
@@ -143,5 +162,6 @@ public class levelManager : MonoBehaviour {
 
     }
 
-
 }
+
+

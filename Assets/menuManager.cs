@@ -9,6 +9,8 @@ public class menuManager : MonoBehaviour {
     public GameObject button;
     public GameObject Playground;
     public GameObject levelManager;
+    public GameObject level;
+
     levelManager LVM;
 
     void Start()
@@ -34,10 +36,11 @@ public class menuManager : MonoBehaviour {
 
             int level = i;
             Button btn = go.GetComponent<Button>();
-            btn.onClick.AddListener(delegate () { LVM.loadLevel(level); });
+            btn.onClick.AddListener(delegate () { LVM.LoadLevel(level); });
             
         }
 
+        level.gameObject.SetActive(false);
     }
 
     public void Update()

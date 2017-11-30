@@ -5,12 +5,16 @@ using UnityEngine;
 public class ElementManager : MonoBehaviour {
 
     public bool isSelected = false;
+    public bool inReaction = false;
     public bool success = false;
     public bool firstsuccess = false; // used to reset to initial state for multiple step reactions
     public GameObject highlight;
+    public GameObject react;
 
     public void selectElement()
     {
+        if (inReaction) return; //Already part of a reaction
+
         bool s= isSelected;
         GameObject[] goSameType;
 
@@ -23,7 +27,12 @@ public class ElementManager : MonoBehaviour {
 
         isSelected = !s; //toggle selection
 
-        
+    }
+
+    public void ReactWith(GameObject go){
+        react = go;
+        inReaction = true;
+        isSelected = false;
     }
 
     private void Start()
