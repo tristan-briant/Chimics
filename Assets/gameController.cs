@@ -168,7 +168,7 @@ public class gameController : MonoBehaviour {
             go.GetComponent<ElementManager>().inReaction = false;
         }
 
-            Transform line = transform.Find("line"); // élimine les lignes qui existent
+        Transform line = transform.Find("line"); // élimine les lignes qui existent
         while (line != null)
         {
             DestroyImmediate(line.gameObject);
