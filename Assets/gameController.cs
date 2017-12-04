@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 using UnityEngine.UI;
 
 
@@ -39,7 +40,7 @@ public class gameController : MonoBehaviour {
         failCount = 0;
         ResetElements();
     }
-	
+
 	
 	void LateUpdate () {
 
@@ -106,6 +107,43 @@ public class gameController : MonoBehaviour {
             GetComponent<Animator>().SetTrigger("failTrigger");
 
         }*/
+    }
+
+    public void Validate()
+    {
+        Transform sol = transform.Find("Solutions");
+
+        LineManager[] lm = transform.GetComponentsInChildren<LineManager>();
+        int length = lm.Length;
+
+        GameObject[] acc = new GameObject[length];
+        GameObject[] don = new GameObject[length]; ;
+
+        int count = 0;
+        foreach (LineManager iterator in lm)
+        {
+            acc[count] = iterator.atome;
+            don[count++] = iterator.liaison;
+        }
+
+
+        foreach (Solutions s in sol.GetComponents<Solutions>())
+        {
+            if (s.GetComponent<Solutions>().TestReaction(acc, don) == 1)
+            {
+                WinLevel();
+                Debug.Log("gagné");
+                return;
+            }
+            else
+            {
+                Debug.Log("perdu");
+                animPlaying = true;
+                failCount++;
+                GetComponent<Animator>().SetTrigger("failTrigger");
+            }
+        }
+
     }
 
     public void WinLevel(){
@@ -234,7 +272,14 @@ public class gameController : MonoBehaviour {
         };
         Arrow.transform.parent = transform;
 
-        GameObject Line = new GameObject();
+        Arrow.AddComponent<LineManager>();                       // Store the end of the arrow
+        LineManager lm = Arrow.GetComponent<LineManager>();
+        lm.atome = atome.gameObject;
+        lm.liaison = liaison.gameObject;
+
+
+
+        GameObject Line = new GameObject();                       // Add a line and an head                                
         GameObject Head = new GameObject();
 
         Line.transform.parent = Arrow.transform;
