@@ -14,7 +14,9 @@ public class Arrow : MonoBehaviour {
     //Parametres géométriques
     public int NSample = 20;
     public float h = 1.0f;
-    public float width = 0.1f;
+    public float width = 0.075f;
+    public float headAngle = 60;
+    public float headLength = 0.3f;
 
     // Couleur
     public Color color = new Color(0x3E / 255.0f, 0x3E / 255.0f, 0x8B / 255.0f, 0);
@@ -51,6 +53,7 @@ public class Arrow : MonoBehaviour {
         else if (toBeRemoved)  // Eventually destroy the arrow if planned to be
         {
             Destroy(arrow);
+            Destroy(this);
         }
     }
 
@@ -76,12 +79,15 @@ public class Arrow : MonoBehaviour {
             toBeRemoved = true;
         }
         else
+        {
             Destroy(arrow);
+            Destroy(this);
+        }
+           
+
     }
 
 
-
-    //public void DrawCurvedArrowBetween(Transform liaison, Transform atome) // Une flèche courbe entre une liaison et un atome
     public void DrawCurvedArrow()  // Une flèche courbe entre la liaison et l'atome
     {
         
@@ -98,16 +104,9 @@ public class Arrow : MonoBehaviour {
 
         arrow = new GameObject()
         {
-            name = "line"
+            name = "arrow"
         };
         arrow.transform.parent = transform;
-
-        /*arrow.AddComponent<LineManager>();                       // Store the end of the arrow
-        LineManager lm = arrow.GetComponent<LineManager>();
-        lm.atome = atome.gameObject;
-        lm.liaison = liaison.gameObject;*/
-
-
 
         GameObject Line = new GameObject();                       // Add a line and an head                                
         GameObject Head = new GameObject();
@@ -117,19 +116,21 @@ public class Arrow : MonoBehaviour {
 
         Line.AddComponent<LineRenderer>();
         LineRenderer lr = Line.GetComponent<LineRenderer>();
-        //lr.material = new Material(Shader.Find("Particles/Alpha Blended Premultiply"));
         lr.material = new Material(Shader.Find("Sprites/Default"));
         lr.startColor = lr.endColor = color;
         lr.startWidth = lr.endWidth = width;
         lr.numCapVertices = 10;
-        lr.positionCount = NSample;
+        lr.positionCount = NSample+1;
 
         Head.AddComponent<LineRenderer>();
         LineRenderer head = Head.GetComponent<LineRenderer>();
         head.material = new Material(Shader.Find("Sprites/Default"));
         head.startColor = head.endColor = color;
-        head.startWidth = 3 * width; head.endWidth = 0;
-        head.positionCount = 2;
+        //head.startWidth = 3 * width; head.endWidth = 0;
+        head.startWidth = head.endWidth = width;
+        head.numCapVertices = 10;
+        head.numCornerVertices = 10;
+        head.positionCount = 3;
 
         // Les maths pour calculer le centre, le rayon de courbure, et l'angle d'ouverture de la flèche
 
@@ -174,19 +175,23 @@ public class Arrow : MonoBehaviour {
         /*vectors[0] = center;
         vectors[k-2] = center;*/
 
-        lr.positionCount = k - 1;
+        lr.positionCount = k ;
 
-        for (int i = 0; i < k - 1; i++)
+        for (int i = 0; i < k ; i++)
         {
             lr.SetPosition(i, vectors[i]);
         }
 
-        head.SetPosition(0, vectors[k - 2]);
+        float a = Vector3.Angle(vectors[k - 2] - vectors[k - 1], Vector3.right);
+        if (vectors[k - 2].y - vectors[k - 1].y < 0) a = -a;  // Quelques corrections suivant l'orientation de la flèche
+
+        head.SetPosition(0, vectors[k - 1] + headLength * Vector3FromAngle(a + headAngle * 0.5f));
         head.SetPosition(1, vectors[k - 1]);
+        head.SetPosition(2, vectors[k - 1] + headLength * Vector3FromAngle(a - headAngle * 0.5f));
 
     }
 
-    void DrawLine(Vector3 start, Vector3 end, Color color) // Juste une ligne simple (mais ne sert à rien)
+    void DrawLine(Vector3 start, Vector3 end, Color color) // Juste une ligne simple (for debugging purpose)
     {
         GameObject myLine = new GameObject()
         {
@@ -203,5 +208,9 @@ public class Arrow : MonoBehaviour {
         lr.SetPosition(1, end);
     }
 
-
+    public Vector3 Vector3FromAngle(float a)
+    {
+        a *= Mathf.Deg2Rad;
+        return new Vector3(Mathf.Cos(a), Mathf.Sin(a),0);
+    }
 }

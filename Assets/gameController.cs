@@ -90,45 +90,20 @@ public class gameController : MonoBehaviour {
 
         }
 
-
-        /*foreach (GameObject go in doublets)
-        {
-            if (go.GetComponent<ElementManager>().isSelected)
-            {
-                doubletSelected = true;
-                if (go.GetComponent<ElementManager>().success)
-                    doubletSuccess = true;
-            }
-        }
-
-        if (doubletSuccess && accepteurSuccess)
-        {
-            animPlaying = true;
-            resumeWinAnimation();
-            GetComponent<Animator>().SetTrigger("successTrigger");
-           
-        }
-        else if (accepteurSelected && doubletSelected)
-        {
-            animPlaying = true;
-            failCount++;
-            GetComponent<Animator>().SetTrigger("failTrigger");
-
-        }*/
     }
 
     public void Validate()
     {
         Transform sol = transform.Find("Solutions");
 
-        LineManager[] lm = transform.GetComponentsInChildren<LineManager>();
+        Arrow[] lm = transform.GetComponents<Arrow>();
         int length = lm.Length;
 
         GameObject[] acc = new GameObject[length];
         GameObject[] don = new GameObject[length]; ;
 
         int count = 0;
-        foreach (LineManager iterator in lm)
+        foreach (Arrow iterator in lm)
         {
             acc[count] = iterator.atome;
             don[count++] = iterator.liaison;
@@ -139,8 +114,9 @@ public class gameController : MonoBehaviour {
         {
             if (s.GetComponent<Solutions>().TestReaction(acc, don) == 1)
             {
-                WinLevel();
+                //WinLevel();
                 Debug.Log("gagné");
+                GetComponent<Animator>().SetTrigger("successTrigger");
                 return;
             }
             else
@@ -179,54 +155,18 @@ public class gameController : MonoBehaviour {
 
     }
 
-    public void ClearLevel() {
+    public void ClearLevel()
+    {
         ResetElements(); // déselectionne les éléments
 
         Arrow[] arrows = transform.GetComponents<Arrow>();
 
-        foreach (Arrow it in arrows) {
-            it.Remove(2.0f);
+        foreach (Arrow it in arrows)
+        {
+            it.Remove(0.2f);
         }
 
-        /*Transform line = transform.Find("line"); // élimine les lignes qui existent
-        //while (line != null)
-        {
-            DestroyImmediate(line.gameObject);
-            line.GetComponent<LineManager>().Remove();
-            line = transform.Find("line"); // élimine les lignes qui existent
-
-        }*/
     }
-
-    /*public void FadeArrow() {
-        Transform line = transform.Find("line"); // élimine les lignes qui existent
-        while (line != null)
-        {
-            DestroyImmediate(line.gameObject);
-            line = transform.Find("line"); // élimine les lignes qui existent
-        }
-        }
-        */
-    
-    /*public void resetLevel() {
-       
-        resetElements();
-        foreach (GameObject go in accepteurs)
-            if(go.activeInHierarchy)
-                go.GetComponent<ElementManager>().reset();
-        foreach (GameObject go in doublets)
-            if (go.activeInHierarchy)
-                go.GetComponent<ElementManager>().reset();
-
-        failCount = 0;
-        GetComponent<Animator>().SetTrigger("reset");
-        GetComponent<Animator>().ResetTrigger("successTrigger");
-        GetComponent<Animator>().ResetTrigger("failTrigger");
-        animPlaying = false;
-        Tip.SetActive(false);
-        ClickableEnable();
-        
-    }*/
 
 
     public void ShowTip()

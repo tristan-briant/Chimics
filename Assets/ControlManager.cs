@@ -1,23 +1,21 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ControlManager : MonoBehaviour {
 
-    private gameController gc;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
-	// Use this for initialization
-	void Start () {
-        gc = transform.parent.GetComponent<gameController>();
-	}
-	
-    public void ClearGame()
+
+public class ControlManager : MonoBehaviour
+{
+    public Text text;
+
+    public void Click()
     {
-        gc.ResetElements();
+        Debug.Log("Click !! ");
+        //text.color
     }
-
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    
 }
