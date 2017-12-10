@@ -13,6 +13,7 @@ public class gameController : MonoBehaviour {
     levelManager LVM;
     GameObject Tip;
     Animator anim;
+    public GameObject canvas;
 
     void Start () {
         LVM = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<levelManager>();
@@ -79,6 +80,8 @@ public class gameController : MonoBehaviour {
             Arrow ar = gameObject.AddComponent<Arrow>();
             ar.atome = atome;
             ar.liaison = liaison;
+            
+            //ar.width = 0.02f * canvas.transform.GetComponent<Rect>().height/500;
             ar.DrawCurvedArrow();
             //ar.DrawCurvedArrowBetween(liaison.transform, atome.transform);
 

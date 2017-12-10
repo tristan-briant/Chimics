@@ -31,6 +31,8 @@ public class Solutions : MonoBehaviour {
         // Reaction en un coup
         if (accepteurs2.Length == 0) {
 
+            Debug.Log("en un coup");
+
             if (acc.Length == 1) {
                 if (IsElement(acc[0], accepteurs1) && IsElement(don[0], donneurs1)) return 1;
                 else return 0;
@@ -40,12 +42,15 @@ public class Solutions : MonoBehaviour {
         }
         else //if (accepteurs3.Length == 0)
         {
+            Debug.Log("en 2 coup");
             if (acc.Length == 1) // Reaction incomplete ou fausse
             {
+                Debug.Log("incomplet ou faux");
                 if (IsElement(acc[0], accepteurs1) && IsElement(don[0], donneurs1)) return -1;
-                if (IsElement(acc[0], accepteurs2) && IsElement(don[0], donneurs2)) return -1;
+                else if (IsElement(acc[0], accepteurs2) && IsElement(don[0], donneurs2)) return -1;
+                else return 0;
             }
-            else return 0;
+             
 
 
             if (acc.Length == 2)

@@ -8,7 +8,8 @@ public class tipManager : MonoBehaviour {
     //gameController GC;
 	// Use this for initialization
 	void Start () {
-        transform.localPosition = new Vector3(0, 0, 0);
+        Vector3 pos = transform.localPosition;
+        transform.localPosition = new Vector3(0, 0, pos.z);
         //GC =transform.parent.transform.GetComponent<gameController>();
         gameObject.SetActive(false);
 

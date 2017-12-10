@@ -13,10 +13,10 @@ public class Arrow : MonoBehaviour {
 
     //Parametres géométriques
     public int NSample = 20;
-    public float h = 1.0f;
-    public float width = 0.075f;
+    public float h = 0.2f;
+    public float width = 0.03f;
     public float headAngle = 60;
-    public float headLength = 0.3f;
+    public float headLength = 0.10f;
 
     // Couleur
     public Color color = new Color(0x3E / 255.0f, 0x3E / 255.0f, 0x8B / 255.0f, 0);
@@ -34,26 +34,29 @@ public class Arrow : MonoBehaviour {
 	
 	void Update () {
         float t = Time.time;
-        if (t < TimeEnd)
+        if (t <= TimeEnd+0.1f)
         {
             for (int i = 0; i < arrow.transform.childCount; i++)
             {
                 LineRenderer lr = arrow.transform.GetChild(i).GetComponent<LineRenderer>();
-                Color c = lr.startColor;
+                Color c = color;
                 if (isfadein)
                     c.a = (t - TimeStart) / (TimeEnd - TimeStart);
                 else
-                    c.a = 1 - (t - TimeStart) / (TimeEnd - TimeStart);
+                    c.a = (1 - (t - TimeStart) / (TimeEnd - TimeStart));
 
                 lr.startColor = c;
                 lr.endColor = c;
             }
 
         }
-        else if (toBeRemoved)  // Eventually destroy the arrow if planned to be
+        else
         {
-            Destroy(arrow);
-            Destroy(this);
+            if (toBeRemoved)  // Eventually destroy the arrow if planned to be
+            {
+                Destroy(arrow);
+                Destroy(this);
+            }
         }
     }
 
@@ -159,7 +162,7 @@ public class Arrow : MonoBehaviour {
         Vector3[] vectors = new Vector3[NSample + 1];
 
 
-        for (int i = 0; i < NSample + 1; i++)
+        for (int i = 0; i < NSample +1; i++)
         {
             Vector3 vec = center + new Vector3(Mathf.Cos(angle0 + angle / NSample * i) * R, Mathf.Sin(angle0 + angle / NSample * i) * R, 0);
 
@@ -175,19 +178,20 @@ public class Arrow : MonoBehaviour {
         /*vectors[0] = center;
         vectors[k-2] = center;*/
 
-        lr.positionCount = k ;
+        lr.positionCount = k-1 ;
 
-        for (int i = 0; i < k ; i++)
+        for (int i = 0; i < lr.positionCount; i++)
         {
             lr.SetPosition(i, vectors[i]);
         }
 
-        float a = Vector3.Angle(vectors[k - 2] - vectors[k - 1], Vector3.right);
-        if (vectors[k - 2].y - vectors[k - 1].y < 0) a = -a;  // Quelques corrections suivant l'orientation de la flèche
+        Vector3 last = vectors[k - 3] - vectors[k - 2];
+        float a = Vector3.Angle(last, Vector3.right);
+        if (last.y < 0) a = -a;  // Quelques corrections suivant l'orientation de la flèche
 
-        head.SetPosition(0, vectors[k - 1] + headLength * Vector3FromAngle(a + headAngle * 0.5f));
-        head.SetPosition(1, vectors[k - 1]);
-        head.SetPosition(2, vectors[k - 1] + headLength * Vector3FromAngle(a - headAngle * 0.5f));
+        head.SetPosition(0,  vectors[k - 1] + headLength * Vector3FromAngle(a + headAngle * 0.5f));
+        head.SetPosition(1,  vectors[k - 1]);
+        head.SetPosition(2,  vectors[k - 1] + headLength * Vector3FromAngle(a - headAngle * 0.5f));
 
     }
 
