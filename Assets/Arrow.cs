@@ -10,6 +10,8 @@ public class Arrow : MonoBehaviour {
     public GameObject liaison; // le donneur (1ère extremité)
     public GameObject atome; // l'accepteur (2ème extrémité, la pointe)
 
+    public int collision = 0, collisionbis = 0;
+
 
     //Parametres géométriques
     public int NSample = 20;
@@ -27,9 +29,31 @@ public class Arrow : MonoBehaviour {
     bool isfadein = true;
     bool toBeRemoved = false;
     public float fadeDuration = 0.2f;
+    //public GameObject[] elements;
+    public List<GameObject> elements = new List<GameObject>(); // element a éviter de collisionner;
 
-    void Start () {
+    void Awake () {
         FadeIn(fadeDuration);
+        GameObject[] accepteurs, doublets;
+
+        accepteurs = GameObject.FindGameObjectsWithTag("Accepteur");
+        doublets = GameObject.FindGameObjectsWithTag("Doublet");
+
+        Transform[] children = GetComponentsInChildren<Transform>();
+        foreach (Transform child in children)
+        {
+            if (child.CompareTag("Accepteur"))
+                elements.Add(child.gameObject);
+
+            if (child.CompareTag("Doublet"))
+                elements.Add(child.gameObject);
+
+        }
+
+        /*elements = new GameObject[accepteurs.Length + doublets.Length];
+        accepteurs.CopyTo(elements, 0);
+        doublets.CopyTo(elements, accepteurs.Length);*/
+
     }
 	
 	void Update () {
@@ -121,7 +145,8 @@ public class Arrow : MonoBehaviour {
         LineRenderer lr = Line.GetComponent<LineRenderer>();
         lr.material = new Material(Shader.Find("Sprites/Default"));
         lr.startColor = lr.endColor = color;
-        lr.startWidth = lr.endWidth = width;
+        lr.startWidth = width;
+        lr.endWidth = width * 0.8f;
         lr.numCapVertices = 10;
         lr.positionCount = NSample+1;
 
@@ -130,7 +155,8 @@ public class Arrow : MonoBehaviour {
         head.material = new Material(Shader.Find("Sprites/Default"));
         head.startColor = head.endColor = color;
         //head.startWidth = 3 * width; head.endWidth = 0;
-        head.startWidth = head.endWidth = width;
+        head.startWidth = width;
+        head.endWidth = width * 0.8f;
         head.numCapVertices = 10;
         head.numCornerVertices = 10;
         head.positionCount = 3;
@@ -142,6 +168,7 @@ public class Arrow : MonoBehaviour {
         float R = d * d / 8.0f / h + h * 0.5f; // Rayon de courbure
         Vector3 perp = new Vector3(r.y, -r.x, 0); // Vecteur perpendiculaire à start-end 
 
+        // on test d'un coté 
         Vector3 center = 0.5f * (start + end) + perp * (R - h); // Centre de la courbe
 
         float angle = -Vector3.Angle(start - center, end - center) / 180 * Mathf.PI;  // angle d'ouverture
@@ -150,17 +177,35 @@ public class Arrow : MonoBehaviour {
         if (start.y - center.y < 0) angle0 = -angle0;  // Quelques corrections suivant l'orientation de la flèche
         if (R < h) angle = -2 * Mathf.PI - angle;
 
+
+        // et de l'autre
+        Vector3 centerbis = 0.5f * (start + end) - perp * (R - h); // Centre de la courbe
+
+        float anglebis = -Vector3.Angle(start - centerbis, end - centerbis) / 180 * Mathf.PI;  // angle d'ouverture
+        float angle0bis = Vector3.Angle(start - centerbis, Vector3.right) / 180 * Mathf.PI;  // angle de départ
+
+        if (start.y - centerbis.y < 0) angle0bis = -angle0bis;  // Quelques corrections suivant l'orientation de la flèche
+        anglebis = -anglebis;
+        if (R < h) anglebis = 2 * Mathf.PI - anglebis;
+
+        /*center = centerbis;
+        angle = anglebis;
+        angle0 = angle0bis;*/
+
         /*DrawLine(start, end, new Color(255, 255, 0));
-        DrawLine(center, end, new Color(255, 255, 0));
-        //DrawLine(center, center - R * perp, new Color(255, 255, 0));
+        DrawLine(center, end, new Color(255, 255, 0));*/
+        /*DrawLine(center, center - R * perp, new Color(255, 255, 0));
         DrawLine(center, center - R * new Vector3(Mathf.Cos(angle0 + Mathf.PI / 2), Mathf.Sin(angle0 + Mathf.PI / 2), 0), new Color(255, 255, 0));*/
 
 
 
         int k = 0; // nombre de point (< NSample car on élimine ceux dans le collider)
+        int kbis = 0; // nombre de point (< NSample car on élimine ceux dans le collider)
 
         Vector3[] vectors = new Vector3[NSample + 1];
+        Vector3[] vectorsbis = new Vector3[NSample + 1];
 
+ 
 
         for (int i = 0; i < NSample +1; i++)
         {
@@ -169,11 +214,43 @@ public class Arrow : MonoBehaviour {
             if (!colliderLiaison.OverlapPoint(vec) && !colliderAtome.OverlapPoint(vec))
             // On ne retient le point que s'il ne touche ni l'atome ni la liaison
             {
+                foreach(GameObject ob in elements)
+                {
+                    if (ob.transform.GetComponent<Collider2D>().OverlapPoint(vec)) collision++;
+                }
+                /*for (int n = 0; n < elements.Count; n++)
+                {
+                    collision++;
+                }*/
+                
+
                 vectors[k] = vec;
                 k++;
             }
-
         }
+
+        for (int i = 0; i < NSample + 1; i++)
+        {
+            Vector3 vec = centerbis + new Vector3(Mathf.Cos(angle0bis + anglebis / NSample * i) * R, Mathf.Sin(angle0bis + anglebis / NSample * i) * R, 0);
+
+            if (!colliderLiaison.OverlapPoint(vec) && !colliderAtome.OverlapPoint(vec))
+            // On ne retient le point que s'il ne touche ni l'atome ni la liaison
+            {
+                foreach (GameObject ob in elements)
+                {
+                    if (ob.transform.GetComponent<Collider2D>().OverlapPoint(vec)) collisionbis++;
+                }
+
+                vectorsbis[kbis] = vec;
+                kbis++;
+            }
+        }
+
+        if (collision > collisionbis) {
+            k = kbis;
+            for (int i = 0; i < k; i++) vectors[i] = vectorsbis[i];
+        }
+
 
         /*vectors[0] = center;
         vectors[k-2] = center;*/
@@ -207,7 +284,7 @@ public class Arrow : MonoBehaviour {
         LineRenderer lr = myLine.GetComponent<LineRenderer>();
         lr.material = new Material(Shader.Find("Particles/Alpha Blended Premultiply"));
         lr.startColor = lr.endColor = color;
-        lr.startWidth = lr.endWidth = 0.1f;
+        lr.startWidth = lr.endWidth = 0.01f;
         lr.SetPosition(0, start);
         lr.SetPosition(1, end);
     }
