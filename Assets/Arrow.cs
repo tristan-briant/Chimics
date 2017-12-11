@@ -6,6 +6,8 @@ public class Arrow : MonoBehaviour {
 
 
     public GameObject arrow;  // La flèche
+    GameObject Line;                       // Add a line and an head                                
+    GameObject Head;
 
     public GameObject liaison; // le donneur (1ère extremité)
     public GameObject atome; // l'accepteur (2ème extrémité, la pointe)
@@ -20,6 +22,8 @@ public class Arrow : MonoBehaviour {
     public float headAngle = 60;
     public float headLength = 0.10f;
 
+    Vector3 startPos;
+
     // Couleur
     public Color color = new Color(0x3E / 255.0f, 0x3E / 255.0f, 0x8B / 255.0f, 0);
 
@@ -32,9 +36,20 @@ public class Arrow : MonoBehaviour {
     //public GameObject[] elements;
     public List<GameObject> elements = new List<GameObject>(); // element a éviter de collisionner;
 
+    Vector3[] vectors;
+    Vector3[] vectorsHead;
+
+    RectTransform PageRect; // besoin du niveau de zoom de la page
+
     void Awake () {
+
+        Line = new GameObject();
+        Head = new GameObject();
+
         FadeIn(fadeDuration);
         GameObject[] accepteurs, doublets;
+
+        PageRect = transform.parent.parent.GetComponent<RectTransform>(); 
 
         accepteurs = GameObject.FindGameObjectsWithTag("Accepteur");
         doublets = GameObject.FindGameObjectsWithTag("Doublet");
@@ -50,28 +65,33 @@ public class Arrow : MonoBehaviour {
 
         }
 
-        /*elements = new GameObject[accepteurs.Length + doublets.Length];
-        accepteurs.CopyTo(elements, 0);
-        doublets.CopyTo(elements, accepteurs.Length);*/
-
     }
 	
 	void Update () {
-        float t = Time.time;
-        if (t <= TimeEnd+0.1f)
-        {
-            for (int i = 0; i < arrow.transform.childCount; i++)
-            {
-                LineRenderer lr = arrow.transform.GetChild(i).GetComponent<LineRenderer>();
-                Color c = color;
-                if (isfadein)
-                    c.a = (t - TimeStart) / (TimeEnd - TimeStart);
-                else
-                    c.a = (1 - (t - TimeStart) / (TimeEnd - TimeStart));
 
-                lr.startColor = c;
-                lr.endColor = c;
-            }
+
+        LineRenderer lr1 = Line.GetComponent<LineRenderer>();
+        LineRenderer lr2 = Head.GetComponent<LineRenderer>();
+
+        float scale = PageRect.localScale.x;  // recupère le niveau de zoom
+        lr1.widthMultiplier = scale;
+        lr2.widthMultiplier = scale;
+
+
+        float t = Time.time;
+
+        if (t <= TimeEnd + 0.1f)
+        {
+
+            Color c = color;
+            if (isfadein)
+                c.a = (t - TimeStart) / (TimeEnd - TimeStart);
+            else
+                c.a = (1 - (t - TimeStart) / (TimeEnd - TimeStart));
+
+            lr1.startColor = lr1.endColor = c;
+            lr2.startColor = lr2.endColor = c;
+
 
         }
         else
@@ -135,8 +155,8 @@ public class Arrow : MonoBehaviour {
         };
         arrow.transform.parent = transform;
 
-        GameObject Line = new GameObject();                       // Add a line and an head                                
-        GameObject Head = new GameObject();
+        startPos = arrow.transform.parent.position;
+
 
         Line.transform.parent = arrow.transform;
         Head.transform.parent = arrow.transform;
@@ -149,6 +169,7 @@ public class Arrow : MonoBehaviour {
         lr.endWidth = width * 0.8f;
         lr.numCapVertices = 10;
         lr.positionCount = NSample+1;
+        lr.useWorldSpace = false;
 
         Head.AddComponent<LineRenderer>();
         LineRenderer head = Head.GetComponent<LineRenderer>();
@@ -160,6 +181,7 @@ public class Arrow : MonoBehaviour {
         head.numCapVertices = 10;
         head.numCornerVertices = 10;
         head.positionCount = 3;
+        head.useWorldSpace = false;
 
         // Les maths pour calculer le centre, le rayon de courbure, et l'angle d'ouverture de la flèche
 
@@ -202,7 +224,9 @@ public class Arrow : MonoBehaviour {
         int k = 0; // nombre de point (< NSample car on élimine ceux dans le collider)
         int kbis = 0; // nombre de point (< NSample car on élimine ceux dans le collider)
 
-        Vector3[] vectors = new Vector3[NSample + 1];
+        
+        vectors = new Vector3[NSample + 1];
+        vectorsHead = new Vector3[3];
         Vector3[] vectorsbis = new Vector3[NSample + 1];
 
  
@@ -266,9 +290,18 @@ public class Arrow : MonoBehaviour {
         float a = Vector3.Angle(last, Vector3.right);
         if (last.y < 0) a = -a;  // Quelques corrections suivant l'orientation de la flèche
 
-        head.SetPosition(0,  vectors[k - 1] + headLength * Vector3FromAngle(a + headAngle * 0.5f));
+        vectorsHead[0] = vectors[k - 1] + headLength * Vector3FromAngle(a + headAngle * 0.5f);
+        vectorsHead[1] = vectors[k - 1];
+        vectorsHead[2] = vectors[k - 1] + headLength * Vector3FromAngle(a - headAngle * 0.5f);
+
+        for (int i = 0; i < 3; i++)
+        {
+            head.SetPosition(i, vectorsHead[i]);
+        }
+
+        /*head.SetPosition(0,  vectors[k - 1] + headLength * Vector3FromAngle(a + headAngle * 0.5f));
         head.SetPosition(1,  vectors[k - 1]);
-        head.SetPosition(2,  vectors[k - 1] + headLength * Vector3FromAngle(a - headAngle * 0.5f));
+        head.SetPosition(2,  vectors[k - 1] + headLength * Vector3FromAngle(a - headAngle * 0.5f));*/
 
     }
 
