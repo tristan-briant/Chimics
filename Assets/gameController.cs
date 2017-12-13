@@ -218,7 +218,10 @@ public class gameController : MonoBehaviour {
     public void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
+        {
             LVM.Menu.SetActive(true);
+            LVM.Level.SetActive(false);
+        }
     }
 
    

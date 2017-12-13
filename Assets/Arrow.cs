@@ -148,6 +148,10 @@ public class Arrow : MonoBehaviour {
         Collider2D colliderAtome = atome.GetComponent<Collider2D>();
         Collider2D colliderLiaison = liaison.GetComponent<Collider2D>();
 
+        float scale = PageRect.localScale.x; // Niveau de zoom
+
+        float hs = h * scale;
+        float headLengthS = headLength * scale;
 
         arrow = new GameObject()
         {
@@ -183,21 +187,23 @@ public class Arrow : MonoBehaviour {
         head.positionCount = 3;
         head.useWorldSpace = false;
 
+
+
         // Les maths pour calculer le centre, le rayon de courbure, et l'angle d'ouverture de la flèche
 
         Vector3 r = Vector3.Normalize(end - start);
         float d = Vector3.Distance(end, start);
-        float R = d * d / 8.0f / h + h * 0.5f; // Rayon de courbure
+        float R = d * d / 8.0f / hs + hs * 0.5f; // Rayon de courbure
         Vector3 perp = new Vector3(r.y, -r.x, 0); // Vecteur perpendiculaire à start-end 
 
         // on test d'un coté 
-        Vector3 center = 0.5f * (start + end) + perp * (R - h); // Centre de la courbe
+        Vector3 center = 0.5f * (start + end) + perp * (R - hs); // Centre de la courbe
 
         float angle = -Vector3.Angle(start - center, end - center) / 180 * Mathf.PI;  // angle d'ouverture
         float angle0 = Vector3.Angle(start - center, Vector3.right) / 180 * Mathf.PI;  // angle de départ
 
         if (start.y - center.y < 0) angle0 = -angle0;  // Quelques corrections suivant l'orientation de la flèche
-        if (R < h) angle = -2 * Mathf.PI - angle;
+        if (R < hs) angle = -2 * Mathf.PI - angle;
 
 
         // et de l'autre
@@ -290,9 +296,9 @@ public class Arrow : MonoBehaviour {
         float a = Vector3.Angle(last, Vector3.right);
         if (last.y < 0) a = -a;  // Quelques corrections suivant l'orientation de la flèche
 
-        vectorsHead[0] = vectors[k - 1] + headLength * Vector3FromAngle(a + headAngle * 0.5f);
+        vectorsHead[0] = vectors[k - 1] + headLengthS * Vector3FromAngle(a + headAngle * 0.5f);
         vectorsHead[1] = vectors[k - 1];
-        vectorsHead[2] = vectors[k - 1] + headLength * Vector3FromAngle(a - headAngle * 0.5f);
+        vectorsHead[2] = vectors[k - 1] + headLengthS * Vector3FromAngle(a - headAngle * 0.5f);
 
         for (int i = 0; i < 3; i++)
         {

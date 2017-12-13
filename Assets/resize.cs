@@ -15,7 +15,20 @@ public class resize : MonoBehaviour {
     }
 
     void Update () {
-        reactionRect = transform.Find("Playground").GetChild(0).transform.GetComponent<RectTransform>();
+        Transform pg = transform.Find("Playground");
+
+        for (int i=0;i< pg.childCount; i++)
+        {
+            GameObject ch = pg.GetChild(i).gameObject;
+            if (ch.activeSelf)
+            {
+                reactionRect=ch.transform.GetComponent<RectTransform>();
+            }
+        }
+
+        //reactionRect = transform.Find("Playground").GetChild(0).transform.GetComponent<RectTransform>();
+
+
         rect.sizeDelta = new Vector2(reactionRect.sizeDelta.x * reactionRect.localScale.x,
            reactionRect.sizeDelta.y * reactionRect.localScale.y) ;
 

@@ -22,7 +22,11 @@ public class ElementManager : MonoBehaviour {
 
         foreach (GameObject go in goSameType) // and unselect them
         {
-            go.GetComponent<ElementManager>().isSelected = false;
+            ElementManager el = go.GetComponent<ElementManager>();
+            if(el==null)
+                Debug.Log(go.name);
+            else
+                go.GetComponent<ElementManager>().isSelected = false;
         }
 
         isSelected = !s; //toggle selection
