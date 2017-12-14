@@ -44,25 +44,7 @@ public class gameController : MonoBehaviour {
 	
 	void LateUpdate () {
 
-        if (animPlaying == true) return;
-
-        bool accepteurSelected, doubletSelected, accepteurSuccess, doubletSuccess;
-
-        accepteurSelected = false;
-        accepteurSuccess = false;
-
-        foreach (GameObject go in accepteurs)
-        {
-            if (go.GetComponent<ElementManager>().isSelected)
-            {
-                accepteurSelected=true;
-                if (go.GetComponent<ElementManager>().success)
-                    accepteurSuccess = true;
-            }
-        }
-
-        doubletSelected = false;
-        doubletSuccess = false;
+        //if (animPlaying == true) return;
 
         GameObject liaison=null, atome=null;
 
@@ -111,34 +93,45 @@ public class gameController : MonoBehaviour {
             don[count++] = iterator.liaison;
         }
 
+        bool win = false;
 
-        foreach (Solutions s in sol.GetComponents<Solutions>())
+        Solutions[] solutions = sol.GetComponents<Solutions>();
+        Debug.Log("nombre de sol " + solutions.Length);
+
+        foreach (Solutions s in solutions)
         {
-            if (s.GetComponent<Solutions>().TestReaction(acc, don) == 1)
-            {
-                //WinLevel();
-                Debug.Log("gagné");
-                GetComponent<Animator>().SetTrigger("successTrigger");
-                return;
-            }
-            else
-            {
-                Debug.Log("perdu");
-                animPlaying = true;
-                failCount++;
-                GetComponent<Animator>().SetTrigger("failTrigger");
-            }
+            if (s.TestReaction(acc, don) == 1)
+                win = true;
         }
 
+        if (win)
+        {
+            //WinLevel();
+            //Debug.Log("gagné");
+            GetComponent<Animator>().SetTrigger("successTrigger");
+            return;
+        }
+        else
+        {
+            Debug.Log("perdu");
+            //animPlaying = true;
+            failCount++;
+            //Lance le fail
+            transform.parent.parent.Find("Fail").GetComponent<Animator>().SetTrigger("FailTrigger");
+        }
     }
 
+
+
     public void WinLevel(){
+        Debug.Log("gagné");
         if (LVM.completedLevel < LVM.currentLevel + 1)
             {
                 LVM.completedLevel = LVM.currentLevel + 1;
                 Debug.Log("level+1");
             }
 
+        transform.parent.parent.Find("Check").GetComponent<Animator>().SetTrigger("SuccessTrigger");
     }
 
     public void ResetElements()
@@ -154,6 +147,21 @@ public class gameController : MonoBehaviour {
             go.GetComponent<ElementManager>().inReaction = false;
         }
 
+
+    }
+
+    public void ResetLevel() {
+        ResetElements(); // déselectionne les éléments
+
+        Arrow[] arrows = transform.GetComponents<Arrow>();
+
+        foreach (Arrow it in arrows)
+        {
+            it.Remove(0.0f);
+        }
+
+        // si on load le level on enlève un éventuel check
+        transform.parent.parent.Find("Check").GetComponent<Animator>().SetTrigger("reset");
 
     }
 
@@ -188,7 +196,7 @@ public class gameController : MonoBehaviour {
         Debug.Log("click again");
     }
 
-    public void PrepareNextSuccess()
+    /*public void PrepareNextSuccess()
     {
         foreach (GameObject go in accepteurs)
             if (go.activeInHierarchy)
@@ -213,7 +221,7 @@ public class gameController : MonoBehaviour {
     public void resumeWinAnimation()
     {
         anim.SetFloat("winspeed", 1);
-    }
+    }*/
 
     public void Update()
     {

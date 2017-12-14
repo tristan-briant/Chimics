@@ -47,8 +47,10 @@ public class levelManager : MonoBehaviour {
         GameObject lv = Playground.transform.GetChild(levelNumber).gameObject;
 
         lv.SetActive(true);
-        lv.GetComponent<gameController>().ClearLevel();
+        lv.GetComponent<gameController>().ResetLevel();
         lv.GetComponent<gameController>().ClickableEnable();
+        lv.GetComponent<gameController>().failCount = 0;
+        
 
        //GameObject lv=Instantiate(levels[levelNumber]);
        //lv.transform.SetParent(Playground.transform);
