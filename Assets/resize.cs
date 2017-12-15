@@ -4,41 +4,52 @@ using UnityEngine;
 
 public class resize : MonoBehaviour {
 
-    RectTransform reactionRect;
-    RectTransform rect;
+    RectTransform reactionRect, parentRect;
+    RectTransform pageRect;
 
-    public float w,h;
+    Transform pg;
 
-    private void Start()
+    public float scale;
+
+    public float ZoomMax = 3.0f;
+    float ZoomBest;
+
+    private void Awake()
     {
-        rect = transform.GetComponent<RectTransform>();
+        pageRect = transform.GetComponent<RectTransform>();
+        scale = 1.0f;
+        parentRect = transform.parent.parent.GetComponent<RectTransform>();
+
+        pg = transform.Find("Playground");
     }
 
     void Update () {
-        Transform pg = transform.Find("Playground");
 
-        for (int i=0;i< pg.childCount; i++)
+
+        /*for (int i=0;i< pg.childCount; i++)
         {
             GameObject ch = pg.GetChild(i).gameObject;
             if (ch.activeSelf)
             {
                 reactionRect=ch.transform.GetComponent<RectTransform>();
+                break;
             }
-        }
+        }*/
 
         //reactionRect = transform.Find("Playground").GetChild(0).transform.GetComponent<RectTransform>();
 
+        if (!reactionRect) return;
 
-        rect.sizeDelta = new Vector2(reactionRect.sizeDelta.x * reactionRect.localScale.x,
+        pageRect.sizeDelta = new Vector2(reactionRect.sizeDelta.x * reactionRect.localScale.x,
            reactionRect.sizeDelta.y * reactionRect.localScale.y) ;
 
         if (Input.GetAxis("Mouse ScrollWheel") > 0f) // forward
         {
-            rect.localScale = rect.localScale + 0.1f*Vector3.one;
+            scale = pageRect.localScale.x + 0.1f;
         }
         else if (Input.GetAxis("Mouse ScrollWheel") < 0f) // backwards
         {
-            rect.localScale = rect.localScale - 0.1f * Vector3.one;
+            scale = pageRect.localScale.x - 0.1f;
         }
 
         if (Input.touchCount == 2) {
@@ -57,18 +68,59 @@ public class resize : MonoBehaviour {
             // Find the difference in the distances between each frame.
             float deltaMagnitudeDiff = prevTouchDeltaMag - touchDeltaMag;
 
-            float scale = rect.localScale.x;
+            scale = pageRect.localScale.x;
 
-            scale = Mathf.Clamp(scale - 0.001f * deltaMagnitudeDiff, 0.3f, 3.0f);
-            rect.localScale = new Vector2(scale,scale);
+            scale = scale - 0.001f * deltaMagnitudeDiff;
 
 
-            
         }
 
 
-        w = reactionRect.sizeDelta.x;
-        h = reactionRect.sizeDelta.y;
+        scale = Mathf.Clamp(scale, ZoomBest, ZoomBest * ZoomMax);
+        pageRect.localScale = new Vector2(scale, scale);
 
     }
+
+    public void InitResize(Transform reaction)
+    {
+        /*for (int i = 0; i < pg.childCount; i++)
+        {
+            GameObject ch = pg.GetChild(i).gameObject;
+            if (ch.activeSelf)
+            {
+                reactionRect = ch.transform.GetComponent<RectTransform>();
+                break;
+            }
+        }*/
+
+        reactionRect = reaction.transform.GetComponent<RectTransform>();
+   
+        transform.localPosition = new Vector3(0, 0, 0);
+        transform.parent.localPosition = new Vector3(0, 0, 0);
+
+        ZoomBest = BestFit();
+        scale = ZoomBest;
+        pageRect.localScale = ZoomBest * Vector2.one;
+
+        Transform bg = transform.Find("Background");
+        float s = bg.localScale.x * ZoomBest;
+        bg.GetComponent<SpriteRenderer>().size = (parentRect.rect.size + new Vector2(0, 2 * 100)) / s; //new Vector2(0, 0);
+    }
+
+
+    public float BestFit(){
+        float scale;
+
+        if (parentRect.rect.width / parentRect.rect.height > reactionRect.rect.width / reactionRect.rect.height)
+        {
+            scale = parentRect.rect.height / reactionRect.rect.height;
+        }
+        else {
+            scale = parentRect.rect.width / reactionRect.rect.width;
+        }
+
+        return scale;
+
+    }
+
 }

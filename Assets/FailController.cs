@@ -28,4 +28,10 @@ public class FailController : MonoBehaviour {
     {
         pg.transform.GetChild(LVM.currentLevel).GetComponent<gameController>().ClickableEnable();
     }
+
+    public void ShowTip()
+    {
+        pg.transform.GetChild(LVM.currentLevel).GetComponent<gameController>().ShowTip();
+    }
+
 }

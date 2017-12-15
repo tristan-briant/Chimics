@@ -174,6 +174,7 @@ public class Arrow : MonoBehaviour {
         lr.numCapVertices = 10;
         lr.positionCount = NSample+1;
         lr.useWorldSpace = false;
+        lr.sortingOrder = 1;
 
         Head.AddComponent<LineRenderer>();
         LineRenderer head = Head.GetComponent<LineRenderer>();
@@ -186,7 +187,7 @@ public class Arrow : MonoBehaviour {
         head.numCornerVertices = 10;
         head.positionCount = 3;
         head.useWorldSpace = false;
-
+        head.sortingOrder = 1;
 
 
         // Les maths pour calculer le centre, le rayon de courbure, et l'angle d'ouverture de la flèche

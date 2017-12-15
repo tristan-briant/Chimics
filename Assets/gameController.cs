@@ -7,14 +7,15 @@ using UnityEngine.UI;
 public class gameController : MonoBehaviour {
     List<GameObject> accepteurs = new List<GameObject>();
     List<GameObject> doublets = new List<GameObject>();
-    public int failCount;
-    public bool animPlaying = false;
+    public int failCount; // nombre d'echec sur le level en cours
+    public int step;    // Pour les réaction mutli étape, n° de l'étape
+    //public bool animPlaying = false;
     levelManager LVM;
-    GameObject Tip;
+    public GameObject Tip;
     Animator anim;
     public GameObject canvas;
 
-    void Start () {
+    void Awake () {
         LVM = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<levelManager>();
         if (transform.Find("Tip") != null)
             Tip = transform.Find("Tip").gameObject;
@@ -161,8 +162,14 @@ public class gameController : MonoBehaviour {
         }
 
         // si on load le level on enlève un éventuel check
-        transform.parent.parent.Find("Check").GetComponent<Animator>().SetTrigger("reset");
+        Animator anim = transform.parent.parent.Find("Check").GetComponent<Animator>();
+        if(anim.isActiveAndEnabled)
+            anim.SetTrigger("reset");
 
+        transform.parent.parent.GetComponent<resize>().InitResize(transform);
+        if (Tip != null)
+            Tip.SetActive(false);
+        failCount = 0;
     }
 
     public void ClearLevel()
