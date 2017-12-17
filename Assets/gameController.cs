@@ -11,14 +11,14 @@ public class gameController : MonoBehaviour {
     public int step;    // Pour les réaction mutli étape, n° de l'étape
     //public bool animPlaying = false;
     levelManager LVM;
-    public GameObject Tip;
+    public Transform Tips;
     Animator anim;
     public GameObject canvas;
 
     void Awake () {
         LVM = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<levelManager>();
-        if (transform.Find("Tip") != null)
-            Tip = transform.Find("Tip").gameObject;
+        //if (transform.Find("Tips") != null)
+        Tips = transform.Find("Tips");
 
 
         transform.localPosition = new Vector3(0, 0, 0);
@@ -45,8 +45,6 @@ public class gameController : MonoBehaviour {
 	
 	void LateUpdate () {
 
-        //if (animPlaying == true) return;
-
         GameObject liaison=null, atome=null;
 
         foreach (GameObject go in doublets)
@@ -63,13 +61,8 @@ public class gameController : MonoBehaviour {
             ar.atome = atome;
             ar.liaison = liaison;
             
-            //ar.width = 0.02f * canvas.transform.GetComponent<Rect>().height/500;
             ar.DrawCurvedArrow();
-            //ar.DrawCurvedArrowBetween(liaison.transform, atome.transform);
-
-
-            /*Arrow arrow=new Arrow();
-            arrow.DrawCurvedArrowBetween(liaison.transform, atome.transform,transform);*/
+           
             liaison.GetComponent<ElementManager>().ReactWith(atome);
             atome.GetComponent<ElementManager>().ReactWith(liaison);
 
@@ -107,17 +100,16 @@ public class gameController : MonoBehaviour {
 
         if (win)
         {
-            //WinLevel();
-            //Debug.Log("gagné");
+            RemoveTip();
+            failCount=0;
+            step++;
+            transform.parent.parent.GetComponent<resize>().ReZoom();
             GetComponent<Animator>().SetTrigger("successTrigger");
-            return;
         }
         else
         {
-            Debug.Log("perdu");
-            //animPlaying = true;
             failCount++;
-            //Lance le fail
+            transform.parent.parent.GetComponent<resize>().ReZoom();
             transform.parent.parent.Find("Fail").GetComponent<Animator>().SetTrigger("FailTrigger");
         }
     }
@@ -167,9 +159,10 @@ public class gameController : MonoBehaviour {
             anim.SetTrigger("reset");
 
         transform.parent.parent.GetComponent<resize>().InitResize(transform);
-        if (Tip != null)
-            Tip.SetActive(false);
+
         failCount = 0;
+
+        ShowTip();
     }
 
     public void ClearLevel()
@@ -188,9 +181,42 @@ public class gameController : MonoBehaviour {
 
     public void ShowTip()
     {
-        if (Tip!= null && failCount > 3)
-            Tip.SetActive(true);
+        if (!Tips) return; // Si pas de Tips pas de Tips !
+
+        for(int i = 0; i < Tips.childCount; i++)
+        {
+            Transform tip= Tips.GetChild(i);
+            TipManager tm = tip.GetComponent<TipManager>();
+
+            if (!tm || (tm.ShowInStep != step && tm.ShowInStep >= 0))
+            {
+                tip.gameObject.SetActive(false);
+                return;
+            }
+
+            if (failCount >= tm.ShowAfterNFail && ( failCount < tm.HideAfterNFail || tm.HideAfterNFail < 0))
+            {
+                tip.gameObject.SetActive(true);
+            }
+            else
+            {
+                tip.gameObject.SetActive(false);
+            }
+
+        }
     }
+
+    public void RemoveTip()
+    {
+        if (!Tips) return; // Si pas de Tips pas de Tips !
+
+        for (int i = 0; i < Tips.childCount; i++)
+        {
+            Transform tip = Tips.GetChild(i);
+            tip.gameObject.SetActive(false);
+        }
+    }
+
 
     public void ClickableDisable()
     {
@@ -203,32 +229,6 @@ public class gameController : MonoBehaviour {
         Debug.Log("click again");
     }
 
-    /*public void PrepareNextSuccess()
-    {
-        foreach (GameObject go in accepteurs)
-            if (go.activeInHierarchy)
-                go.GetComponent<ElementManager>().success=false;
-        foreach (GameObject go in doublets)
-            if (go.activeInHierarchy)
-                go.GetComponent<ElementManager>().success = false;
-
-        failCount = 0;
-
-        if(transform.Find("Tip2")!=null)
-            Tip = transform.Find("Tip").gameObject;
-        animPlaying = false;
-    }
-
-    public void stopWinAnimation()
-    {
-        anim.SetFloat("winspeed",0);
-        animPlaying = false;
-    }
-
-    public void resumeWinAnimation()
-    {
-        anim.SetFloat("winspeed", 1);
-    }*/
 
     public void Update()
     {

@@ -2,18 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class tipManager : MonoBehaviour {
+public class TipManager : MonoBehaviour {
 
-    //levelManager LVM;
-    //gameController GC;
-	// Use this for initialization
-	void Start () {
-        Vector3 pos = transform.localPosition;
-        transform.localPosition = new Vector3(0, 0, pos.z);
-        //GC =transform.parent.transform.GetComponent<gameController>();
-        gameObject.SetActive(false);
-
-    }
-    
+    public int ShowAfterNFail = 3; // appear after n fail  
+    public int HideAfterNFail = -1; // if <0 never diseapear
+    public int ShowInStep = -1; //only show in step n of the multistep reaction if 0< allways show
     
 }
