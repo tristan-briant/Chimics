@@ -4,18 +4,20 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
-
-
 public class ControlManager : MonoBehaviour
 {
-    public Text text;
+    public levelManager LVM;
+    public GameObject pg;
 
-    public void Click()
-    {
-        Debug.Log("Click !! ");
-        //text.color
+    public void Validate() {
+        //pg.transform.GetChild(LVM.currentLevel).GetComponent<gameController>().Validate();
+        LVM.CurrentReaction().GetComponent<gameController>().Validate();
     }
-    
+
+    public void Clear()
+    {
+        //pg.transform.GetChild(LVM.currentLevel).GetComponent<gameController>().ClearLevel();
+        LVM.CurrentReaction().GetComponent<gameController>().ClearLevel();
+    }
+
 }

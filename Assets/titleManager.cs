@@ -15,6 +15,6 @@ public class titleManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        GetComponent<Text>().text = "Réaction " + (lvm.currentLevel + 1);
+        GetComponent<Text>().text = "Niveau " + (lvm.currentLevel + 1) + " - Réaction " + (lvm.currentReaction + 1);
 	}
 }

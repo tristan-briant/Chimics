@@ -14,15 +14,24 @@ public class gameController : MonoBehaviour {
     public Transform Tips;
     Animator anim;
     public GameObject canvas;
+    //resize ZoomManager;
+    GameObject[] Buttons;
+
+    public void Start()
+    {
+        
+    }
 
     void Awake () {
         LVM = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<levelManager>();
         //if (transform.Find("Tips") != null)
         Tips = transform.Find("Tips");
+        //ZoomManager = transform.parent.parent.GetComponent<resize>();
 
+        Buttons = GameObject.FindGameObjectsWithTag("Buttons");
 
         transform.localPosition = new Vector3(0, 0, 0);
-        transform.localScale = new Vector3(1, 1, 1);
+        //transform.localScale = new Vector3(1, 1, 1);
 
         transform.GetComponent<Image>().enabled = false;
         anim = GetComponent<Animator>();
@@ -113,6 +122,7 @@ public class gameController : MonoBehaviour {
             transform.parent.parent.Find("Fail").GetComponent<Animator>().SetTrigger("FailTrigger");
         }
     }
+
 
 
 
@@ -221,12 +231,22 @@ public class gameController : MonoBehaviour {
     public void ClickableDisable()
     {
         GetComponent<CanvasGroup>().blocksRaycasts = false;
+        foreach (GameObject ob in Buttons)
+        {
+            ob.SetActive(false);
+            //ob.transform.GetComponent<Button>().interactable = false;
+        }
+
     }
 
     public void ClickableEnable()
     {
         GetComponent<CanvasGroup>().blocksRaycasts = true;
-        Debug.Log("click again");
+        foreach (GameObject ob in Buttons)
+        {
+            ob.SetActive(true);
+            //ob.transform.GetComponent<Button>().interactable = true;
+        }
     }
 
 
@@ -234,8 +254,8 @@ public class gameController : MonoBehaviour {
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            LVM.Menu.SetActive(true);
-            LVM.Level.SetActive(false);
+            LVM.ReactionSelector.SetActive(true);
+            LVM.Game.SetActive(false);
         }
     }
 

@@ -6,62 +6,117 @@ using UnityEngine.UI;
 public class levelManager : MonoBehaviour {
 
     public int currentLevel;
+    public int currentReaction;
+
     public int completedLevel=0;
     public int maxLevel;
     public GameObject Playground;
-    public GameObject Menu;
-    public GameObject Level;
+    public GameObject ReactionSelector;
+    public GameObject LevelSelector;
+    public GameObject Game;
 
     [Header("Debug Mode")]
     public bool debug = false;
 
-    public List<GameObject> levels;
+    public Transform[][] reactions;
     
     private void Awake()
     {
-        levels = new List<GameObject>();
+  
+        Transform levels = GameObject.Find("Levels").transform;
+
+        reactions = new Transform[levels.childCount][];
+
+        int n = 0;
+
+        foreach (Transform child in levels) {
+            int nreact = child.childCount;
+
+            reactions[n] = new Transform[nreact];
+
+            for (int i = 0; i < nreact; i++) 
+            {
+                Transform r = child.GetChild(0);
  
-        foreach (Transform child in Playground.transform)
-        {
-            //levels.Add(Resources.Load<GameObject>("Level/"+ child.gameObject.name));
-            levels.Add(child.gameObject);
+                r.SetParent(Playground.transform);
+                r.localScale = new Vector3(1, 1, 1);
+                r.localPosition = new Vector3(0, 0, 0);
+                reactions[n][i] = r;
+            }
+
+            n++;
         }
-   
-        maxLevel = levels.Count; 
+
+        
+
     }
 
-    public void LoadNextLevel()
+    private void Start()
     {
-        LoadLevel(currentLevel+1);
+        LevelSelector.SetActive(true);
+        ReactionSelector.SetActive(false);
+        Game.SetActive(false);
     }
 
-    public void LoadLevel(int levelNumber)
+    public void LoadNextReaction()
     {
-        if (levelNumber >= maxLevel)
+        if (currentReaction < reactions[currentLevel].Length - 1)
+        {
+            currentReaction++;
+        }
+        else if (currentLevel < reactions.Length - 1) {
+            currentLevel++;
+            currentReaction = 0;
+        }
+
+        LoadReaction(currentReaction);
+    }
+
+    public void LoadLevel(int level)
+    {
+        if (level >= reactions.Length)
             return;
 
+        currentLevel = level;
+
+        LevelSelector.SetActive(false); 
+        ReactionSelector.SetActive(true); 
+        Game.SetActive(false);
+    }
+
+
+        public void LoadReaction(int reaction)
+    {
+        if (reaction >= reactions[currentLevel].Length)
+            return;
+
+        currentReaction = reaction;
+
         foreach (Transform child in Playground.transform)
-            //GameObject.Destroy(child.gameObject);
             child.gameObject.SetActive(false);
 
-        GameObject lv = Playground.transform.GetChild(levelNumber).gameObject;
+        Transform lv = reactions[currentLevel][currentReaction];
 
-        lv.SetActive(true);
+        lv.gameObject.SetActive(true);
         lv.GetComponent<gameController>().ResetLevel();
         lv.GetComponent<gameController>().ClickableEnable();
         lv.GetComponent<gameController>().failCount = 0;
-        
 
-       //GameObject lv=Instantiate(levels[levelNumber]);
-       //lv.transform.SetParent(Playground.transform);
+        LevelSelector.SetActive(false); // desactive le menu
+        ReactionSelector.SetActive(false); // desactive le menu
+        Game.SetActive(true);
 
-        Menu.SetActive(false); // desactive le menu
-        Level.SetActive(true);
-
-        currentLevel = levelNumber;
+        //currentLevel = levelNumber;
 
 
     }
+
+    public Transform CurrentReaction()
+    {
+        return reactions[currentLevel][currentReaction];
+
+    }
     
+
 
 }
