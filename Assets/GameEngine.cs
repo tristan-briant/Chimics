@@ -4,7 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-public class gameController : MonoBehaviour {
+
+public class GameEngine : MonoBehaviour {
     List<GameObject> accepteurs = new List<GameObject>();
     List<GameObject> doublets = new List<GameObject>();
     public int failCount; // nombre d'echec sur le level en cours
@@ -15,47 +16,57 @@ public class gameController : MonoBehaviour {
     public GameObject canvas;
     GameObject[] Buttons;
     GameObject ResetButton;
+    Transform solutions;
+    Transform reaction;
 
     public void Start()
     {
-        ResetLevel();
+        //ResetLevel();
     }
 
-    void Awake () {
+    void Awake()
+    {
         LVM = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<levelManager>();
-        Tips = transform.Find("Tips");
- 
+
         Buttons = GameObject.FindGameObjectsWithTag("Buttons");
         ResetButton = GameObject.FindGameObjectWithTag("Reset");
 
-        transform.localPosition = new Vector3(0, 0, 0);
+    }
 
-        transform.GetComponent<Image>().enabled = false;
-        anim = GetComponent<Animator>();
 
-        Transform[] children = GetComponentsInChildren<Transform>();
+    public void LoadCurrentReaction() {
+        reaction = LVM.CurrentReaction();
+
+        reaction.localPosition = new Vector3(0, 0, 0);
+        reaction.GetComponent<Image>().enabled = false;
+        anim = reaction.GetComponent<Animator>();
+
+        accepteurs.Clear();
+        doublets.Clear();
+
+        Transform[] children = reaction.GetComponentsInChildren<Transform>();
         foreach (Transform child in children)
         {
             if (child.CompareTag("Accepteur"))
                 accepteurs.Add(child.gameObject);
-            
+
             if (child.CompareTag("Doublet"))
                 doublets.Add(child.gameObject);
-            
+
         }
 
-        // Enlève le texte pour ne pas être visible sur le jeu
-        Transform sol = transform.Find("Solutions");
-        if (sol.GetComponent<Text>())
-            sol.GetComponent<Text>().enabled = false;
+        Tips = reaction.Find("Tips");
 
-        
+        solutions = reaction.Find("Solutions");
+        if (solutions.GetComponent<Text>())
+            solutions.GetComponent<Text>().enabled = false;
+
     }
 
-	
-	void LateUpdate () {
+    void LateUpdate()
+    {
 
-        GameObject liaison=null, atome=null;
+        GameObject liaison = null, atome = null;
 
         foreach (GameObject go in doublets)
             if (go.GetComponent<ElementManager>().isSelected) liaison = go;
@@ -70,9 +81,9 @@ public class gameController : MonoBehaviour {
             Arrow ar = gameObject.AddComponent<Arrow>();
             ar.atome = atome;
             ar.liaison = liaison;
-            
+
             ar.DrawCurvedArrow();
-           
+
             liaison.GetComponent<ElementManager>().ReactWith(atome);
             atome.GetComponent<ElementManager>().ReactWith(liaison);
 
@@ -82,7 +93,7 @@ public class gameController : MonoBehaviour {
 
     public void Validate()
     {
-        Transform sol = transform.Find("Solutions");
+        //Transform sol = transform.Find("Solutions");
 
         Arrow[] lm = transform.GetComponents<Arrow>();
         int length = lm.Length;
@@ -99,10 +110,10 @@ public class gameController : MonoBehaviour {
 
         bool win = false;
 
-        Solutions[] solutions = sol.GetComponents<Solutions>();
-        Debug.Log("nombre de sol " + solutions.Length);
+        Solutions[] sol = solutions.GetComponents<Solutions>();
+        Debug.Log("nombre de sol " + sol.Length);
 
-        foreach (Solutions s in solutions)
+        foreach (Solutions s in sol)
         {
             if (s.TestReaction(acc, don) == 1)
                 win = true;
@@ -111,11 +122,11 @@ public class gameController : MonoBehaviour {
         if (win)
         {
             RemoveTip();
-            failCount=0;
+            failCount = 0;
             step++;
             transform.parent.parent.GetComponent<resize>().ReZoom();
 
-            Animator anim = GetComponent<Animator>();
+            Animator anim = reaction.GetComponent<Animator>();
             if (anim != null && anim.enabled)
                 anim.SetTrigger("successTrigger");
             else
@@ -124,23 +135,24 @@ public class gameController : MonoBehaviour {
         else
         {
             failCount++;
-            transform.parent.parent.GetComponent<resize>().ReZoom();
-            transform.parent.parent.Find("Fail").GetComponent<Animator>().SetTrigger("FailTrigger");
+            transform.parent.GetComponent<resize>().ReZoom();
+            transform.parent.Find("Fail").GetComponent<Animator>().SetTrigger("FailTrigger");
         }
     }
 
 
 
 
-    public void WinLevel(){
+    public void WinLevel()
+    {
         Debug.Log("gagné");
         if (LVM.completedLevel < LVM.currentLevel + 1)
-            {
-                LVM.completedLevel = LVM.currentLevel + 1;
-                Debug.Log("level+1");
-            }
+        {
+            LVM.completedLevel = LVM.currentLevel + 1;
+            Debug.Log("level+1");
+        }
 
-        transform.parent.parent.Find("Check").GetComponent<Animator>().SetTrigger("SuccessTrigger");
+        transform.parent.Find("Check").GetComponent<Animator>().SetTrigger("SuccessTrigger");
 
         ResetButton.SetActive(true);
     }
@@ -161,10 +173,11 @@ public class gameController : MonoBehaviour {
 
     }
 
-    public void ResetLevel() {
+    public void ResetLevel()
+    {
         ResetElements(); // déselectionne les éléments
 
-        Arrow[] arrows = transform.GetComponents<Arrow>();
+        Arrow[] arrows = reaction.GetComponents<Arrow>();
 
         foreach (Arrow it in arrows)
         {
@@ -172,15 +185,15 @@ public class gameController : MonoBehaviour {
         }
 
         // si on load le level on enlève un éventuel check
-        
+
         if (transform.parent)
         {
-            Transform t = transform.parent.parent.Find("Check");
+            Transform t = transform.parent.Find("Check");
             Animator anim = t.GetComponent<Animator>();
             if (anim.isActiveAndEnabled)
                 anim.SetTrigger("reset");
 
-            transform.parent.parent.GetComponent<resize>().InitResize(transform);
+            transform.parent.GetComponent<resize>().InitResize(transform);
 
         }
 
@@ -188,9 +201,9 @@ public class gameController : MonoBehaviour {
         anim = GetComponent<Animator>();
         if (anim && anim.isActiveAndEnabled)
             anim.SetTrigger("reset");
-      
 
- 
+
+
         failCount = 0;
         step = 0;
 
@@ -204,7 +217,7 @@ public class gameController : MonoBehaviour {
         Debug.Log("Clear Level");
         ResetElements(); // déselectionne les éléments
 
-        Arrow[] arrows = transform.GetComponents<Arrow>();
+        Arrow[] arrows = reaction.GetComponents<Arrow>();
 
         foreach (Arrow it in arrows)
         {
@@ -218,9 +231,9 @@ public class gameController : MonoBehaviour {
     {
         if (!Tips) return; // Si pas de Tips pas de Tips !
 
-        for(int i = 0; i < Tips.childCount; i++)
+        for (int i = 0; i < Tips.childCount; i++)
         {
-            Transform tip= Tips.GetChild(i);
+            Transform tip = Tips.GetChild(i);
             TipManager tm = tip.GetComponent<TipManager>();
 
             if (!tm || (tm.ShowInStep != step && tm.ShowInStep >= 0))
@@ -229,7 +242,7 @@ public class gameController : MonoBehaviour {
                 return;
             }
 
-            if (failCount >= tm.ShowAfterNFail && ( failCount < tm.HideAfterNFail || tm.HideAfterNFail < 0))
+            if (failCount >= tm.ShowAfterNFail && (failCount < tm.HideAfterNFail || tm.HideAfterNFail < 0))
             {
                 tip.gameObject.SetActive(true);
             }
@@ -255,7 +268,7 @@ public class gameController : MonoBehaviour {
 
     public void ClickableDisable()
     {
-        GetComponent<CanvasGroup>().blocksRaycasts = false;
+        reaction.GetComponent<CanvasGroup>().blocksRaycasts = false;
         foreach (GameObject ob in Buttons)
         {
             ob.SetActive(false);
@@ -266,7 +279,7 @@ public class gameController : MonoBehaviour {
 
     public void ClickableEnable()
     {
-        GetComponent<CanvasGroup>().blocksRaycasts = true;
+        reaction.GetComponent<CanvasGroup>().blocksRaycasts = true;
         foreach (GameObject ob in Buttons)
         {
             ob.SetActive(true);
@@ -284,7 +297,7 @@ public class gameController : MonoBehaviour {
         }
     }
 
-   
+
 
 }
 
