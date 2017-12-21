@@ -10,14 +10,17 @@ public class ControlManager : MonoBehaviour
     public GameObject pg;
 
     public void Validate() {
-        //pg.transform.GetChild(LVM.currentLevel).GetComponent<gameController>().Validate();
         LVM.CurrentReaction().GetComponent<gameController>().Validate();
     }
 
     public void Clear()
     {
-        //pg.transform.GetChild(LVM.currentLevel).GetComponent<gameController>().ClearLevel();
         LVM.CurrentReaction().GetComponent<gameController>().ClearLevel();
+    }
+
+    public void ResetLevel()
+    {
+        LVM.CurrentReaction().GetComponent<gameController>().ResetLevel();
     }
 
 }

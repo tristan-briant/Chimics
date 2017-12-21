@@ -12,8 +12,7 @@ public class Arrow : MonoBehaviour {
     public GameObject liaison; // le donneur (1ère extremité)
     public GameObject atome; // l'accepteur (2ème extrémité, la pointe)
 
-    public int collision = 0, collisionbis = 0;
-
+ 
 
     //Parametres géométriques
     public int NSample = 20;
@@ -22,8 +21,7 @@ public class Arrow : MonoBehaviour {
     public float headAngle = 60;
     public float headLength = 0.10f;
 
-    Vector3 startPos;
-
+  
     // Couleur
     public Color color = new Color(0x3E / 255.0f, 0x3E / 255.0f, 0x8B / 255.0f, 0);
 
@@ -47,12 +45,12 @@ public class Arrow : MonoBehaviour {
         Head = new GameObject();
 
         FadeIn(fadeDuration);
-        GameObject[] accepteurs, doublets;
+        //GameObject[] accepteurs, doublets;
 
         PageRect = transform.parent.parent.GetComponent<RectTransform>(); 
 
-        accepteurs = GameObject.FindGameObjectsWithTag("Accepteur");
-        doublets = GameObject.FindGameObjectsWithTag("Doublet");
+        //accepteurs = GameObject.FindGameObjectsWithTag("Accepteur");
+        //doublets = GameObject.FindGameObjectsWithTag("Doublet");
 
         Transform[] children = GetComponentsInChildren<Transform>();
         foreach (Transform child in children)
@@ -159,7 +157,7 @@ public class Arrow : MonoBehaviour {
         };
         arrow.transform.parent = transform;
 
-        startPos = arrow.transform.parent.position;
+        //startPos = arrow.transform.parent.position;
 
 
         Line.transform.parent = arrow.transform;
@@ -208,21 +206,17 @@ public class Arrow : MonoBehaviour {
 
 
         // et de l'autre
-        Vector3 centerbis = 0.5f * (start + end) - perp * (R - h); // Centre de la courbe
+        Vector3 centerbis = 0.5f * (start + end) - perp * (R - hs); // Centre de la courbe
 
         float anglebis = -Vector3.Angle(start - centerbis, end - centerbis) / 180 * Mathf.PI;  // angle d'ouverture
         float angle0bis = Vector3.Angle(start - centerbis, Vector3.right) / 180 * Mathf.PI;  // angle de départ
 
         if (start.y - centerbis.y < 0) angle0bis = -angle0bis;  // Quelques corrections suivant l'orientation de la flèche
         anglebis = -anglebis;
-        if (R < h) anglebis = 2 * Mathf.PI - anglebis;
-
-        /*center = centerbis;
-        angle = anglebis;
-        angle0 = angle0bis;*/
+        if (R < hs) anglebis = 2 * Mathf.PI - anglebis;
 
         /*DrawLine(start, end, new Color(255, 255, 0));
-        DrawLine(center, end, new Color(255, 255, 0));*/
+        DrawLine(centerbis, end, new Color(255, 255, 0));*/
         /*DrawLine(center, center - R * perp, new Color(255, 255, 0));
         DrawLine(center, center - R * new Vector3(Mathf.Cos(angle0 + Mathf.PI / 2), Mathf.Sin(angle0 + Mathf.PI / 2), 0), new Color(255, 255, 0));*/
 
@@ -236,7 +230,7 @@ public class Arrow : MonoBehaviour {
         vectorsHead = new Vector3[3];
         Vector3[] vectorsbis = new Vector3[NSample + 1];
 
- 
+        int collision = 0, collisionbis = 0;
 
         for (int i = 0; i < NSample +1; i++)
         {
@@ -248,12 +242,7 @@ public class Arrow : MonoBehaviour {
                 foreach(GameObject ob in elements)
                 {
                     if (ob.transform.GetComponent<Collider2D>().OverlapPoint(vec)) collision++;
-                }
-                /*for (int n = 0; n < elements.Count; n++)
-                {
-                    collision++;
-                }*/
-                
+                } 
 
                 vectors[k] = vec;
                 k++;
@@ -279,12 +268,9 @@ public class Arrow : MonoBehaviour {
 
         if (collision > collisionbis) {
             k = kbis;
-            for (int i = 0; i < k; i++) vectors[i] = vectorsbis[i];
+            for (int i = 0; i < kbis; i++) vectors[i] = vectorsbis[i];
         }
-
-
-        /*vectors[0] = center;
-        vectors[k-2] = center;*/
+        
 
         lr.positionCount = k-1 ;
 
@@ -305,10 +291,6 @@ public class Arrow : MonoBehaviour {
         {
             head.SetPosition(i, vectorsHead[i]);
         }
-
-        /*head.SetPosition(0,  vectors[k - 1] + headLength * Vector3FromAngle(a + headAngle * 0.5f));
-        head.SetPosition(1,  vectors[k - 1]);
-        head.SetPosition(2,  vectors[k - 1] + headLength * Vector3FromAngle(a - headAngle * 0.5f));*/
 
     }
 

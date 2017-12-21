@@ -9,29 +9,26 @@ public class gameController : MonoBehaviour {
     List<GameObject> doublets = new List<GameObject>();
     public int failCount; // nombre d'echec sur le level en cours
     public int step;    // Pour les réaction mutli étape, n° de l'étape
-    //public bool animPlaying = false;
     levelManager LVM;
     public Transform Tips;
     Animator anim;
     public GameObject canvas;
-    //resize ZoomManager;
     GameObject[] Buttons;
+    GameObject ResetButton;
 
     public void Start()
     {
-        
+        ResetLevel();
     }
 
     void Awake () {
         LVM = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<levelManager>();
-        //if (transform.Find("Tips") != null)
         Tips = transform.Find("Tips");
-        //ZoomManager = transform.parent.parent.GetComponent<resize>();
-
+ 
         Buttons = GameObject.FindGameObjectsWithTag("Buttons");
+        ResetButton = GameObject.FindGameObjectWithTag("Reset");
 
         transform.localPosition = new Vector3(0, 0, 0);
-        //transform.localScale = new Vector3(1, 1, 1);
 
         transform.GetComponent<Image>().enabled = false;
         anim = GetComponent<Animator>();
@@ -47,8 +44,17 @@ public class gameController : MonoBehaviour {
             
         }
 
-        failCount = 0;
-        ResetElements();
+        // Enlève le texte pour ne pas être visible sur le jeu
+        Transform sol = transform.Find("Solutions");
+        if (sol.GetComponent<Text>())
+            sol.GetComponent<Text>().enabled = false;
+
+
+        //ResetLevel();
+        //failCount = 0;
+        //ResetElements();
+        //ResetButton.SetActive(false);
+        //Debug.Log(ResetButton);
     }
 
 	
@@ -113,7 +119,12 @@ public class gameController : MonoBehaviour {
             failCount=0;
             step++;
             transform.parent.parent.GetComponent<resize>().ReZoom();
-            GetComponent<Animator>().SetTrigger("successTrigger");
+
+            Animator anim = GetComponent<Animator>();
+            if (anim != null && anim.enabled)
+                anim.SetTrigger("successTrigger");
+            else
+                WinLevel();
         }
         else
         {
@@ -135,6 +146,8 @@ public class gameController : MonoBehaviour {
             }
 
         transform.parent.parent.Find("Check").GetComponent<Animator>().SetTrigger("SuccessTrigger");
+
+        ResetButton.SetActive(true);
     }
 
     public void ResetElements()
@@ -168,15 +181,25 @@ public class gameController : MonoBehaviour {
         if(anim.isActiveAndEnabled)
             anim.SetTrigger("reset");
 
+        // et on reset l'animation
+        anim = GetComponent<Animator>();
+        if (anim && anim.isActiveAndEnabled)
+            anim.SetTrigger("reset");
+      
+
         transform.parent.parent.GetComponent<resize>().InitResize(transform);
 
         failCount = 0;
+        step = 0;
 
         ShowTip();
+        ResetButton.SetActive(false);
+        ClickableEnable();
     }
 
     public void ClearLevel()
     {
+        Debug.Log("Clear Level");
         ResetElements(); // déselectionne les éléments
 
         Arrow[] arrows = transform.GetComponents<Arrow>();

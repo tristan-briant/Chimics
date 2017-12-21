@@ -13,6 +13,7 @@ public class resize : MonoBehaviour
 
     RectTransform reactionRect, parentRect;
     RectTransform pageRect;
+    ScrollRect scrollRect;
 
     Transform pg;
 
@@ -22,6 +23,8 @@ public class resize : MonoBehaviour
     float ZoomBest;
     float ZoomTarget;
 
+    Vector2 positionTarget=new Vector2(0,0);
+
     float SpeedZoom = 0.2f;
 
     private void Awake()
@@ -29,45 +32,20 @@ public class resize : MonoBehaviour
         pageRect = transform.GetComponent<RectTransform>();
         Zoom = 1.0f;
         parentRect = transform.parent.parent.GetComponent<RectTransform>();
+        scrollRect = transform.parent.parent.GetComponent<ScrollRect>();
 
         pg = transform.Find("Playground");
     }
 
     void Update () {
 
-        if (!reactionRect) return;
+        //if (!reactionRect) return;
 
 
 
-        if (Input.GetAxis("Mouse ScrollWheel") > 0f) // forward
-        {
-            ZoomTarget = ZoomTarget *1.1f;
-        }
-        else if (Input.GetAxis("Mouse ScrollWheel") < 0f) // backwards
-        {
-            ZoomTarget = ZoomTarget / 1.1f;
-        }
 
-        if (Input.touchCount == 2) {
-            // Store both touches.
-            Touch touchZero = Input.GetTouch(0);
-            Touch touchOne = Input.GetTouch(1);
 
-            // Find the position in the previous frame of each touch.
-            Vector2 touchZeroPrevPos = touchZero.position - touchZero.deltaPosition;
-            Vector2 touchOnePrevPos = touchOne.position - touchOne.deltaPosition;
-
-            // Find the magnitude of the vector (the distance) between the touches in each frame.
-            float prevTouchDeltaMag = (touchZeroPrevPos - touchOnePrevPos).magnitude;
-            float touchDeltaMag = (touchZero.position - touchOne.position).magnitude;
-
-            // Find the difference in the distances between each frame.
-            float deltaMagnitudeDiff = prevTouchDeltaMag - touchDeltaMag;
-
-            ZoomTarget = ZoomTarget - 0.001f * deltaMagnitudeDiff;
-
-        }
-
+        /*
         if (one_click && ((Time.time - timerdclick) > dclick_threshold))
         {
             Debug.Log("single click");
@@ -94,12 +72,101 @@ public class resize : MonoBehaviour
             }
 
         }
-        
-        ZoomTarget = Mathf.Clamp(ZoomTarget, ZoomBest, ZoomBest * ZoomMagMax);
+        */
 
-        Zoom = (1- SpeedZoom) * Zoom + SpeedZoom * ZoomTarget;
+        //if(Input)
+
+        /* Event e = Event.current;
+         if (e!=null && e.isMouse && e.type == EventType.MouseDown && e.clickCount == 2)
+         {
+             // Double click event
+             Debug.Log("Double click");
+         }*/
+
+        /*if (Input.touchCount == 1 &&  Input.GetTouch(0).tapCount == 2) {
+            Debug.Log("double click");
+            ZoomTarget = ZoomBest;
+        }*/
+
+ 
+        Zoom = (1 - SpeedZoom) * Zoom + SpeedZoom * ZoomTarget;
 
         ChangeZoom(Zoom);
+    }
+
+
+    bool isDragging = false;
+    Vector2 StartPosition=new Vector2(0,0);
+
+    public void OnGUI()
+    {
+        Event e = Event.current;
+
+        /*if (Input.GetMouseButtonDown(0))
+        {
+            isDragging = true;
+            StartPosition = positionTarget - (Vector2)Input.mousePosition;
+        }
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            isDragging = false;
+        }
+
+        if (e.isMouse && e.type == EventType.MouseDrag) {
+
+            positionTarget = (Vector2)Input.mousePosition + StartPosition;
+        }
+        else
+        {
+            isDragging = false;
+        }*/
+
+        if (e.isMouse && e.type == EventType.MouseDown && e.clickCount == 2)
+        {
+            ZoomTarget = ZoomBest;
+        }
+
+        if (Input.GetAxis("Mouse ScrollWheel") > 0f) // forward
+        {
+            ZoomTarget = ZoomTarget * 1.1f;
+        }
+        else if (Input.GetAxis("Mouse ScrollWheel") < 0f) // backwards
+        {
+            ZoomTarget = ZoomTarget / 1.1f;
+        }
+
+        if (Input.touchCount == 2)
+        {
+
+            scrollRect.enabled = false; // On desactive le scroll car ça saute
+            // Store both touches.
+            Touch touchZero = Input.GetTouch(0);
+            Touch touchOne = Input.GetTouch(1);
+
+            // Find the position in the previous frame of each touch.
+            Vector2 touchZeroPrevPos = touchZero.position - touchZero.deltaPosition;
+            Vector2 touchOnePrevPos = touchOne.position - touchOne.deltaPosition;
+
+            // Find the magnitude of the vector (the distance) between the touches in each frame.
+            float prevTouchDeltaMag = (touchZeroPrevPos - touchOnePrevPos).magnitude;
+            float touchDeltaMag = (touchZero.position - touchOne.position).magnitude;
+
+            // Find the difference in the distances between each frame.
+            float deltaMagnitudeDiff = prevTouchDeltaMag - touchDeltaMag;
+
+            ZoomTarget = ZoomTarget - 0.001f * deltaMagnitudeDiff;
+
+
+        }
+        else
+        {
+            scrollRect.enabled = true;
+        }
+
+        ZoomTarget = Mathf.Clamp(ZoomTarget, ZoomBest, ZoomBest * ZoomMagMax);
+
+
 
     }
 
@@ -123,7 +190,7 @@ public class resize : MonoBehaviour
         //change the zoom and check if position is ok 
         pageRect.localScale = new Vector2(z, z);
 
-        ScrollRect scrollRect = transform.parent.parent.GetComponent<ScrollRect>();
+        //ScrollRect scrollRect = transform.parent.parent.GetComponent<ScrollRect>();
         scrollRect.horizontalNormalizedPosition = Mathf.Clamp(scrollRect.horizontalNormalizedPosition, 0f, 1f);
         scrollRect.verticalNormalizedPosition = Mathf.Clamp(scrollRect.verticalNormalizedPosition, 0f, 1f);
 

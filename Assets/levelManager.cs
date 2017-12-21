@@ -72,6 +72,21 @@ public class levelManager : MonoBehaviour {
         LoadReaction(currentReaction);
     }
 
+    public void LoadPreviousReaction()
+    {
+        if (currentReaction > 0) 
+        {
+            currentReaction--;
+        }
+        else if (currentLevel > 0)
+        {
+            currentLevel--;
+            currentReaction = reactions[currentLevel].Length - 1;
+        }
+
+        LoadReaction(currentReaction);
+    }
+
     public void LoadLevel(int level)
     {
         if (level >= reactions.Length)
@@ -99,8 +114,8 @@ public class levelManager : MonoBehaviour {
 
         lv.gameObject.SetActive(true);
         lv.GetComponent<gameController>().ResetLevel();
-        lv.GetComponent<gameController>().ClickableEnable();
-        lv.GetComponent<gameController>().failCount = 0;
+        //lv.GetComponent<gameController>().ClickableEnable();
+        //lv.GetComponent<gameController>().failCount = 0;
 
         LevelSelector.SetActive(false); // desactive le menu
         ReactionSelector.SetActive(false); // desactive le menu

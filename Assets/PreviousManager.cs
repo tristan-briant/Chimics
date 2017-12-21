@@ -3,17 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class nextManager : MonoBehaviour {
+
+public class PreviousManager : MonoBehaviour {
     levelManager LVM;
-    
+
     void Start()
     {
         LVM = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<levelManager>();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-        if (LVM.currentLevel < LVM.reactions.Length - 1 || LVM.currentReaction < LVM.reactions[LVM.currentLevel].Length-1 )
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (LVM.currentLevel > 0 || LVM.currentReaction > 0)
             GetComponent<Button>().interactable = true;
         else
             GetComponent<Button>().interactable = false;
