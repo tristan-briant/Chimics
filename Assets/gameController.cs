@@ -161,15 +161,12 @@ public class gameController : MonoBehaviour {
 
     }
 
-    public void ResetLevel() {
-        ResetElements(); // déselectionne les éléments
-
-        Arrow[] arrows = transform.GetComponents<Arrow>();
-
-        foreach (Arrow it in arrows)
-        {
-            it.Remove(0.0f);
-        }
+    public void ResetLevel() {   
+        
+        // On reset l'animation
+        anim = GetComponent<Animator>();
+        if (anim && anim.isActiveAndEnabled)
+            anim.SetTrigger("reset");
 
         // si on load le level on enlève un éventuel check
         
@@ -184,12 +181,14 @@ public class gameController : MonoBehaviour {
 
         }
 
-        // et on reset l'animation
-        anim = GetComponent<Animator>();
-        if (anim && anim.isActiveAndEnabled)
-            anim.SetTrigger("reset");
-      
+        ResetElements(); // déselectionne les éléments
 
+        Arrow[] arrows = transform.GetComponents<Arrow>();
+
+        foreach (Arrow it in arrows)
+        {
+            it.Remove(0.0f);
+        }
  
         failCount = 0;
         step = 0;
