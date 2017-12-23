@@ -39,55 +39,6 @@ public class resize : MonoBehaviour
 
     void Update () {
 
-        //if (!reactionRect) return;
-
-
-
-
-
-        /*
-        if (one_click && ((Time.time - timerdclick) > dclick_threshold))
-        {
-            Debug.Log("single click");
-            //call the SingleClick() function, not shown
-            one_click = false;
-        }
-
-        if (Input.GetMouseButtonDown(0))
-        {
-
-            if (!one_click)
-            {
-                //dclick = -1;
-                timerdclick = Time.time;
-                one_click = true;
-            }
-
-            else if (one_click && ((Time.time - timerdclick) < dclick_threshold))
-            {
-                Debug.Log("double click");
-                ZoomTarget = ZoomBest;
-                //transform.localPosition = new Vector3(0, 0, 0);
-                one_click = false;
-            }
-
-        }
-        */
-
-        //if(Input)
-
-        /* Event e = Event.current;
-         if (e!=null && e.isMouse && e.type == EventType.MouseDown && e.clickCount == 2)
-         {
-             // Double click event
-             Debug.Log("Double click");
-         }*/
-
-        /*if (Input.touchCount == 1 &&  Input.GetTouch(0).tapCount == 2) {
-            Debug.Log("double click");
-            ZoomTarget = ZoomBest;
-        }*/
-
  
         Zoom = (1 - SpeedZoom) * Zoom + SpeedZoom * ZoomTarget;
 
@@ -101,26 +52,6 @@ public class resize : MonoBehaviour
     public void OnGUI()
     {
         Event e = Event.current;
-
-        /*if (Input.GetMouseButtonDown(0))
-        {
-            isDragging = true;
-            StartPosition = positionTarget - (Vector2)Input.mousePosition;
-        }
-
-        if (Input.GetMouseButtonUp(0))
-        {
-            isDragging = false;
-        }
-
-        if (e.isMouse && e.type == EventType.MouseDrag) {
-
-            positionTarget = (Vector2)Input.mousePosition + StartPosition;
-        }
-        else
-        {
-            isDragging = false;
-        }*/
 
         if (e.isMouse && e.type == EventType.MouseDown && e.clickCount == 2)
         {

@@ -18,7 +18,7 @@ public class gameController : MonoBehaviour {
 
     public void Start()
     {
-        ResetLevel();
+        //ResetLevel();
     }
 
     void Awake () {
@@ -195,7 +195,18 @@ public class gameController : MonoBehaviour {
 
         ShowTip();
         ResetButton.SetActive(false);
-        ClickableEnable();
+
+        if (gameObject.name.Contains("Tuto"))
+        {
+            foreach (GameObject ob in Buttons)
+            {
+                ob.SetActive(false);
+            }
+        }
+        else
+        {
+            ClickableEnable();
+        }
     }
 
     public void ClearLevel()
@@ -258,7 +269,6 @@ public class gameController : MonoBehaviour {
         foreach (GameObject ob in Buttons)
         {
             ob.SetActive(false);
-            //ob.transform.GetComponent<Button>().interactable = false;
         }
 
     }

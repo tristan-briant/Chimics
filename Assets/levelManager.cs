@@ -113,10 +113,12 @@ public class levelManager : MonoBehaviour {
         Transform lv = reactions[currentLevel][currentReaction];
 
         lv.gameObject.SetActive(true);
-        lv.GetComponent<gameController>().ResetLevel();
-        //lv.GetComponent<gameController>().ClickableEnable();
-        //lv.GetComponent<gameController>().failCount = 0;
-
+        gameController gc = lv.GetComponent<gameController>();
+        if (gc)
+        {
+            gc.ResetLevel();
+        }
+        
         LevelSelector.SetActive(false); // desactive le menu
         ReactionSelector.SetActive(false); // desactive le menu
         Game.SetActive(true);
