@@ -19,13 +19,17 @@ public class levelManager : MonoBehaviour {
     public bool debug = false;
 
     public Transform[][] reactions;
-    
+    public string[] LevelNames;
+    public Color[] LevelColor;
+
     private void Awake()
     {
   
         Transform levels = GameObject.Find("Levels").transform;
 
         reactions = new Transform[levels.childCount][];
+        LevelNames = new string[levels.childCount];
+        LevelColor = new Color[levels.childCount];
 
         int n = 0;
 
@@ -33,6 +37,9 @@ public class levelManager : MonoBehaviour {
             int nreact = child.childCount;
 
             reactions[n] = new Transform[nreact];
+            LevelNames[n] = child.name;
+            LevelColor[n] = child.GetComponent<Image>().color;
+
 
             for (int i = 0; i < nreact; i++) 
             {
@@ -50,6 +57,8 @@ public class levelManager : MonoBehaviour {
         
 
     }
+
+    
 
     private void Start()
     {
@@ -94,9 +103,16 @@ public class levelManager : MonoBehaviour {
 
         currentLevel = level;
 
-        LevelSelector.SetActive(false); 
-        ReactionSelector.SetActive(true); 
-        Game.SetActive(false);
+        if (LevelNames[level].Contains("Tuto")) // Niveau de tuto On va direct au Game
+        {
+            LoadReaction(0);
+        }
+        else
+        {
+            LevelSelector.SetActive(false);
+            ReactionSelector.SetActive(true);
+            Game.SetActive(false);
+        }
     }
 
 
@@ -133,7 +149,11 @@ public class levelManager : MonoBehaviour {
         return reactions[currentLevel][currentReaction];
 
     }
-    
 
+    public string LevelName() {
+        // Returne the name of the current level
+
+        return LevelNames[currentLevel];
+    }
 
 }

@@ -65,12 +65,12 @@ public class LevelSelectorManager : MonoBehaviour {
             go.transform.SetParent(levelList.transform);
             go.transform.localPosition = new Vector3(0, 0, 0);
             go.transform.localScale = new Vector3(1, 1, 1);
-            go.transform.Find("Text").transform.GetComponent<Text>().text = "Niveau " + (i + 1);
+            go.transform.Find("Text").transform.GetComponent<Text>().text = LVM.LevelNames[i];//"Niveau " + (i + 1);
+            go.transform.GetComponent<Image>().color = LVM.LevelColor[i];
 
             int level = i;
             Button btn = go.GetComponent<Button>();
             btn.onClick.AddListener(delegate () { LVM.LoadLevel(level); });
-            //btn.onClick.AddListener(delegate () { LVM.LoadReaction(); });
         }
     }
 

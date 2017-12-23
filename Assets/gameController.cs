@@ -181,7 +181,8 @@ public class gameController : MonoBehaviour {
 
         }
 
-        ResetElements(); // déselectionne les éléments
+        if (gameObject.name.Contains("Tuto") == false) 
+            ResetElements(); // déselectionne les éléments
 
         Arrow[] arrows = transform.GetComponents<Arrow>();
 

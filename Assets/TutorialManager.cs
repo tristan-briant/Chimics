@@ -30,15 +30,21 @@ public class TutorialManager : MonoBehaviour {
     }
 
     public void ReadMore() {
+        Debug.Log("More !");
         anim.SetTrigger("Next");
     }
 
     public void ReadMoreToNext() {
 
         Button btn = ReadMoreButton.GetComponent<Button>();
-        //btn.onClick.AddListener(delegate () { LVM.LoadNextReaction(); });
         btn.onClick.RemoveAllListeners();
         btn.onClick.AddListener(LVM.LoadNextReaction);
     }
 
-}
+    public void LoadNext()
+    {
+        LVM.LoadNextReaction();
+    }
+
+
+    }

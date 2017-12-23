@@ -6,8 +6,8 @@ public class ElementManager : MonoBehaviour {
 
     public bool isSelected = false;
     public bool inReaction = false;
-    public bool success = false;
-    public bool firstsuccess = false; // used to reset to initial state for multiple step reactions
+    //public bool success = false;
+    //public bool firstsuccess = false; // used to reset to initial state for multiple step reactions
     public GameObject highlight;
     public GameObject react;
 
@@ -43,11 +43,11 @@ public class ElementManager : MonoBehaviour {
     {
         highlight = transform.Find("Highlight").gameObject;
 
-        if (highlight.activeInHierarchy || firstsuccess)
+        /*if (highlight.activeInHierarchy || firstsuccess)
             success = true;
 
         highlight.SetActive(false);
-        isSelected = false;
+        isSelected = false;*/
     }
 
     void Update () {
@@ -61,7 +61,7 @@ public class ElementManager : MonoBehaviour {
         GetComponent<Animator>().SetBool("selected", false);
         isSelected = false;
         GetComponent<Animator>().SetTrigger("reset");
-        success = firstsuccess;
+        //success = firstsuccess;
     }
 
 
