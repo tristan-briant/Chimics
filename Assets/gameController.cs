@@ -98,14 +98,20 @@ public class gameController : MonoBehaviour {
         }
 
         bool win = false;
+        bool halfWin = false;
 
         Solutions[] solutions = sol.GetComponents<Solutions>();
         Debug.Log("nombre de sol " + solutions.Length);
 
         foreach (Solutions s in solutions)
         {
-            if (s.TestReaction(acc, don) == 1)
+            int test = s.TestReaction(acc, don);
+
+            if (test == 1)
                 win = true;
+
+            if (test == -1)
+                halfWin = true;
         }
 
         if (win)
@@ -120,6 +126,11 @@ public class gameController : MonoBehaviour {
                 anim.SetTrigger("successTrigger");
             else
                 WinLevel();
+        }
+        else if (halfWin)
+        {
+            transform.parent.parent.GetComponent<resize>().ReZoom();
+            transform.parent.parent.Find("Warning").GetComponent<Animator>().SetTrigger("FailTrigger");
         }
         else
         {
