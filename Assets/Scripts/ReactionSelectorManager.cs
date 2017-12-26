@@ -52,7 +52,7 @@ public class ReactionSelectorManager : MonoBehaviour {
     {
         if (started)
         {
-            if (LVM.LevelName().Contains("Tuto"))
+            if (LVM.LevelName().Contains("Tuto") || LVM.LevelName().Contains("Dida"))
                 BackToLevelSelector();
             else
                 CreateReactionSelector();

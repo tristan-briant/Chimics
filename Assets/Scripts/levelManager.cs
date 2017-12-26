@@ -103,7 +103,7 @@ public class levelManager : MonoBehaviour {
 
         currentLevel = level;
 
-        if (LevelNames[level].Contains("Tuto")) // Niveau de tuto On va direct au Game
+        if (LevelNames[level].Contains("Tuto") || LevelName().Contains("Dida")) // Niveau de tuto On va direct au Game
         {
             LoadReaction(0);
         }
