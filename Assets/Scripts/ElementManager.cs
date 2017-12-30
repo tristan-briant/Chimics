@@ -39,10 +39,18 @@ public class ElementManager : MonoBehaviour {
         isSelected = false;
     }
 
-    private void Start()
+    private void Awake()
     {
         highlight = transform.Find("Highlight").gameObject;
 
+        if(highlight.GetComponent<Canvas>()==null)
+            highlight.AddComponent<Canvas>();
+
+        Canvas canvas = highlight.GetComponent<Canvas>();
+        highlight.SetActive(true); // mandatory to access overrideSorting !!
+        canvas.overrideSorting=true;
+        canvas.sortingOrder = -1;
+        highlight.SetActive(false);
         /*if (highlight.activeInHierarchy || firstsuccess)
             success = true;
 

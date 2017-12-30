@@ -163,6 +163,7 @@ public class Arrow : MonoBehaviour {
         Line.AddComponent<LineRenderer>();
         LineRenderer lr = Line.GetComponent<LineRenderer>();
         lr.material = new Material(Shader.Find("Sprites/Default"));
+        //lr.material = new Material(Shader.Find("Particles/Additive"));
         lr.startColor = lr.endColor = color;
         lr.startWidth = width;
         lr.endWidth = width; // * 0.8f;

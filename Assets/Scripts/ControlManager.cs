@@ -7,7 +7,7 @@ using UnityEngine;
 public class ControlManager : MonoBehaviour
 {
     public levelManager LVM;
-    public GameObject pg;
+    //public GameObject pg;
 
     public void Validate() {
         LVM.CurrentReaction().GetComponent<gameController>().Validate();

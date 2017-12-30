@@ -15,6 +15,9 @@ public class gameController : MonoBehaviour {
     public GameObject canvas;
     GameObject[] Buttons;
     GameObject ResetButton;
+    GameObject ValidateButton;
+    GameObject ClearButton;
+    GameObject Controls;
 
     public void Start()
     {
@@ -26,7 +29,12 @@ public class gameController : MonoBehaviour {
         Tips = transform.Find("Tips");
  
         Buttons = GameObject.FindGameObjectsWithTag("Buttons");
+        Controls= GameObject.FindGameObjectWithTag("Controls");
         ResetButton = GameObject.FindGameObjectWithTag("Reset");
+        /*ValidateButton = Buttons[0].transform.Find("Validate").gameObject;
+        ClearButton = Buttons[0].transform.Find("Clear").gameObject;
+        ResetButton = Buttons[0].transform.Find("Reset").gameObject;*/
+
 
         transform.localPosition = new Vector3(0, 0, 0);
 
@@ -120,6 +128,8 @@ public class gameController : MonoBehaviour {
             failCount=0;
             step++;
             transform.parent.parent.GetComponent<resize>().ReZoom();
+            ClickableDisable();
+            ResetElements();
 
             Animator anim = GetComponent<Animator>();
             if (anim != null && anim.enabled)
@@ -129,18 +139,37 @@ public class gameController : MonoBehaviour {
         }
         else if (halfWin)
         {
-            transform.parent.parent.GetComponent<resize>().ReZoom();
-            transform.parent.parent.Find("Warning").GetComponent<Animator>().SetTrigger("FailTrigger");
+            StartCoroutine(WarningAnimation());
         }
         else
         {
             failCount++;
-            transform.parent.parent.GetComponent<resize>().ReZoom();
-            transform.parent.parent.Find("Fail").GetComponent<Animator>().SetTrigger("FailTrigger");
+            StartCoroutine(FailAnimation());
         }
     }
 
+    IEnumerator WarningAnimation()
+    {
+        transform.parent.parent.GetComponent<resize>().ReZoom();
+        ClickableDisable();
+        ResetElements();
+        transform.parent.parent.Find("Warning").GetComponent<Animator>().SetTrigger("FailTrigger");
+        yield return new WaitForSeconds(1.0f);
+        ClickableEnable();
+        ShowTip();
+    }
 
+    IEnumerator FailAnimation()
+    {
+        transform.parent.parent.GetComponent<resize>().ReZoom();
+        ClickableDisable();
+        ResetElements();
+        transform.parent.parent.Find("Fail").GetComponent<Animator>().SetTrigger("FailTrigger");
+        yield return new WaitForSeconds(1.5f);
+        ClearLevel();
+        ClickableEnable();
+        ShowTip();
+    }
 
 
     public void WinLevel(){
@@ -185,8 +214,15 @@ public class gameController : MonoBehaviour {
         {
             Transform t = transform.parent.parent.Find("Check");
             Animator anim = t.GetComponent<Animator>();
-            if (anim.isActiveAndEnabled)
-                anim.SetTrigger("reset");
+            if (anim.isActiveAndEnabled) anim.SetTrigger("reset");
+
+            t = transform.parent.parent.Find("Fail");
+            anim = t.GetComponent<Animator>();
+            if (anim.isActiveAndEnabled) anim.SetTrigger("reset");
+
+            t = transform.parent.parent.Find("Warning");
+            anim = t.GetComponent<Animator>();
+            if (anim.isActiveAndEnabled) anim.SetTrigger("reset");
 
             transform.parent.parent.GetComponent<resize>().InitResize(transform);
 
@@ -207,6 +243,8 @@ public class gameController : MonoBehaviour {
 
         ShowTip();
         ResetButton.SetActive(false);
+
+        Controls.SetActive(true);
 
         if (gameObject.name.Contains("Tuto"))
         {
