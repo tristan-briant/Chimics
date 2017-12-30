@@ -189,13 +189,16 @@ public class gameController : MonoBehaviour {
     {
         foreach (GameObject go in accepteurs)
         {
-            go.GetComponent<ElementManager>().isSelected = false;
-            go.GetComponent<ElementManager>().inReaction = false;
+            /*go.GetComponent<ElementManager>().isSelected = false;
+            go.GetComponent<ElementManager>().inReaction = false;*/
+			go.GetComponent<ElementManager> ().reset ();
         }
         foreach (GameObject go in doublets)
         {
-            go.GetComponent<ElementManager>().isSelected = false;
-            go.GetComponent<ElementManager>().inReaction = false;
+            /*go.GetComponent<ElementManager>().isSelected = false;
+			go.GetComponent<ElementManager>().inReaction = false;*/
+			go.GetComponent<ElementManager> ().reset ();
+
         }
 
 
@@ -213,16 +216,16 @@ public class gameController : MonoBehaviour {
         if (transform.parent)
         {
             Transform t = transform.parent.parent.Find("Check");
-            Animator anim = t.GetComponent<Animator>();
-            if (anim.isActiveAndEnabled) anim.SetTrigger("reset");
+            Animator a = t.GetComponent<Animator>();
+			if (a.isActiveAndEnabled) a.SetTrigger("reset");
 
             t = transform.parent.parent.Find("Fail");
-            anim = t.GetComponent<Animator>();
-            if (anim.isActiveAndEnabled) anim.SetTrigger("reset");
+			a = t.GetComponent<Animator>();
+			if (a.isActiveAndEnabled) a.SetTrigger("reset");
 
             t = transform.parent.parent.Find("Warning");
-            anim = t.GetComponent<Animator>();
-            if (anim.isActiveAndEnabled) anim.SetTrigger("reset");
+			a = t.GetComponent<Animator>();
+			if (a.isActiveAndEnabled) a.SetTrigger("reset");
 
             transform.parent.parent.GetComponent<resize>().InitResize(transform);
 

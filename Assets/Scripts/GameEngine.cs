@@ -198,9 +198,9 @@ public class GameEngine : MonoBehaviour {
         }
 
         // et on reset l'animation
-        anim = GetComponent<Animator>();
+        /*anim = GetComponent<Animator>();
         if (anim && anim.isActiveAndEnabled)
-            anim.SetTrigger("reset");
+            anim.SetTrigger("reset");*/
 
 
 

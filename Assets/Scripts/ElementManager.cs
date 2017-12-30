@@ -6,8 +6,6 @@ public class ElementManager : MonoBehaviour {
 
     public bool isSelected = false;
     public bool inReaction = false;
-    //public bool success = false;
-    //public bool firstsuccess = false; // used to reset to initial state for multiple step reactions
     public GameObject highlight;
     public GameObject react;
 
@@ -26,17 +24,25 @@ public class ElementManager : MonoBehaviour {
             if(el==null)
                 Debug.Log(go.name);
             else
-                go.GetComponent<ElementManager>().isSelected = false;
+                //go.GetComponent<ElementManager>().isSelected = false;
+				go.GetComponent<ElementManager>().unSelectElement();
         }
 
         isSelected = !s; //toggle selection
-
+		GetComponent<Animator>().SetBool("selected", isSelected);
     }
+
+	public void unSelectElement(){
+		isSelected = false;
+
+			GetComponent<Animator>().SetBool("selected", isSelected);
+	}
 
     public void ReactWith(GameObject go){
         react = go;
         inReaction = true;
-        isSelected = false;
+		unSelectElement ();
+        //isSelected = false;
     }
 
     private void Awake()
@@ -51,24 +57,31 @@ public class ElementManager : MonoBehaviour {
         canvas.overrideSorting=true;
         canvas.sortingOrder = -1;
         highlight.SetActive(false);
-        /*if (highlight.activeInHierarchy || firstsuccess)
-            success = true;
-
-        highlight.SetActive(false);
-        isSelected = false;*/
     }
 
     void Update () {
-        //highlight.SetActive(isSelected);
-        GetComponent<Animator>().SetBool("selected", isSelected);
+		
+        //GetComponent<Animator>().SetBool("selected", isSelected);
 
     }
 
+
+	void OnEnable(){
+		if (isSelected)
+		if (GetComponent<Animator> ().isActiveAndEnabled) {
+			GetComponent<Animator> ().SetBool ("selected", true);
+		}
+	}
+
     public void reset()
     {
-        GetComponent<Animator>().SetBool("selected", false);
         isSelected = false;
-        GetComponent<Animator>().SetTrigger("reset");
+		inReaction = false;
+		if (GetComponent<Animator> ().isActiveAndEnabled) {
+			GetComponent<Animator> ().SetTrigger ("reset");
+			GetComponent<Animator> ().SetBool ("selected", false);
+		}
+
         //success = firstsuccess;
     }
 

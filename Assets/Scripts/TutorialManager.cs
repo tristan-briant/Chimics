@@ -31,7 +31,8 @@ public class TutorialManager : MonoBehaviour {
 
     public void ReadMore() {
         Debug.Log("More !");
-        anim.SetTrigger("Next");
+		if(anim.isActiveAndEnabled)
+        	anim.SetTrigger("Next");
     }
 
     public void ReadMoreToNext() {

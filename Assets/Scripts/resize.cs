@@ -6,9 +6,7 @@ using UnityEngine.UI;
 
 public class resize : MonoBehaviour
 {
-    bool one_click = false;
-    float dclick_threshold = 0.25f;
-    double timerdclick = 0;
+	
     public Canvas canvas;
 
     RectTransform reactionRect, parentRect;
