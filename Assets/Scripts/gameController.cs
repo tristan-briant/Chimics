@@ -5,19 +5,19 @@ using UnityEngine.UI;
 
 
 public class gameController : MonoBehaviour {
-    List<GameObject> accepteurs = new List<GameObject>();
-    List<GameObject> doublets = new List<GameObject>();
+    protected List<GameObject> accepteurs = new List<GameObject>();
+    protected List<GameObject> doublets = new List<GameObject>();
     public int failCount; // nombre d'echec sur le level en cours
     public int step;    // Pour les réaction mutli étape, n° de l'étape
-    levelManager LVM;
+    protected levelManager LVM;
     public Transform Tips;
     Animator anim;
     public GameObject canvas;
-    GameObject[] Buttons;
-    GameObject ResetButton;
+    protected GameObject[] Buttons;
+    protected GameObject ResetButton;
     GameObject ValidateButton;
     GameObject ClearButton;
-    GameObject Controls;
+    protected GameObject Controls;
 
     public void Start()
     {
@@ -88,7 +88,7 @@ public class gameController : MonoBehaviour {
 
     }
 
-    public void Validate()
+    virtual public void Validate()
     {
         Transform sol = transform.Find("Solutions");
 
@@ -172,7 +172,7 @@ public class gameController : MonoBehaviour {
     }
 
 
-    public void WinLevel(){
+    virtual public void WinLevel(){
         Debug.Log("gagné");
         if (LVM.completedLevel < LVM.currentLevel + 1)
             {
@@ -204,7 +204,7 @@ public class gameController : MonoBehaviour {
 
     }
 
-    public void ResetLevel() {   
+    virtual public void ResetLevel() {   
         
         // On reset l'animation
         anim = GetComponent<Animator>();
@@ -262,7 +262,7 @@ public class gameController : MonoBehaviour {
         }
     }
 
-    public void ClearLevel()
+    virtual public void ClearLevel()
     {
         Debug.Log("Clear Level");
         ResetElements(); // déselectionne les éléments

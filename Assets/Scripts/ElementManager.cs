@@ -8,6 +8,7 @@ public class ElementManager : MonoBehaviour {
     public bool inReaction = false;
     public GameObject highlight;
     public GameObject react;
+    public bool multiSelectable = false;
 
     public void selectElement()
     {
@@ -16,16 +17,19 @@ public class ElementManager : MonoBehaviour {
         bool s= isSelected;
         GameObject[] goSameType;
 
-        goSameType = GameObject.FindGameObjectsWithTag(gameObject.tag); // Find all GO with same tag
-
-        foreach (GameObject go in goSameType) // and unselect them
+        if (!multiSelectable)
         {
-            ElementManager el = go.GetComponent<ElementManager>();
-            if(el==null)
-                Debug.Log(go.name);
-            else
-                //go.GetComponent<ElementManager>().isSelected = false;
-				go.GetComponent<ElementManager>().unSelectElement();
+            goSameType = GameObject.FindGameObjectsWithTag(gameObject.tag); // Find all GO with same tag
+
+            foreach (GameObject go in goSameType) // and unselect them
+            {
+                ElementManager el = go.GetComponent<ElementManager>();
+                if (el == null)
+                    Debug.Log(go.name);
+                else
+                    //go.GetComponent<ElementManager>().isSelected = false;
+                    go.GetComponent<ElementManager>().unSelectElement();
+            }
         }
 
         isSelected = !s; //toggle selection

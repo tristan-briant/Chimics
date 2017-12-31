@@ -13,17 +13,6 @@ public class Solutions : MonoBehaviour {
 
 
 
-    // Use this for initialization
-    void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-
-
     public int TestReaction(GameObject[] acc, GameObject[] don)
     {
         if (acc.Length < 1) return 0;
