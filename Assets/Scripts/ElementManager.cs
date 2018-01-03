@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ElementManager : MonoBehaviour {
 
@@ -9,6 +10,7 @@ public class ElementManager : MonoBehaviour {
     public GameObject highlight;
     public GameObject react;
     public bool multiSelectable = false;
+    public GameObject AbsorptionLine;
 
     public void selectElement()
     {
@@ -86,8 +88,30 @@ public class ElementManager : MonoBehaviour {
 			GetComponent<Animator> ().SetBool ("selected", false);
 		}
 
+        AbsorptionLine = null;
+        if (transform.Find("Vibration")) 
+            transform.Find("Vibration").gameObject.SetActive(false);
         //success = firstsuccess;
     }
 
+    public void IdentifyAbsoptionLine(GameObject Line)
+    {
+        Debug.Log("identifier");
+        AbsorptionLine = Line;
+        Transform vib = transform.Find("Vibration");
+        if (!vib) { Debug.Log(this); return; }
+
+        if (Line)
+        {
+            vib.gameObject.SetActive(true);
+            Color c = Line.GetComponent<LineSelectorManager>().color;
+            vib.GetComponent<Image>().color = c;
+        }
+        else
+        {
+            vib.gameObject.SetActive(false);
+        }
+
+    }
 
 }

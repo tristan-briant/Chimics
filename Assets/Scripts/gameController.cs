@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class gameController : MonoBehaviour {
     protected List<GameObject> accepteurs = new List<GameObject>();
-    protected List<GameObject> doublets = new List<GameObject>();
+    public List<GameObject> doublets = new List<GameObject>();
     public int failCount; // nombre d'echec sur le level en cours
     public int step;    // Pour les réaction mutli étape, n° de l'étape
     protected levelManager LVM;
@@ -61,7 +61,7 @@ public class gameController : MonoBehaviour {
     }
 
 	
-	void LateUpdate () {
+	virtual public void LateUpdate () {
 
         GameObject liaison=null, atome=null;
 
