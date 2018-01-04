@@ -34952,11 +34952,11 @@ Background	#ffffff	0
 Margin	0
 Border	0	#000000
 grid	1	1	0	0	#c0c0c0	0	0.5	#f1f1f1	0	0.5	#0000ff	0	0.5	#a0a0a4	2	0.4	0	0	2	0	0
-EnabledAxes	1	0	1	0	
+EnabledAxes	1	0	1	1	
 AxesTitles	Nombre d'ondes (cm<sup>-1</sup>)	Transmitance (%)		%(?Y)	
 AxesTitleColors	#000000	#000000	#000000	#000000	
-AxesTitleAlignment	4	4	4	4
-AxesTitleDistance	2	-1	2	-1
+AxesTitleAlignment	4	4	4	5124
+AxesTitleDistance	2	-1	2	2
 TitleFont	MS Shell Dlg 2	18	75	0	0	0
 ScaleFont0	Liberation Mono	20	75	0	0	0
 ScaleFont1	MS Shell Dlg 2	14	75	0	0	0
@@ -34965,7 +34965,7 @@ ScaleFont3	MS Shell Dlg 2	14	75	0	0	0
 AxisFont0	Liberation Sans	20	75	0	0	0
 AxisFont1	MS Shell Dlg 2	14	50	0	0	0
 AxisFont2	Liberation Sans	20	75	0	0	0
-AxisFont3	MS Shell Dlg 2	14	50	0	0	0
+AxisFont3	Liberation Sans	20	75	0	0	0
 AxesColors	#000000	#000000	#000000	#000000
 AxesNumberColors	#000000	#000000	#000000	#000000
 AxesBaseline	0	0	0	0	
@@ -34975,8 +34975,8 @@ curve	Table8_1	Table8_3	0	1	#000000	0	5	7	0	#000000	#000000	0	#000000	14	1	2	0	0
 curve	Lissée15_1	Lissée15_2	0	1	#000000	0	5	0	0	#000000	#a0a0a4	0	#000000	14	0	2	0	0	871	1
 scale	0	0	1.05	0	3	4	0	0
 scale	1	0	1.05	0	8	5	0	0
-scale	2	436.28088426528	3936.28088426528	0	7	5	0	1
-scale	3	436.28088426528	3936.28088426528	0	8	5	0	1
+scale	2	436.2808842653	3936.280884265	0	8	5	0	1
+scale	3	436.2808842653	3936.280884265	0	8	5	0	1
 <AxisFormula pos="0">
 x*100
 </AxisFormula>

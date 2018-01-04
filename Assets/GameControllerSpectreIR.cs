@@ -64,15 +64,11 @@ public class GameControllerSpectreIR : gameController {
     {
 
         foreach (LineSelectorManager ls in transform.GetComponentsInChildren<LineSelectorManager>()) {
-            if (ls.isSelected && ls.ID != null) 
+            if (ls.isSelected) 
             {
-                Debug.Log("line selected");
-
                 foreach (GameObject go in doublets) {
                     ElementManager em = go.GetComponent<ElementManager>();
-                    //Debug.Log("element scanned");
                     if (em.isSelected) {
-                        // Debug.Log("element selected");
                         if (em.AbsorptionLine != ls.gameObject)
                             em.IdentifyAbsoptionLine(ls.gameObject);
                         else
@@ -83,12 +79,6 @@ public class GameControllerSpectreIR : gameController {
 
                     }
                 }
-
-                /*foreach (GameObject go in accepteurs)
-                    if (go.GetComponent<ElementManager>().isSelected) {
-                        go.GetComponent<ElementManager>().IdentifyAbsoptionLine(ls.gameObject);
-                        go.GetComponent<ElementManager>().unSelectElement();
-                    }*/
             }
         }
 
@@ -138,54 +128,110 @@ public class GameControllerSpectreIR : gameController {
     {
         Transform sol = transform.Find("Solutions");
 
-        SolutionGroupes[] solutions = sol.GetComponents<SolutionGroupes>();
-        Groupe[] grs = transform.GetComponents<Groupe>();
+        SolutionSpectre[] solutions = sol.GetComponents<SolutionSpectre>();
 
-        bool test = false;
-
-        if (grs.Length == solutions.Length)
+        /*******  Calcul du nombre d'item à trouver  ****/
+        int SolutionCountTotal = 0;
+        foreach (SolutionSpectre s in solutions)
         {
-
-            test = true;
-
-            foreach (Groupe g in grs)
-            {
-                bool groupeOk = false;
-
-                foreach (SolutionGroupes s in solutions)
-                {
-                    if (s.TestGroupes(g) == 1)
-                        groupeOk = true;
-                }
-
-                if (!groupeOk) test = false;
-            }
-
+            SolutionCountTotal++; //identification du nom
+            SolutionCountTotal += s.elements.Count; //identification des liaisons
         }
 
+        /*******  Calcul du nombre d'item trouvé par le joueur  ****/
 
-
-
-        if (test)
+        int SolutionCountUser = 0;
+        foreach (LineSelectorManager ls in transform.GetComponentsInChildren<LineSelectorManager>())
         {
+            foreach (SolutionSpectre s in solutions)
+            {
+                if (ls.ID == s.LineName) SolutionCountUser++; //identification du nom
+            }
+        }
+
+        foreach (GameObject go in doublets)
+        {
+            ElementManager em = go.GetComponent<ElementManager>();
+
+            foreach (SolutionSpectre s in solutions)
+            {
+                if (em.AbsorptionLine == s.Line && s.elements.Contains(em.gameObject)) //identification des liaisons
+                    SolutionCountUser++;
+
+            }
+        }
+
+        foreach (GameObject go in doublets)
+        {
+            ElementManager em = go.GetComponent<ElementManager>();
+
+            if (em.AbsorptionLine != null)
+            {
+                foreach (SolutionSpectre s in solutions)
+                {
+                    if (em.AbsorptionLine == s.Line && !s.elements.Contains(em.gameObject)) //identification des erreurs
+                        SolutionCountUser--;
+                }
+            }
+        }
+
+        Debug.Log("Trouver : " + SolutionCountUser + " / " + SolutionCountTotal);
+
+        if (SolutionCountUser < SolutionCountTotal)
+            StartCoroutine(WarningAnimation((float)SolutionCountUser / SolutionCountTotal));
+        else {
             WinLevel();
         }
-        else
-        {
-            failCount++;
-            StartCoroutine(FailAnimation());
-        }
 
 
+        /* Groupe[] grs = transform.GetComponents<Groupe>();
+
+         bool test = false;
+
+         if (grs.Length == solutions.Length)
+         {
+
+             test = true;
+
+             foreach (Groupe g in grs)
+             {
+                 bool groupeOk = false;
+
+                 foreach (SolutionGroupes s in solutions)
+                 {
+                     if (s.TestGroupes(g) == 1)
+                         groupeOk = true;
+                 }
+
+                 if (!groupeOk) test = false;
+             }
+
+         }
+
+
+
+
+         if (test)
+         {
+             WinLevel();
+         }
+         else
+         {
+             failCount++;
+             StartCoroutine(FailAnimation());
+         }
+
+     */
 
 
     }
 
-    IEnumerator WarningAnimation()
+    IEnumerator WarningAnimation(float progress)
     {
         transform.parent.parent.GetComponent<resize>().ReZoom();
         ClickableDisable();
-        ResetElements();
+        int percent = 10 * Mathf.FloorToInt(10 * progress);
+        transform.parent.parent.Find("Warning/Text").transform.GetComponent<Text>().text = "Complété à " + percent + "%";
         transform.parent.parent.Find("Warning").GetComponent<Animator>().SetTrigger("FailTrigger");
         yield return new WaitForSeconds(1.0f);
         ClickableEnable();
@@ -242,6 +288,9 @@ public class GameControllerSpectreIR : gameController {
 
         }
         ResetElements();
+
+        foreach (LineSelectorManager ls in transform.GetComponentsInChildren<LineSelectorManager>())
+            ls.ResetLineSelector();
 
         Groupe[] groupes = transform.GetComponents<Groupe>();
 

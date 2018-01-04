@@ -10,19 +10,42 @@ public class LineSelectorManager : MonoBehaviour {
     public Color color;
     public GameObject ID;
     List<GameObject> liaisons = new List<GameObject>();
+    GameObject unkwown;
+
+    private void Awake()
+    {
+        color = transform.Find("Name").GetComponent<Image>().color;
+        unkwown = transform.Find("Name/Unknown").gameObject;
+        unkwown.transform.SetParent(this.transform);
+
+        ResetLineSelector();
+    }
 
     public void ResetLineSelector()
     {
         isSelected = false;
         isIdentified = false;
-        ID = null;
+
+        if (ID != null)
+        {
+            ID.GetComponent<Image>().enabled = false;
+            ID.GetComponent<Button>().interactable = true;
+
+            ID = null;
+        }
+
         liaisons.Clear();
 
-        Color c = new Color(0,0,0,30/255.0f);
-        
-        transform.Find("Name").GetComponent<Image>().color = new Color(0, 0, 0, 0);
-        transform.Find("Mask").GetComponent<Image>().color = new Color(0, 0, 0, 30 / 255.0f);
+        Color c = color;
+        c.a = 0.25f;
 
+        transform.Find("Name").GetComponent<Image>().color = c;
+        foreach (Transform child in transform.Find("Name"))
+        {
+            Destroy(child.gameObject);
+        }
+        //transform.Find("Mask").GetComponent<Image>().color = new Color(0, 0, 0, 30 / 255.0f);
+        unkwown.SetActive(true);
     }
 
     public void AddElement(GameObject element)
@@ -73,6 +96,8 @@ public class LineSelectorManager : MonoBehaviour {
             name.transform.SetParent(transform.Find("Name"), false);
             name.transform.localPosition = Vector3.zero;
             name.transform.localScale = 0.5f * Vector3.one;
+            name.GetComponent<Image>().enabled = false;
+            unkwown.SetActive(false);
 
             if (ID != null)
             {
@@ -87,8 +112,8 @@ public class LineSelectorManager : MonoBehaviour {
             //color = c;
             //c.a = 150 / 255.0f;
             transform.Find("Name").GetComponent<Image>().color = c;
-            c.a = 100 / 255.0f;
-            transform.Find("Mask").GetComponent<Image>().color = c;
+            //c.a = 100 / 255.0f;
+            //transform.Find("Mask").GetComponent<Image>().color = c;
 
             ID = id;
         }

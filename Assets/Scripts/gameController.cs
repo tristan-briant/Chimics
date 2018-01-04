@@ -153,6 +153,7 @@ public class gameController : MonoBehaviour {
         transform.parent.parent.GetComponent<resize>().ReZoom();
         ClickableDisable();
         ResetElements();
+        transform.parent.parent.Find("Warning/Text").transform.GetComponent<Text>().text = "Réaction incomplète";
         transform.parent.parent.Find("Warning").GetComponent<Animator>().SetTrigger("FailTrigger");
         yield return new WaitForSeconds(1.0f);
         ClickableEnable();
