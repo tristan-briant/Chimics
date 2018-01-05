@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 
 public class LevelSelectorManager : MonoBehaviour {
@@ -42,7 +43,8 @@ public class LevelSelectorManager : MonoBehaviour {
 
 
         if (Input.GetKeyDown(KeyCode.Escape))
-            Application.Quit();
+            SceneManager.LoadScene("Activities");
+        //Application.Quit();
     }
 
     private void OnEnable()
@@ -72,6 +74,11 @@ public class LevelSelectorManager : MonoBehaviour {
             Button btn = go.GetComponent<Button>();
             btn.onClick.AddListener(delegate () { LVM.LoadLevel(level); });
         }
+    }
+
+
+    public void BackToActivities() {
+        SceneManager.LoadScene("Activities");
     }
 
 }

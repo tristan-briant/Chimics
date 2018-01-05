@@ -133,7 +133,11 @@ public class gameController : MonoBehaviour {
 
             Animator anim = GetComponent<Animator>();
             if (anim != null && anim.enabled)
-                anim.SetTrigger("successTrigger");
+            {
+                ClickableDisable();
+                ClearLevel();
+                anim.SetTrigger("SuccessTrigger");
+            }
             else
                 WinLevel();
         }
@@ -147,6 +151,7 @@ public class gameController : MonoBehaviour {
             StartCoroutine(FailAnimation());
         }
     }
+
 
     IEnumerator WarningAnimation()
     {
