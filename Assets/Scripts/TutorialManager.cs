@@ -24,9 +24,15 @@ public class TutorialManager : MonoBehaviour {
 
     private void OnEnable()
     {
+        transform.parent.parent.GetComponent<resize>().InitResize(transform);
         Button btn = ReadMoreButton.GetComponent<Button>();
         btn.onClick.RemoveAllListeners();
         btn.onClick.AddListener(ReadMore);
+        foreach (GameObject ob in Buttons)
+        {
+            ob.SetActive(false);
+        }
+        ResetButton.SetActive(false);
     }
 
     public void ReadMore() {

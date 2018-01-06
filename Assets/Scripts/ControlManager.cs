@@ -23,4 +23,9 @@ public class ControlManager : MonoBehaviour
         LVM.CurrentReaction().GetComponent<gameController>().ResetLevel();
     }
 
+    public void NextLevel()
+    {
+        LVM.LoadNextReaction();
+    }
+
 }

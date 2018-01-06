@@ -14,8 +14,8 @@ public class LineSelectorManager : MonoBehaviour {
 
     private void Awake()
     {
-        color = transform.Find("Name").GetComponent<Image>().color;
-        unkwown = transform.Find("Name/Unknown").gameObject;
+        color = transform.Find("Etiquette/Name").GetComponent<Image>().color;
+        unkwown = transform.Find("Etiquette/Name/Unknown").gameObject;
         unkwown.transform.SetParent(this.transform);
 
         ResetLineSelector();
@@ -39,8 +39,8 @@ public class LineSelectorManager : MonoBehaviour {
         Color c = color;
         c.a = 0.25f;
 
-        transform.Find("Name").GetComponent<Image>().color = c;
-        foreach (Transform child in transform.Find("Name"))
+        transform.Find("Etiquette/Name").GetComponent<Image>().color = c;
+        foreach (Transform child in transform.Find("Etiquette/Name"))
         {
             Destroy(child.gameObject);
         }
@@ -57,7 +57,7 @@ public class LineSelectorManager : MonoBehaviour {
     {
         isSelected = false;
 
-        GetComponent<Animator>().SetBool("selected", isSelected);
+        transform.Find("Etiquette").GetComponent<Animator>().SetBool("selected", isSelected);
     }
 
     public void SelectElement()
@@ -71,12 +71,12 @@ public class LineSelectorManager : MonoBehaviour {
         }
 
         isSelected = !s; //toggle selection
-        GetComponent<Animator>().SetBool("selected", isSelected);
+        transform.Find("Etiquette").GetComponent<Animator>().SetBool("selected", isSelected);
     }
 
     public void SetID(GameObject id)
     {
-        foreach (Transform child in transform.Find("Name"))
+        foreach (Transform child in transform.Find("Etiquette/Name"))
         {
             Destroy(child.gameObject);
         }
@@ -93,7 +93,7 @@ public class LineSelectorManager : MonoBehaviour {
         }
         else {
             GameObject name = Object.Instantiate<GameObject>(id.transform.Find("Data/Name").gameObject);
-            name.transform.SetParent(transform.Find("Name"), false);
+            name.transform.SetParent(transform.Find("Etiquette/Name"), false);
             name.transform.localPosition = Vector3.zero;
             name.transform.localScale = 0.5f * Vector3.one;
             name.GetComponent<Image>().enabled = false;
@@ -111,7 +111,7 @@ public class LineSelectorManager : MonoBehaviour {
             Color c = color;
             //color = c;
             //c.a = 150 / 255.0f;
-            transform.Find("Name").GetComponent<Image>().color = c;
+            transform.Find("Etiquette/Name").GetComponent<Image>().color = c;
             //c.a = 100 / 255.0f;
             //transform.Find("Mask").GetComponent<Image>().color = c;
 

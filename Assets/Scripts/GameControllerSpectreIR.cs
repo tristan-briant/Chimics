@@ -263,6 +263,9 @@ public class GameControllerSpectreIR : gameController {
         }
 
         transform.parent.parent.Find("Check").GetComponent<Animator>().SetTrigger("SuccessTrigger");
+
+        transform.Find("Validate").gameObject.SetActive(false);
+        transform.Find("Next").gameObject.SetActive(true);
     }
 
 
@@ -318,6 +321,10 @@ public class GameControllerSpectreIR : gameController {
         {
             ClickableEnable();
         }
+
+        transform.Find("Validate").gameObject.SetActive(true);
+        transform.Find("Next").gameObject.SetActive(false);
+
     }
 
 
