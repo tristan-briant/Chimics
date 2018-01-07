@@ -165,7 +165,7 @@ public class gameController : MonoBehaviour {
         ShowTip();
     }
 
-    IEnumerator FailAnimation()
+    virtual public IEnumerator FailAnimation()
     {
         transform.parent.parent.GetComponent<resize>().ReZoom();
         ClickableDisable();
