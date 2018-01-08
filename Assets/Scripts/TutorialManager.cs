@@ -3,14 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TutorialManager : gameController
+public class TutorialManager : GameController
 {
 
-    Animator anim;
-    //GameObject[] Buttons;
-    //GameObject ResetButton;
     public GameObject ReadMoreButton;
-    //levelManager LVM;
     bool started = false;
 
     void Awake()
@@ -18,7 +14,7 @@ public class TutorialManager : gameController
         anim = GetComponent<Animator>();
         Buttons = GameObject.FindGameObjectsWithTag("Buttons");
         ResetButton = GameObject.FindGameObjectWithTag("Reset");
-        LVM = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<levelManager>();
+        LVM = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelManager>();
 
         transform.GetComponent<Image>().enabled = false;
         transform.localPosition = new Vector3(0, 0, 0);
@@ -26,7 +22,7 @@ public class TutorialManager : gameController
     }
 
 
-    override public void Start()
+    /*override public void Start()
     {
         started = true;
     }
@@ -36,7 +32,7 @@ public class TutorialManager : gameController
         if (!started) return;
 
         ResetLevel();
-    }
+    }*/
 
     public void ReadMore()
     {
@@ -47,7 +43,6 @@ public class TutorialManager : gameController
 
     public void ReadMoreToNext()
     {
-
         Button btn = ReadMoreButton.GetComponent<Button>();
         btn.onClick.RemoveAllListeners();
         btn.onClick.AddListener(LVM.LoadNextReaction);

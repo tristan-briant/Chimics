@@ -11,7 +11,7 @@ public class ReactionSelectorManager : MonoBehaviour {
     public GameObject levelManager;
     public GameObject Game;
     public GameObject LevelSelector;
-    levelManager LVM;
+    LevelManager LVM;
 
     bool started = false;
 
@@ -20,7 +20,7 @@ public class ReactionSelectorManager : MonoBehaviour {
         var rect = GetComponent<RectTransform>();
         rect.localPosition = new Vector3(0, 0, 0);
 
-        LVM = levelManager.GetComponent<levelManager>();
+        LVM = levelManager.GetComponent<LevelManager>();
 
         CreateReactionSelector();
 
@@ -29,7 +29,7 @@ public class ReactionSelectorManager : MonoBehaviour {
 
     public void Update()
     {
-        int cpLevel = LVM.completedLevel;
+        /*int cpLevel = LVM.completedLevel;
 
         for (int i = 0; i < levelList.transform.childCount; i++)
         {
@@ -38,7 +38,7 @@ public class ReactionSelectorManager : MonoBehaviour {
             else
                 levelList.transform.GetChild(i).GetComponent<Button>().interactable = false;
 
-        }
+        }*/
 
 
         if (Input.GetKeyDown(KeyCode.Escape)) {
@@ -81,8 +81,8 @@ public class ReactionSelectorManager : MonoBehaviour {
             btn.onClick.AddListener(delegate () { LVM.LoadReaction(level); });
         }
 
-        Text title = transform.Find("Panel").transform.Find("Text").GetComponent<Text>();
-        title.text = LVM.LevelName();//+ " - Sélectionner une réaction";
+        /*Text title = transform.Find("Panel").transform.Find("Text").GetComponent<Text>();
+        title.text = LVM.LevelName();//+ " - Sélectionner une réaction";*/
 
         //transform.Find("Panel").
         transform.GetComponent<Image>().color = LVM.LevelColor[LVM.currentLevel];

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameControllerSpectreIR : gameController {
+public class GameControllerSpectreIR : GameController {
 
     public int solution = 0;
 
@@ -16,7 +16,7 @@ public class GameControllerSpectreIR : gameController {
 
         transform.GetComponent<Image>().enabled = false;
 
-        LVM = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<levelManager>();
+        LVM = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelManager>();
         Controls = GameObject.FindGameObjectWithTag("Controls");
         Buttons = GameObject.FindGameObjectsWithTag("Buttons");
         ResetButton = GameObject.FindGameObjectWithTag("Reset");
@@ -46,19 +46,6 @@ public class GameControllerSpectreIR : gameController {
 
     }
 
-    new private void Start()
-    {
-        started = true;
-    }
-
-    private void OnEnable()
-    {
-        if (!started) return;
-
-        ResetLevel();
-
-
-    }
 
     override public void LateUpdate()
     {
@@ -178,67 +165,18 @@ public class GameControllerSpectreIR : gameController {
         Debug.Log("Trouver : " + SolutionCountUser + " / " + SolutionCountTotal);
 
         if (SolutionCountUser < SolutionCountTotal)
-            StartCoroutine(WarningAnimation((float)SolutionCountUser / SolutionCountTotal));
-        else {
+        {
+            int percent = Mathf.Clamp(10 * Mathf.FloorToInt(10 * SolutionCountUser / SolutionCountTotal), 0, 100);
+            StartCoroutine(WarningAnimation("Complété à " + percent + "%"));
+        }
+        else
+        {
             WinLevel();
         }
 
-
-        /* Groupe[] grs = transform.GetComponents<Groupe>();
-
-         bool test = false;
-
-         if (grs.Length == solutions.Length)
-         {
-
-             test = true;
-
-             foreach (Groupe g in grs)
-             {
-                 bool groupeOk = false;
-
-                 foreach (SolutionGroupes s in solutions)
-                 {
-                     if (s.TestGroupes(g) == 1)
-                         groupeOk = true;
-                 }
-
-                 if (!groupeOk) test = false;
-             }
-
-         }
-
-
-
-
-         if (test)
-         {
-             WinLevel();
-         }
-         else
-         {
-             failCount++;
-             StartCoroutine(FailAnimation());
-         }
-
-     */
-
-
     }
 
-    IEnumerator WarningAnimation(float progress)
-    {
-        transform.parent.parent.GetComponent<resize>().ReZoom();
-        ClickableDisable();
-        int percent = 10 * Mathf.FloorToInt(10 * progress);
-        transform.parent.parent.Find("Warning/Text").transform.GetComponent<Text>().text = "Complété à " + percent + "%";
-        transform.parent.parent.Find("Warning").GetComponent<Animator>().SetTrigger("FailTrigger");
-        yield return new WaitForSeconds(1.0f);
-        ClickableEnable();
-        ShowTip();
-    }
-
-    override public IEnumerator FailAnimation()
+    /*override public IEnumerator FailAnimation()
     {
         transform.parent.parent.GetComponent<resize>().ReZoom();
         ClickableDisable();
@@ -248,7 +186,7 @@ public class GameControllerSpectreIR : gameController {
         ClearLevel();
         ClickableEnable();
         ShowTip();
-    }
+    }*/
 
 
     override public void WinLevel()
@@ -340,5 +278,18 @@ public class GameControllerSpectreIR : gameController {
             it.Remove(0.2f);
         }
 
+    }
+
+    override public void ResetElements()
+    {
+        foreach (GameObject go in accepteurs)
+        {
+            go.GetComponent<ElementManager>().reset();
+        }
+        foreach (GameObject go in doublets)
+        {
+            go.GetComponent<ElementManager>().reset();
+
+        }
     }
 }

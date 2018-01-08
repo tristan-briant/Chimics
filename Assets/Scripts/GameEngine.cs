@@ -10,7 +10,7 @@ public class GameEngine : MonoBehaviour {
     List<GameObject> doublets = new List<GameObject>();
     public int failCount; // nombre d'echec sur le level en cours
     public int step;    // Pour les réaction mutli étape, n° de l'étape
-    levelManager LVM;
+    LevelManager LVM;
     public Transform Tips;
     Animator anim;
     public GameObject canvas;
@@ -26,7 +26,7 @@ public class GameEngine : MonoBehaviour {
 
     void Awake()
     {
-        LVM = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<levelManager>();
+        LVM = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelManager>();
 
         Buttons = GameObject.FindGameObjectsWithTag("Buttons");
         ResetButton = GameObject.FindGameObjectWithTag("Reset");

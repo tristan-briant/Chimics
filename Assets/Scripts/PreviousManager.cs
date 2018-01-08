@@ -5,11 +5,11 @@ using UnityEngine.UI;
 
 
 public class PreviousManager : MonoBehaviour {
-    levelManager LVM;
+    LevelManager LVM;
 
     void Start()
     {
-        LVM = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<levelManager>();
+        LVM = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelManager>();
     }
 
     // Update is called once per frame

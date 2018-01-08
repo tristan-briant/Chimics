@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class levelManager : MonoBehaviour {
+public class LevelManager : MonoBehaviour {
 
     public int currentLevel;
     public int currentReaction;
@@ -72,12 +72,10 @@ public class levelManager : MonoBehaviour {
 
     public void LoadNextReaction()
     {
-        if (CurrentReaction().GetComponent<gameController>()!=null)
-        {
-            CurrentReaction().GetComponent<gameController>().ResetLevel();
-        }
+       
+        CurrentReaction().GetComponent<GameController>().ResetLevel();
 
-            if (currentReaction < reactions[currentLevel].Length - 1)
+        if (currentReaction < reactions[currentLevel].Length - 1)
         {
             currentReaction++;
         }
@@ -86,13 +84,13 @@ public class levelManager : MonoBehaviour {
             currentReaction = 0;
         }
 
-       
-
         LoadReaction(currentReaction);
     }
 
     public void LoadPreviousReaction()
     {
+        CurrentReaction().GetComponent<GameController>().ResetLevel();
+
         if (currentReaction > 0) 
         {
             currentReaction--;
@@ -108,6 +106,9 @@ public class levelManager : MonoBehaviour {
 
     public void LoadLevel(int level)
     {
+        if(CurrentReaction())
+            CurrentReaction().GetComponent<GameController>().ResetLevel();
+
         if (level >= reactions.Length)
             return;
 
@@ -126,7 +127,7 @@ public class levelManager : MonoBehaviour {
     }
 
 
-        public void LoadReaction(int reaction)
+    public void LoadReaction(int reaction)
     {
         if (reaction >= reactions[currentLevel].Length)
             return;
@@ -139,18 +140,16 @@ public class levelManager : MonoBehaviour {
         Transform lv = reactions[currentLevel][currentReaction];
 
         lv.gameObject.SetActive(true);
-        gameController gc = lv.GetComponent<gameController>();
+        GameController gc = lv.GetComponent<GameController>();
         if (gc)
         {
             gc.ResetLevel();
         }
+        SetTitlePanel();
         
         LevelSelector.SetActive(false); // desactive le menu
         ReactionSelector.SetActive(false); // desactive le menu
         Game.SetActive(true);
-
-        //currentLevel = levelNumber;
-
 
     }
 
@@ -161,9 +160,35 @@ public class levelManager : MonoBehaviour {
     }
 
     public string LevelName() {
-        // Returne the name of the current level
+        // Return the name of the current level
 
         return LevelNames[currentLevel];
     }
+
+    void SetTitlePanel()
+    {
+        LevelParameters parameters =Parameters[currentLevel];
+        string title = "";
+
+        if (parameters.levelNameOn) title += parameters.LevelName;
+        if (parameters.levelNameOn && parameters.subLevelNameOn) title += " - ";
+        if (parameters.subLevelNameOn) title += parameters.subLevelName;
+        if (parameters.subLevelNumberOn) title += " " + (currentReaction + 1);
+
+        Game.transform.Find("Panel/Title").GetComponent<Text>().text = title;
+        Game.transform.Find("Panel").GetComponent<Image>().color = LevelColor[currentLevel];
+
+        if (currentReaction == reactions[currentLevel].Length - 1 && currentLevel== reactions.Length-1)
+            Game.transform.Find("Panel/NextLevel").GetComponent<Button>().interactable = false;
+        else
+            Game.transform.Find("Panel/NextLevel").GetComponent<Button>().interactable = true;
+
+        if (currentReaction == 0 && currentLevel == 0)
+            Game.transform.Find("Panel/PreviousLevel").GetComponent<Button>().interactable = false;
+        else
+            Game.transform.Find("Panel/PreviousLevel").GetComponent<Button>().interactable = true;
+
+    }
+
 
 }

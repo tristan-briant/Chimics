@@ -4,34 +4,34 @@ using UnityEngine;
 
 public class ValidateController : MonoBehaviour {
 
-    public levelManager LVM;
+    public LevelManager LVM;
     public GameObject pg;
     
     //front end for accessing level gamecontroller via the fail animation
 
     public void ResetElements()
     {
-        LVM.CurrentReaction().GetComponent<gameController>().ResetElements();
+        LVM.CurrentReaction().GetComponent<GameController>().ResetElements();
     }
 
     public void ClearLevel()
     {
-        LVM.CurrentReaction().GetComponent<gameController>().ClearLevel();
+        LVM.CurrentReaction().GetComponent<GameController>().ClearLevel();
     }
 
     public void ClickableDisable()
     {
-        LVM.CurrentReaction().GetComponent<gameController>().ClickableDisable();
+        LVM.CurrentReaction().GetComponent<GameController>().ClickableDisable();
     }
 
     public void ClickableEnable()
     {
-        LVM.CurrentReaction().GetComponent<gameController>().ClickableEnable();
+        LVM.CurrentReaction().GetComponent<GameController>().ClickableEnable();
     }
 
     public void ShowTip()
     {
-        LVM.CurrentReaction().GetComponent<gameController>().ShowTip();
+        LVM.CurrentReaction().GetComponent<GameController>().ShowTip();
     }
 
 }

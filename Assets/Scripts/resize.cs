@@ -23,7 +23,7 @@ public class resize : MonoBehaviour
 
     Vector2 positionTarget=new Vector2(0,0);
 
-    float SpeedZoom = 0.2f;
+    float SpeedZoom = 0.1f;
 
     private void Awake()
     {
@@ -39,13 +39,23 @@ public class resize : MonoBehaviour
 
  
         Zoom = (1 - SpeedZoom) * Zoom + SpeedZoom * ZoomTarget;
+        if (Zoom < ZoomTarget)
+        {
+            Zoom = Mathf.Clamp(Zoom + SpeedZoom * Time.deltaTime, 0, ZoomTarget);
+            ChangeZoom(Zoom);
+        }
+        if (Zoom > ZoomTarget)
+        {
+            Zoom = Mathf.Clamp(Zoom - SpeedZoom * Time.deltaTime, ZoomTarget, Zoom);
+            ChangeZoom(Zoom);
+        }
 
-        ChangeZoom(Zoom);
+
     }
 
 
-   
-   
+
+
     Vector3 lastMousePosition=new Vector3(0,0,0);
 
     public void OnGUI()
@@ -98,6 +108,7 @@ public class resize : MonoBehaviour
 
 
             pageRect.localPosition = pageRect.localPosition + Delta / canvas.scaleFactor;
+            ClampPage();
 
 
         }
@@ -131,10 +142,15 @@ public class resize : MonoBehaviour
     {
         //change the zoom and check if position is ok 
         pageRect.localScale = new Vector2(z, z);
-        
+
+        ClampPage();
+
+
+    }
+
+    void ClampPage() {
         scrollRect.horizontalNormalizedPosition = Mathf.Clamp(scrollRect.horizontalNormalizedPosition, 0f, 1f);
         scrollRect.verticalNormalizedPosition = Mathf.Clamp(scrollRect.verticalNormalizedPosition, 0f, 1f);
-        
     }
 
     public void ReZoom() {

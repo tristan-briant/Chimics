@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameControllerGroupes : gameController {
+public class GameControllerGroupes : GameController {
 
     public int solution = 0;
  
@@ -16,7 +16,7 @@ public class GameControllerGroupes : gameController {
 
         transform.GetComponent<Image>().enabled = false;
 
-        LVM = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<levelManager>();
+        LVM = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelManager>();
         Controls = GameObject.FindGameObjectWithTag("Controls");
         Buttons = GameObject.FindGameObjectsWithTag("Buttons");
         ResetButton = GameObject.FindGameObjectWithTag("Reset");

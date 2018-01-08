@@ -12,7 +12,7 @@ public class LevelSelectorManager : MonoBehaviour {
     public GameObject levelManager;
     public GameObject Game;
     public GameObject ReactionSelector;
-    levelManager LVM;
+    LevelManager LVM;
 
     bool started = false;
 
@@ -21,16 +21,18 @@ public class LevelSelectorManager : MonoBehaviour {
         var rect = GetComponent<RectTransform>();
         rect.localPosition = new Vector3(0, 0, 0);
 
-        LVM = levelManager.GetComponent<levelManager>();
+        LVM = levelManager.GetComponent<LevelManager>();
 
         CreateLevelSelector();
 
         started = true;
     }
 
+
+
     public void Update()
     {
-        int cpLevel = LVM.completedLevel;
+        /*int cpLevel = LVM.completedLevel;
 
         for (int i = 0; i < levelList.transform.childCount; i++)
         {
@@ -39,7 +41,7 @@ public class LevelSelectorManager : MonoBehaviour {
             else
                 levelList.transform.GetChild(i).GetComponent<Button>().interactable = false;
 
-        }
+        }*/
 
 
         if (Input.GetKeyDown(KeyCode.Escape))

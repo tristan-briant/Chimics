@@ -6,21 +6,20 @@ using UnityEngine;
 
 public class ControlManager : MonoBehaviour
 {
-    public levelManager LVM;
-    //public GameObject pg;
-
+    public LevelManager LVM;
+  
     public void Validate() {
-        LVM.CurrentReaction().GetComponent<gameController>().Validate();
+        LVM.CurrentReaction().GetComponent<GameController>().Validate();
     }
 
     public void Clear()
     {
-        LVM.CurrentReaction().GetComponent<gameController>().ClearLevel();
+        LVM.CurrentReaction().GetComponent<GameController>().ClearLevel();
     }
 
     public void ResetLevel()
     {
-        LVM.CurrentReaction().GetComponent<gameController>().ResetLevel();
+        LVM.CurrentReaction().GetComponent<GameController>().ResetLevel();
     }
 
     public void NextLevel()
