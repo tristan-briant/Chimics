@@ -13,7 +13,7 @@ public class GameControllerNomenclature : gameController {
 
         foreach(Transform part in NameSelector.transform)
         {
-            string st = "-????-";
+            string st = "";
             foreach (Toggle tog in part.GetComponent<ToggleGroup>().ActiveToggles())
             {
                     st = tog.GetComponentInChildren<Text>().text;
@@ -95,18 +95,20 @@ public class GameControllerNomenclature : gameController {
         {
             if (part.childCount > 1)
             {
+                bool allowSwitchOff = part.GetComponent<ToggleGroup>().allowSwitchOff;
+
                 part.GetComponent<ToggleGroup>().allowSwitchOff = true;
                 foreach (Toggle tog in part.GetComponentsInChildren<Toggle>()) 
                 {
                     tog.isOn = false;
-                    Debug.Log("reset");
+                   
                 }
-                part.GetComponent<ToggleGroup>().allowSwitchOff = false;
+                part.GetComponent<ToggleGroup>().allowSwitchOff = allowSwitchOff;
             }
             else
             {
-                part.GetComponentInChildren<Toggle>().isOn = true;
-                Debug.Log("reset1");
+                part.GetComponentInChildren<Toggle>().isOn = false;
+             
             }
         }
     }

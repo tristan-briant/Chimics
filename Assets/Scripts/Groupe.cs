@@ -14,7 +14,7 @@ public class Groupe : MonoBehaviour {
     //Parametres géométriques
     /*public int NSample = 40;
     public float h = 0.2f;*/
-    public float width = 0.25f;
+    public float width = 0.3f;
    
   
     // Couleur
@@ -119,7 +119,7 @@ public class Groupe : MonoBehaviour {
 
     public void DrawGroupe()  // Dessine le groupe
     {
-        if (elements.Length < 2) return;
+        if (elements.Length < 1) return;
 
         float scale = PageRect.localScale.x; // Niveau de zoom
         color.a = 0;
@@ -131,9 +131,13 @@ public class Groupe : MonoBehaviour {
         };
         groupe.transform.parent = transform;
 
-        Segments = new GameObject[elements.Length-1];
 
-        for (int i = 0; i < elements.Length - 1; i++)
+        int size = elements.Length==1 ? 1:elements.Length - 1;
+
+
+        Segments = new GameObject[size];
+
+        for (int i = 0; i < size; i++)
         {
             Segments[i] = new GameObject();
             Segments[i].transform.parent = groupe.transform;
@@ -141,15 +145,22 @@ public class Groupe : MonoBehaviour {
             lr.material = new Material(Shader.Find("Sprites/Default"));
             //lr.material = new Material(Shader.Find("Particles/Additive"));
             lr.startColor = lr.endColor = color;
-            lr.startWidth = width;
-            lr.endWidth = width; // * 0.8f;
+            if (elements.Length == 1)
+                lr.startWidth = lr.endWidth = width * 1.3f; // Un peu plus gros si tout seul
+            else
+                lr.startWidth = lr.endWidth = width;
             lr.numCapVertices = 10;
             lr.positionCount = 2;
             lr.useWorldSpace = false;
             lr.sortingOrder = -1;
 
             Vector3 start = elements[i].transform.position;
-            Vector3 end = elements[i+1].transform.position;
+            Vector3 end;
+            if (elements.Length > 1)
+                end = elements[i + 1].transform.position;
+            else
+                end = start;
+
             start.z = 0;
             end.z = 0;
 
@@ -157,6 +168,7 @@ public class Groupe : MonoBehaviour {
             lr.SetPosition(1, end);
 
         }
+        
 
 
     }

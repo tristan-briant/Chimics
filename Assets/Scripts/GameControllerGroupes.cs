@@ -66,7 +66,7 @@ public class GameControllerGroupes : gameController {
         foreach (GameObject go in accepteurs)
             if (go.GetComponent<ElementManager>().isSelected) selectedCount++;
 
-        if (selectedCount < 2) return;
+        if (selectedCount < 1) return;
         GameObject[] listElements = new GameObject[selectedCount];
 
         selectedCount = 0;
@@ -141,7 +141,7 @@ public class GameControllerGroupes : gameController {
         ShowTip();
     }
 
-    IEnumerator FailAnimation()
+    override public IEnumerator FailAnimation()
     {
         transform.parent.parent.GetComponent<resize>().ReZoom();
         ClickableDisable();
@@ -236,15 +236,17 @@ public class GameControllerGroupes : gameController {
 
     override public void ClearLevel()
     {
-        Debug.Log("Clear Level");
+        //Debug.Log("Clear Level");
         ResetElements(); // déselectionne les éléments
 
         Groupe[] groupes = transform.GetComponents<Groupe>();
 
-        foreach (Groupe it in groupes)
+        if(groupes.Length>0)
+            groupes[groupes.Length-1].Remove(0.2f);
+        /*foreach (Groupe it in groupes)
         {
             it.Remove(0.2f);
-        }
+        }*/
 
     }
 }

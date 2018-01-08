@@ -238,7 +238,7 @@ public class GameControllerSpectreIR : gameController {
         ShowTip();
     }
 
-    IEnumerator FailAnimation()
+    override public IEnumerator FailAnimation()
     {
         transform.parent.parent.GetComponent<resize>().ReZoom();
         ClickableDisable();

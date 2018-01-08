@@ -3,15 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TutorialManager : MonoBehaviour {
+public class TutorialManager : gameController
+{
 
     Animator anim;
-    GameObject[] Buttons;
-    GameObject ResetButton;
+    //GameObject[] Buttons;
+    //GameObject ResetButton;
     public GameObject ReadMoreButton;
-    levelManager LVM;
+    //levelManager LVM;
+    bool started = false;
 
-    void Awake () {
+    void Awake()
+    {
         anim = GetComponent<Animator>();
         Buttons = GameObject.FindGameObjectsWithTag("Buttons");
         ResetButton = GameObject.FindGameObjectWithTag("Reset");
@@ -22,26 +25,28 @@ public class TutorialManager : MonoBehaviour {
 
     }
 
+
+    override public void Start()
+    {
+        started = true;
+    }
+
     private void OnEnable()
     {
-        transform.parent.parent.GetComponent<resize>().InitResize(transform);
-        Button btn = ReadMoreButton.GetComponent<Button>();
-        btn.onClick.RemoveAllListeners();
-        btn.onClick.AddListener(ReadMore);
-        foreach (GameObject ob in Buttons)
-        {
-            ob.SetActive(false);
-        }
-        ResetButton.SetActive(false);
+        if (!started) return;
+
+        ResetLevel();
     }
 
-    public void ReadMore() {
+    public void ReadMore()
+    {
         Debug.Log("More !");
-		if(anim.isActiveAndEnabled)
-        	anim.SetTrigger("Next");
+        if (anim.isActiveAndEnabled)
+            anim.SetTrigger("Next");
     }
 
-    public void ReadMoreToNext() {
+    public void ReadMoreToNext()
+    {
 
         Button btn = ReadMoreButton.GetComponent<Button>();
         btn.onClick.RemoveAllListeners();
@@ -54,4 +59,45 @@ public class TutorialManager : MonoBehaviour {
     }
 
 
+    override public void ResetLevel()
+    {
+
+        // On reset l'animation
+        anim = GetComponent<Animator>();
+        if (anim && anim.isActiveAndEnabled)
+            anim.SetTrigger("reset");
+
+        // si on load le level on enlève un éventuel check
+
+        if (transform.parent)
+        {
+            Transform t = transform.parent.parent.Find("Check");
+            Animator a = t.GetComponent<Animator>();
+            if (a.isActiveAndEnabled) a.SetTrigger("reset");
+
+            t = transform.parent.parent.Find("Fail");
+            a = t.GetComponent<Animator>();
+            if (a.isActiveAndEnabled) a.SetTrigger("reset");
+
+            t = transform.parent.parent.Find("Warning");
+            a = t.GetComponent<Animator>();
+            if (a.isActiveAndEnabled) a.SetTrigger("reset");
+
+            transform.parent.parent.GetComponent<resize>().InitResize(transform);
+
+        }
+
+        Button btn = ReadMoreButton.GetComponent<Button>();
+        btn.onClick.RemoveAllListeners();
+        btn.onClick.AddListener(ReadMore);
+
+        ResetButton.SetActive(false);
+
+        foreach (GameObject ob in Buttons)
+        {
+            ob.SetActive(false);
+        }
+
     }
+
+}

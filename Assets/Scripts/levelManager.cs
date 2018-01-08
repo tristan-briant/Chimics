@@ -21,6 +21,7 @@ public class levelManager : MonoBehaviour {
     public Transform[][] reactions;
     public string[] LevelNames;
     public Color[] LevelColor;
+    public LevelParameters[] Parameters;
 
     private void Awake()
     {
@@ -30,6 +31,8 @@ public class levelManager : MonoBehaviour {
         reactions = new Transform[levels.childCount][];
         LevelNames = new string[levels.childCount];
         LevelColor = new Color[levels.childCount];
+        Parameters = new LevelParameters[levels.childCount];
+
 
         int n = 0;
 
@@ -39,7 +42,7 @@ public class levelManager : MonoBehaviour {
             reactions[n] = new Transform[nreact];
             LevelNames[n] = child.name;
             LevelColor[n] = child.GetComponent<Image>().color;
-
+            Parameters[n] = child.GetComponent<LevelParameters>();
 
             for (int i = 0; i < nreact; i++) 
             {
@@ -69,7 +72,12 @@ public class levelManager : MonoBehaviour {
 
     public void LoadNextReaction()
     {
-        if (currentReaction < reactions[currentLevel].Length - 1)
+        if (CurrentReaction().GetComponent<gameController>()!=null)
+        {
+            CurrentReaction().GetComponent<gameController>().ResetLevel();
+        }
+
+            if (currentReaction < reactions[currentLevel].Length - 1)
         {
             currentReaction++;
         }
@@ -77,6 +85,8 @@ public class levelManager : MonoBehaviour {
             currentLevel++;
             currentReaction = 0;
         }
+
+       
 
         LoadReaction(currentReaction);
     }

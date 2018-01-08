@@ -19,7 +19,7 @@ public class gameController : MonoBehaviour {
     GameObject ClearButton;
     protected GameObject Controls;
 
-    public void Start()
+    virtual public void Start()
     {
         //ResetLevel();
     }

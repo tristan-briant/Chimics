@@ -82,7 +82,7 @@ public class ReactionSelectorManager : MonoBehaviour {
         }
 
         Text title = transform.Find("Panel").transform.Find("Text").GetComponent<Text>();
-        title.text = LVM.LevelName() + " - Sélectionner une réaction";
+        title.text = LVM.LevelName();//+ " - Sélectionner une réaction";
 
         //transform.Find("Panel").
         transform.GetComponent<Image>().color = LVM.LevelColor[LVM.currentLevel];
