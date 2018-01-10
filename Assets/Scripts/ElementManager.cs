@@ -11,10 +11,11 @@ public class ElementManager : MonoBehaviour {
     public GameObject react;
     public bool multiSelectable = false;
     public GameObject AbsorptionLine;
+    public Arrow arrow;
 
     public void selectElement()
     {
-        if (inReaction) return; //Already part of a reaction
+        //if (inReaction) return; //Already part of a reaction
 
         bool s= isSelected;
         GameObject[] goSameType;
@@ -44,10 +45,18 @@ public class ElementManager : MonoBehaviour {
 			GetComponent<Animator>().SetBool("selected", isSelected);
 	}
 
-    public void ReactWith(GameObject go){
+    /* public void ReactWith(GameObject go){
+         react = go;
+         inReaction = true;
+         unSelectElement ();
+         //isSelected = false;
+     }*/
+
+    public void ReactWith(GameObject go)
+    {
         react = go;
         inReaction = true;
-		unSelectElement ();
+        unSelectElement();
         //isSelected = false;
     }
 

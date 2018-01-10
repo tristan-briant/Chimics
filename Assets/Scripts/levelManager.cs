@@ -51,6 +51,7 @@ public class LevelManager : MonoBehaviour {
                 r.SetParent(Playground.transform);
                 r.localScale = new Vector3(1, 1, 1);
                 r.localPosition = new Vector3(0, 0, 0);
+                //r.gameObject.SetActive(false);
                 reactions[n][i] = r;
             }
 
@@ -65,6 +66,12 @@ public class LevelManager : MonoBehaviour {
 
     private void Start()
     {
+        /*foreach (Transform child in Playground.transform)
+        {
+            child.gameObject.SetActive(false);
+        }
+        */
+            
         LevelSelector.SetActive(true);
         ReactionSelector.SetActive(false);
         Game.SetActive(false);
@@ -72,8 +79,9 @@ public class LevelManager : MonoBehaviour {
 
     public void LoadNextReaction()
     {
-       
-        CurrentReaction().GetComponent<GameController>().ResetLevel();
+
+        if(CurrentReaction().gameObject.activeSelf)
+            CurrentReaction().GetComponent<GameController>().ResetLevel();
 
         if (currentReaction < reactions[currentLevel].Length - 1)
         {
@@ -89,7 +97,8 @@ public class LevelManager : MonoBehaviour {
 
     public void LoadPreviousReaction()
     {
-        CurrentReaction().GetComponent<GameController>().ResetLevel();
+        if (CurrentReaction().gameObject.activeSelf)
+            CurrentReaction().GetComponent<GameController>().ResetLevel();
 
         if (currentReaction > 0) 
         {
@@ -106,7 +115,7 @@ public class LevelManager : MonoBehaviour {
 
     public void LoadLevel(int level)
     {
-        if(CurrentReaction())
+        if(CurrentReaction().gameObject.activeSelf)
             CurrentReaction().GetComponent<GameController>().ResetLevel();
 
         if (level >= reactions.Length)

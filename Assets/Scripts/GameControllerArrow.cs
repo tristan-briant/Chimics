@@ -111,10 +111,10 @@ public class GameControllerArrow : GameController
         GameObject liaison = null, atome = null;
 
         foreach (GameObject go in doublets)
-            if (go.GetComponent<ElementManager>().isSelected) liaison = go;
+            if (go.GetComponent<ElementManager>().isSelected && !go.GetComponent<ElementManager>().inReaction) liaison = go;
 
         foreach (GameObject go in accepteurs)
-            if (go.GetComponent<ElementManager>().isSelected) atome = go;
+            if (go.GetComponent<ElementManager>().isSelected && !go.GetComponent<ElementManager>().inReaction) atome = go;
 
 
 
@@ -127,8 +127,10 @@ public class GameControllerArrow : GameController
             ar.DrawCurvedArrow();
 
             liaison.GetComponent<ElementManager>().ReactWith(atome);
-            atome.GetComponent<ElementManager>().ReactWith(liaison);
+            liaison.GetComponent<ElementManager>().arrow = ar;
 
+            atome.GetComponent<ElementManager>().ReactWith(liaison);
+            atome.GetComponent<ElementManager>().arrow = ar;
         }
 
     }
@@ -139,9 +141,9 @@ public class GameControllerArrow : GameController
         {
             go.GetComponent<ElementManager>().reset();
         }
-        foreach (GameObject go in doublets)
+        foreach (ElementManager em in gameObject.GetComponentsInChildren<ElementManager>())
         {
-            go.GetComponent<ElementManager>().reset();
+           em.reset();
 
         }
     }

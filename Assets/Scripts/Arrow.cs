@@ -29,10 +29,10 @@ public class Arrow : MonoBehaviour {
     float TimeStart;
     float TimeEnd;
     bool isfadein = true;
-    bool toBeRemoved = false;
+    public bool toBeRemoved = false;
     public float fadeDuration = 0.2f;
     //public GameObject[] elements;
-    public List<GameObject> elements = new List<GameObject>(); // element a éviter de collisionner;
+    //public List<GameObject> elements = new List<GameObject>(); // element a éviter de collisionner;
 
     Vector3[] vectors;
     Vector3[] vectorsHead;
@@ -44,12 +44,26 @@ public class Arrow : MonoBehaviour {
         Line = new GameObject();
         Head = new GameObject();
 
+        
+        Line.AddComponent<LineRenderer>();
+        Head.AddComponent<LineRenderer>();
+
+
+        arrow = new GameObject()
+        {
+            name = "arrow"
+        };
+        arrow.transform.parent = transform;
+
+        Line.transform.parent = arrow.transform;
+        Head.transform.parent = arrow.transform;
+
         FadeIn(fadeDuration);
   
         PageRect = transform.parent.parent.GetComponent<RectTransform>(); 
 
 
-        Transform[] children = GetComponentsInChildren<Transform>();
+        /*Transform[] children = GetComponentsInChildren<Transform>();
         foreach (Transform child in children)
         {
             if (child.CompareTag("Accepteur"))
@@ -58,7 +72,7 @@ public class Arrow : MonoBehaviour {
             if (child.CompareTag("Doublet"))
                 elements.Add(child.gameObject);
 
-        }
+        }*/
 
     }
 	
@@ -148,19 +162,21 @@ public class Arrow : MonoBehaviour {
         float hs = h * scale;
         float headLengthS = headLength * scale;
 
-        arrow = new GameObject()
+        List<GameObject> elements = new List<GameObject>(); // element a éviter de collisionner;
+        Transform[] children = GetComponentsInChildren<Transform>();
+        foreach (Transform child in children)
         {
-            name = "arrow"
-        };
-        arrow.transform.parent = transform;
+            if (child.CompareTag("Accepteur"))
+                elements.Add(child.gameObject);
 
-        //startPos = arrow.transform.parent.position;
+            if (child.CompareTag("Doublet"))
+                elements.Add(child.gameObject);
+
+        }
 
 
-        Line.transform.parent = arrow.transform;
-        Head.transform.parent = arrow.transform;
 
-        Line.AddComponent<LineRenderer>();
+        //Line.AddComponent<LineRenderer>();
         LineRenderer lr = Line.GetComponent<LineRenderer>();
         lr.material = new Material(Shader.Find("Sprites/Default"));
         //lr.material = new Material(Shader.Find("Particles/Additive"));
@@ -172,7 +188,7 @@ public class Arrow : MonoBehaviour {
         lr.useWorldSpace = false;
         lr.sortingOrder = 1;
 
-        Head.AddComponent<LineRenderer>();
+        //Head.AddComponent<LineRenderer>();
         LineRenderer head = Head.GetComponent<LineRenderer>();
         head.material = new Material(Shader.Find("Sprites/Default"));
         head.startColor = head.endColor = color;
@@ -291,6 +307,7 @@ public class Arrow : MonoBehaviour {
         }
 
     }
+
 
     void DrawLine(Vector3 start, Vector3 end, Color color) // Juste une ligne simple (for debugging purpose)
     {
