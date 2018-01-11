@@ -111,10 +111,20 @@ public class GameControllerArrow : GameController
         GameObject liaison = null, atome = null;
 
         foreach (GameObject go in doublets)
-            if (go.GetComponent<ElementManager>().isSelected && !go.GetComponent<ElementManager>().inReaction) liaison = go;
+            if (go.GetComponent<ElementManager>().isSelected)
+            {
+                if (!go.GetComponent<ElementManager>().inReaction) liaison = go;
+                else go.GetComponent<ElementManager>().unSelectElement();
+            }
 
         foreach (GameObject go in accepteurs)
-            if (go.GetComponent<ElementManager>().isSelected && !go.GetComponent<ElementManager>().inReaction) atome = go;
+            if (go.GetComponent<ElementManager>().isSelected)
+            {
+                if (!go.GetComponent<ElementManager>().inReaction) atome = go;
+                else go.GetComponent<ElementManager>().unSelectElement();
+            }
+
+       
 
 
 

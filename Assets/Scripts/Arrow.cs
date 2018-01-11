@@ -43,20 +43,22 @@ public class Arrow : MonoBehaviour {
 
         Line = new GameObject();
         Head = new GameObject();
-
         
         Line.AddComponent<LineRenderer>();
         Head.AddComponent<LineRenderer>();
-
-
+        
         arrow = new GameObject()
         {
             name = "arrow"
         };
-        arrow.transform.parent = transform;
-
+        //arrow.transform.parent = transform;
+        arrow.transform.SetParent(transform);
+ 
         Line.transform.parent = arrow.transform;
         Head.transform.parent = arrow.transform;
+
+        /*arrow.transform.localPosition = Vector3.zero;
+        arrow.transform.localScale = Vector3.one;*/
 
         FadeIn(fadeDuration);
   
@@ -157,8 +159,7 @@ public class Arrow : MonoBehaviour {
         Collider2D colliderAtome = atome.GetComponent<Collider2D>();
         Collider2D colliderLiaison = liaison.GetComponent<Collider2D>();
 
-        float scale = PageRect.localScale.x; // Niveau de zoom
-
+        float scale = PageRect.localScale.x; // Niveau de zoom*/
         float hs = h * scale;
         float headLengthS = headLength * scale;
 
