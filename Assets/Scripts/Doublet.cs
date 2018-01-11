@@ -24,7 +24,7 @@ public class Doublet : MonoBehaviour {
 
     public void DrawDoublet()
     {
-        Debug.Log("nouveau doublet");
+        //Debug.Log("nouveau doublet");
         doublet = Instantiate(Resources.Load("Doublet")) as GameObject;
         doublet.name= "Doublet Sup";
 

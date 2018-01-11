@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Arrow : MonoBehaviour {
 
@@ -9,10 +10,12 @@ public class Arrow : MonoBehaviour {
     GameObject Line;                       // Add a line and an head                                
     GameObject Head;
 
+    public Vector3 position;
+
     public GameObject liaison; // le donneur (1ère extremité)
     public GameObject atome; // l'accepteur (2ème extrémité, la pointe)
 
- 
+    public GameObject image;
 
     //Parametres géométriques
     public int NSample = 40;
@@ -39,6 +42,8 @@ public class Arrow : MonoBehaviour {
 
     RectTransform PageRect; // besoin du niveau de zoom de la page
 
+    
+
     void Awake () {
 
         Line = new GameObject();
@@ -51,34 +56,63 @@ public class Arrow : MonoBehaviour {
         {
             name = "arrow"
         };
+        image = new GameObject()
+        {
+            name = "image"
+        };
+
         //arrow.transform.parent = transform;
-        arrow.transform.SetParent(transform);
- 
-        Line.transform.parent = arrow.transform;
-        Head.transform.parent = arrow.transform;
 
         /*arrow.transform.localPosition = Vector3.zero;
         arrow.transform.localScale = Vector3.one;*/
 
         FadeIn(fadeDuration);
   
-        PageRect = transform.parent.parent.GetComponent<RectTransform>(); 
+        PageRect = transform.parent.parent.GetComponent<RectTransform>();
 
 
-        /*Transform[] children = GetComponentsInChildren<Transform>();
-        foreach (Transform child in children)
-        {
-            if (child.CompareTag("Accepteur"))
-                elements.Add(child.gameObject);
+        //Line.AddComponent<LineRenderer>();
+        LineRenderer lr = Line.GetComponent<LineRenderer>();
+        lr.material = new Material(Shader.Find("Sprites/Default"));
+        //lr.material = new Material(Shader.Find("Particles/Additive"));
+        lr.startColor = lr.endColor = color;
+        lr.startWidth = width;
+        lr.endWidth = width; // * 0.8f;
+        lr.numCapVertices = 10;
+        lr.positionCount = NSample + 1;
+        lr.useWorldSpace = false;
+        lr.sortingOrder = 1;
 
-            if (child.CompareTag("Doublet"))
-                elements.Add(child.gameObject);
+        //Head.AddComponent<LineRenderer>();
+        LineRenderer head = Head.GetComponent<LineRenderer>();
+        head.material = new Material(Shader.Find("Sprites/Default"));
+        head.startColor = head.endColor = color;
+        //head.startWidth = 3 * width; head.endWidth = 0;
+        head.startWidth = width;
+        head.endWidth = width; //* 0.8f;
+        head.numCapVertices = 10;
+        head.numCornerVertices = 10;
+        head.positionCount = 3;
+        head.useWorldSpace = false;
+        head.sortingOrder = 1;
 
-        }*/
+        arrow.transform.SetParent(transform);
+        Line.transform.SetParent(arrow.transform);
+        Head.transform.SetParent(arrow.transform);
+
+        image.transform.SetParent(arrow.transform);
+        Image im=image.AddComponent<Image>();
+        im.color=new Color(0,0,0,0);
+        
+        image.GetComponent<RectTransform>().sizeDelta = new Vector2(0.2f, 0.1f) * PageRect.localScale.x;
+        image.AddComponent<Button>();
+
+        image.GetComponent<Button>().onClick.AddListener(delegate () { Remove(0.2f); }); ;
 
     }
-	
-	void Update () {
+
+
+    void Update () {
 
 
         LineRenderer lr1 = Line.GetComponent<LineRenderer>();
@@ -109,6 +143,10 @@ public class Arrow : MonoBehaviour {
         {
             if (toBeRemoved)  // Eventually destroy the arrow if planned to be
             {
+                if(atome)
+                    atome.GetComponent<ElementManager>().reset();
+                if(liaison)
+                    liaison.GetComponent<ElementManager>().reset();
                 Destroy(arrow);
                 Destroy(this);
             }
@@ -174,34 +212,36 @@ public class Arrow : MonoBehaviour {
                 elements.Add(child.gameObject);
 
         }
-
-
-
-        //Line.AddComponent<LineRenderer>();
         LineRenderer lr = Line.GetComponent<LineRenderer>();
-        lr.material = new Material(Shader.Find("Sprites/Default"));
-        //lr.material = new Material(Shader.Find("Particles/Additive"));
-        lr.startColor = lr.endColor = color;
-        lr.startWidth = width;
-        lr.endWidth = width; // * 0.8f;
-        lr.numCapVertices = 10;
-        lr.positionCount = NSample+1;
-        lr.useWorldSpace = false;
-        lr.sortingOrder = 1;
-
-        //Head.AddComponent<LineRenderer>();
         LineRenderer head = Head.GetComponent<LineRenderer>();
-        head.material = new Material(Shader.Find("Sprites/Default"));
-        head.startColor = head.endColor = color;
-        //head.startWidth = 3 * width; head.endWidth = 0;
-        head.startWidth = width;
-        head.endWidth = width; //* 0.8f;
-        head.numCapVertices = 10;
-        head.numCornerVertices = 10;
-        head.positionCount = 3;
-        head.useWorldSpace = false;
-        head.sortingOrder = 1;
 
+
+        /*
+                //Line.AddComponent<LineRenderer>();
+                LineRenderer lr = Line.GetComponent<LineRenderer>();
+                lr.material = new Material(Shader.Find("Sprites/Default"));
+                //lr.material = new Material(Shader.Find("Particles/Additive"));
+                lr.startColor = lr.endColor = color;
+                lr.startWidth = width;
+                lr.endWidth = width; // * 0.8f;
+                lr.numCapVertices = 10;
+                lr.positionCount = NSample+1;
+                lr.useWorldSpace = false;
+                lr.sortingOrder = 1;
+
+                //Head.AddComponent<LineRenderer>();
+                LineRenderer head = Head.GetComponent<LineRenderer>();
+                head.material = new Material(Shader.Find("Sprites/Default"));
+                head.startColor = head.endColor = color;
+                //head.startWidth = 3 * width; head.endWidth = 0;
+                head.startWidth = width;
+                head.endWidth = width; //* 0.8f;
+                head.numCapVertices = 10;
+                head.numCornerVertices = 10;
+                head.positionCount = 3;
+                head.useWorldSpace = false;
+                head.sortingOrder = 1;
+                */
 
         // Les maths pour calculer le centre, le rayon de courbure, et l'angle d'ouverture de la flèche
 
@@ -281,6 +321,7 @@ public class Arrow : MonoBehaviour {
             }
         }
 
+        //Debug.Log("Collision " + collision + "   " + collisionbis);
         if (collision > collisionbis) {
             k = kbis;
             for (int i = 0; i < kbis; i++) vectors[i] = vectorsbis[i];
@@ -291,8 +332,14 @@ public class Arrow : MonoBehaviour {
 
         for (int i = 0; i < lr.positionCount; i++)
         {
-            lr.SetPosition(i, vectors[i]);
+            lr.SetPosition(i,  vectors[i]);
         }
+
+        position = vectors[lr.positionCount/2];
+        image.GetComponent<RectTransform>().position = position;
+        float angleImage = Vector3.Angle(Vector3.right, vectors[lr.positionCount / 2 + 1] - position);
+        if ((vectors[lr.positionCount / 2 + 1] - position).y<0 ) angleImage = -angleImage;
+        image.GetComponent<RectTransform>().rotation = Quaternion.Euler(0,0, angleImage);
 
         Vector3 last = vectors[k - 3] - vectors[k - 2];
         float a = Vector3.Angle(last, Vector3.right);

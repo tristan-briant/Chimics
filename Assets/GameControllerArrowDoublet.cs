@@ -8,8 +8,10 @@ public class GameControllerArrowDoublet : GameControllerArrow {
     int MaxDoublets = 4;
     GameObject AtomeChanged = null;
 
-    public GameObject addButton;
-    public GameObject removeButton;
+    public GameObject DoubletButton;
+    public GameObject ArrowButton;
+
+    public GameObject atomeHH;
 
 
     public void  AddDoublet(GameObject acc) {
@@ -76,7 +78,7 @@ public class GameControllerArrowDoublet : GameControllerArrow {
 
         }*/
 
-        if (addButton.GetComponent<Toggle>().isOn)
+        /*if (addButton.GetComponent<Toggle>().isOn)
         {
             foreach (GameObject go in accepteurs)
                 if (go.GetComponent<ElementManager>().isSelected)
@@ -109,6 +111,26 @@ public class GameControllerArrowDoublet : GameControllerArrow {
                 }
             }
 
+        }*/
+        if (DoubletButton.GetComponent<Toggle>().isOn)
+        {
+            foreach (GameObject go in accepteurs)
+                if (go.GetComponent<ElementManager>().isSelected)
+                {
+                    AddDoublet(go);
+                    go.GetComponent<ElementManager>().unSelectElement();
+                }
+
+            foreach (GameObject go in doublets)
+                if (go.GetComponent<ElementManager>().isSelected)
+                {
+                    if (go.name == "Doublet Sup")
+                    {
+                        RemoveThisDoublet(go);
+                        break; // la collection de doublet est modifié il faut s'arréter 
+                    }
+                    else go.GetComponent<ElementManager>().unSelectElement();
+                }
         }
 
 
