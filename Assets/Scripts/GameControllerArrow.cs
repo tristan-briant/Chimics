@@ -147,16 +147,18 @@ public class GameControllerArrow : GameController
 
     override public void ResetElements()
     {
-        foreach (GameObject go in accepteurs)
+        /*foreach (GameObject go in accepteurs)
         {
             go.GetComponent<ElementManager>().reset();
-        }
+        }*/
         foreach (ElementManager em in gameObject.GetComponentsInChildren<ElementManager>())
         {
            em.reset();
-
+           // em.unSelectElement();
         }
     }
+
+
 
     override public void ResetLevel()
     {

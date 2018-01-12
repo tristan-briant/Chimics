@@ -17,6 +17,11 @@ public class Solutions : MonoBehaviour {
     {
         if (acc.Length < 1) return 0;
 
+        for (int i = 0; i < don.Length; i++) {
+            if (don[i].name == "Doublet Sup")
+                don[i] = don[i].transform.parent.gameObject; // Si c'est un doublet sup on le remplace par son parent
+                }
+
         // Reaction en un coup
         if (accepteurs2.Length == 0) {
 

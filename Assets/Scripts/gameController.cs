@@ -52,16 +52,27 @@ public class GameController : MonoBehaviour {
         
     }
 
+
+    virtual public void UnselectElements() {
+        foreach (ElementManager em in gameObject.GetComponentsInChildren<ElementManager>())
+        {
+           em.unSelectElement();
+        }
+    }
+
     virtual public void ResetElements()
     {
-
+        foreach (ElementManager em in gameObject.GetComponentsInChildren<ElementManager>())
+        {
+            em.reset();
+        }
     }
 
     virtual public IEnumerator WarningAnimation(string message)
     {
         transform.parent.parent.GetComponent<resize>().ReZoom();
         ClickableDisable();
-        ResetElements();
+        UnselectElements();
         transform.parent.parent.Find("Warning/Text").transform.GetComponent<Text>().text = message; // "Réaction incomplète";
         transform.parent.parent.Find("Warning").GetComponent<Animator>().SetTrigger("FailTrigger");
         yield return new WaitForSeconds(1.0f);
@@ -73,10 +84,10 @@ public class GameController : MonoBehaviour {
     {
         transform.parent.parent.GetComponent<resize>().ReZoom();
         ClickableDisable();
-        ResetElements();
+        UnselectElements();
         transform.parent.parent.Find("Fail").GetComponent<Animator>().SetTrigger("FailTrigger");
         yield return new WaitForSeconds(1.5f);
-        ClearLevel();
+        //ClearLevel();
         ClickableEnable();
         ShowTip();
     }
