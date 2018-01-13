@@ -18,6 +18,8 @@ public class GameController : MonoBehaviour {
     GameObject ClearButton;
     protected GameObject Controls;
 
+    public GameObject Help;
+
     virtual public void Start()
     {
         
@@ -110,8 +112,9 @@ public class GameController : MonoBehaviour {
    
 
 
-    virtual public void ResetLevel() {   
-        
+    virtual public void ResetLevel() {
+
+        Debug.Log("reset base");
         // On reset l'animation
         anim = GetComponent<Animator>();
         if (anim && anim.isActiveAndEnabled)
@@ -142,6 +145,20 @@ public class GameController : MonoBehaviour {
 
         ShowTip();
 
+        if (Help != null)
+        {
+            LVM.Game.transform.Find("Panel/ShowHelp").gameObject.SetActive(true);
+            Transform helpFrame = LVM.Game.transform.Find("HelpFrame");
+            Help.transform.SetParent(helpFrame);
+            Help.transform.localPosition = Vector3.zero;
+        }
+        else
+        {
+            Transform helpButton = LVM.Game.transform.Find("Panel/ShowHelp");
+            if(helpButton) helpButton.gameObject.SetActive(false);
+        }
+
+        ClearLevel();
     }
 
     virtual public void ClearLevel()

@@ -60,6 +60,19 @@ public class GameControllerGroupes : GameController {
 
     }
 
+    public override void LateUpdate()
+    {
+        
+        foreach(ElementManager em in transform.GetComponentsInChildren<ElementManager>())
+        {
+            if (em.inReaction && em.isSelected)
+                em.unSelectElement();
+        }
+
+
+    }
+
+
     public void NameGroup(GameObject btn) {
 
         int selectedCount = 0;
@@ -81,7 +94,10 @@ public class GameControllerGroupes : GameController {
         gr.DrawGroupe();
 
         foreach (GameObject go in listElements)
+        {
             go.GetComponent<ElementManager>().ReactWith(btn);
+            go.GetComponent<ElementManager>().unSelectElement();
+        }
 
     }
 

@@ -45,18 +45,11 @@ public class ElementManager : MonoBehaviour {
 			GetComponent<Animator>().SetBool("selected", isSelected);
 	}
 
-    /* public void ReactWith(GameObject go){
-         react = go;
-         inReaction = true;
-         unSelectElement ();
-         //isSelected = false;
-     }*/
-
     public void ReactWith(GameObject go)
     {
         react = go;
         inReaction = true;
-        unSelectElement();
+        //unSelectElement();
         //isSelected = false;
     }
 

@@ -15,7 +15,7 @@ public class Arrow : MonoBehaviour {
     public GameObject liaison; // le donneur (1ère extremité)
     public GameObject atome; // l'accepteur (2ème extrémité, la pointe)
 
-    public GameObject image;
+    GameObject image;
 
     //Parametres géométriques
     public int NSample = 40;
@@ -34,16 +34,13 @@ public class Arrow : MonoBehaviour {
     bool isfadein = true;
     public bool toBeRemoved = false;
     public float fadeDuration = 0.2f;
-    //public GameObject[] elements;
-    //public List<GameObject> elements = new List<GameObject>(); // element a éviter de collisionner;
-
+ 
     Vector3[] vectors;
     Vector3[] vectorsHead;
 
     RectTransform PageRect; // besoin du niveau de zoom de la page
 
     
-
     void Awake () {
 
         Line = new GameObject();
@@ -61,17 +58,12 @@ public class Arrow : MonoBehaviour {
             name = "image"
         };
 
-        //arrow.transform.parent = transform;
-
-        /*arrow.transform.localPosition = Vector3.zero;
-        arrow.transform.localScale = Vector3.one;*/
 
         FadeIn(fadeDuration);
   
         PageRect = transform.parent.parent.GetComponent<RectTransform>();
 
 
-        //Line.AddComponent<LineRenderer>();
         LineRenderer lr = Line.GetComponent<LineRenderer>();
         lr.material = new Material(Shader.Find("Sprites/Default"));
         //lr.material = new Material(Shader.Find("Particles/Additive"));
@@ -83,11 +75,9 @@ public class Arrow : MonoBehaviour {
         lr.useWorldSpace = false;
         lr.sortingOrder = 1;
 
-        //Head.AddComponent<LineRenderer>();
         LineRenderer head = Head.GetComponent<LineRenderer>();
         head.material = new Material(Shader.Find("Sprites/Default"));
         head.startColor = head.endColor = color;
-        //head.startWidth = 3 * width; head.endWidth = 0;
         head.startWidth = width;
         head.endWidth = width; //* 0.8f;
         head.numCapVertices = 10;
@@ -100,20 +90,20 @@ public class Arrow : MonoBehaviour {
         Line.transform.SetParent(arrow.transform);
         Head.transform.SetParent(arrow.transform);
 
-        image.transform.SetParent(arrow.transform);
-        Image im=image.AddComponent<Image>();
-        im.color=new Color(0,0,0,0);
-        
-        image.GetComponent<RectTransform>().sizeDelta = new Vector2(0.2f, 0.1f) * PageRect.localScale.x;
+        image.AddComponent<Image>();
+        image.GetComponent<Image>().color = new Color(0, 0, 0, 0);
+       
         image.AddComponent<Button>();
+        image.GetComponent<Button>().onClick.AddListener(delegate () { Remove(0.2f); });
 
-        image.GetComponent<Button>().onClick.AddListener(delegate () { Remove(0.2f); }); ;
-
+        image.GetComponent<RectTransform>().sizeDelta = new Vector2(0.2f, 0.1f) * PageRect.localScale.x;
+        image.transform.SetParent(arrow.transform); //Doit être mis à la fin sinon ajouter un rectTransform ou une Image reset l'animation, pourquoi???
+ 
     }
 
 
     void Update () {
-
+        
 
         LineRenderer lr1 = Line.GetComponent<LineRenderer>();
         LineRenderer lr2 = Head.GetComponent<LineRenderer>();
@@ -151,6 +141,7 @@ public class Arrow : MonoBehaviour {
                 Destroy(this);
             }
         }
+        
     }
 
     public void FadeIn(float duration)
@@ -214,34 +205,6 @@ public class Arrow : MonoBehaviour {
         }
         LineRenderer lr = Line.GetComponent<LineRenderer>();
         LineRenderer head = Head.GetComponent<LineRenderer>();
-
-
-        /*
-                //Line.AddComponent<LineRenderer>();
-                LineRenderer lr = Line.GetComponent<LineRenderer>();
-                lr.material = new Material(Shader.Find("Sprites/Default"));
-                //lr.material = new Material(Shader.Find("Particles/Additive"));
-                lr.startColor = lr.endColor = color;
-                lr.startWidth = width;
-                lr.endWidth = width; // * 0.8f;
-                lr.numCapVertices = 10;
-                lr.positionCount = NSample+1;
-                lr.useWorldSpace = false;
-                lr.sortingOrder = 1;
-
-                //Head.AddComponent<LineRenderer>();
-                LineRenderer head = Head.GetComponent<LineRenderer>();
-                head.material = new Material(Shader.Find("Sprites/Default"));
-                head.startColor = head.endColor = color;
-                //head.startWidth = 3 * width; head.endWidth = 0;
-                head.startWidth = width;
-                head.endWidth = width; //* 0.8f;
-                head.numCapVertices = 10;
-                head.numCornerVertices = 10;
-                head.positionCount = 3;
-                head.useWorldSpace = false;
-                head.sortingOrder = 1;
-                */
 
         // Les maths pour calculer le centre, le rayon de courbure, et l'angle d'ouverture de la flèche
 

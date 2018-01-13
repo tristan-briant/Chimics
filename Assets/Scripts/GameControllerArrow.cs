@@ -124,13 +124,13 @@ public class GameControllerArrow : GameController
                 else go.GetComponent<ElementManager>().unSelectElement();
             }
 
-       
-
-
 
         if (liaison && atome)
         {
             Arrow ar = gameObject.AddComponent<Arrow>();
+            atome.GetComponent<ElementManager>().unSelectElement();
+            liaison.GetComponent<ElementManager>().unSelectElement();
+
             ar.atome = atome;
             ar.liaison = liaison;
 
@@ -141,20 +141,17 @@ public class GameControllerArrow : GameController
 
             atome.GetComponent<ElementManager>().ReactWith(liaison);
             atome.GetComponent<ElementManager>().arrow = ar;
+            
         }
 
     }
 
     override public void ResetElements()
     {
-        /*foreach (GameObject go in accepteurs)
-        {
-            go.GetComponent<ElementManager>().reset();
-        }*/
+       
         foreach (ElementManager em in gameObject.GetComponentsInChildren<ElementManager>())
         {
            em.reset();
-           // em.unSelectElement();
         }
     }
 
@@ -162,7 +159,7 @@ public class GameControllerArrow : GameController
 
     override public void ResetLevel()
     {
-
+        Debug.Log("reset");
         base.ResetLevel();
 
         foreach (Arrow it in transform.GetComponents<Arrow>())

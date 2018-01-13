@@ -24,7 +24,6 @@ public class Doublet : MonoBehaviour {
 
     public void DrawDoublet()
     {
-        //Debug.Log("nouveau doublet");
         doublet = Instantiate(Resources.Load("Doublet")) as GameObject;
         doublet.name= "Doublet Sup";
 
@@ -32,19 +31,19 @@ public class Doublet : MonoBehaviour {
         doublet.transform.localScale = Vector3.one;
 
         DispachDoublet(Atome);
-
     }
 
-
-
+    
     public void DispachDoublet(GameObject At) {
         float[] ouverture = new float[4];
         float[] startAngle = new float[4];
         float epsilon = .01f;
 
         List<GameObject> elements = new List<GameObject>(); // element a éviter de collisionner;
-        List<GameObject> otherdoublets = GameObject.FindGameObjectsWithTag("Doublet").ToList<GameObject>();
-
+        List<GameObject> otherdoublets = new List<GameObject>();
+        otherdoublets.AddRange(GameObject.FindGameObjectsWithTag("Doublet").ToList<GameObject>());
+        otherdoublets.AddRange(GameObject.FindGameObjectsWithTag("Accepteur").ToList<GameObject>());
+       
         Doublet[] doublets = At.transform.GetComponents<Doublet>();
         int number = doublets.Length;
 
@@ -59,13 +58,11 @@ public class Doublet : MonoBehaviour {
 
         for ( a = 2*Mathf.PI; a > 0; a -= epsilon) {
             Vector3 vec = center +  new Vector3(Mathf.Cos(a) * R, Mathf.Sin(a) * R, 0);
-            //DrawLine(center, vec, Color.red);
             bool touched = false;
 
             foreach(GameObject go in otherdoublets)
             {
                 if (go.transform.GetComponent<Collider2D>().OverlapPoint(vec)) {
-                    //DrawLine(center, vec, Color.red);
                     touched =true;
                 }
             }
@@ -110,7 +107,7 @@ public class Doublet : MonoBehaviour {
 
 
         int[] index = new int[number];
-        float ouvertureDoublet = Mathf.PI/3;
+        float ouvertureDoublet = Mathf.PI/3f;
 
         for (int i = 0; i < number; i++)
         {
@@ -138,15 +135,14 @@ public class Doublet : MonoBehaviour {
             nInOuv[index[i]]++;
         }
 
-
-
-
         for (int i = 0; i < number; i++) 
         {
+            float angleSpacer = Mathf.Clamp(ouverture[index[i]] / (nInOuv[index[i]]), Mathf.PI / 3, Mathf.PI / 2);
 
-            float offset = 0.5f *( ouverture[index[i]] - Mathf.PI / 2 * (nInOuv[index[i]]-1));
+            //float offset = 0.5f *( ouverture[index[i]] - Mathf.PI / 2 * (nInOuv[index[i]]-1));
             //float angle = startAngle[index[i]] + count[index[i]] * ouverture[index[i]] / (nInOuv[index[i]] ) + 0.5f*ouverture[index[i]] / (nInOuv[index[i]]);
-            float angle = startAngle[index[i]] + offset + count[index[i]] * Mathf.PI / 2;
+            float offset = 0.5f * (ouverture[index[i]] - angleSpacer * (nInOuv[index[i]] - 1));
+            float angle = startAngle[index[i]] + offset + count[index[i]] * angleSpacer; //Mathf.PI / 2;
             count[index[i]]++;
             doublets[i].doublet.transform.localPosition = new Vector3(distance * Mathf.Cos(angle), distance * Mathf.Sin(angle), 0);
             doublets[i].doublet.transform.localRotation = Quaternion.Euler(0, 0, angle *  180.0f /Mathf.PI + 90.0f);
@@ -161,20 +157,13 @@ public class Doublet : MonoBehaviour {
         {
             em.arrow.atome.GetComponent<ElementManager>().reset();
             em.arrow.liaison.GetComponent<ElementManager>().reset();
-
-
             em.arrow.Remove(0.2f);
-
         }
 
         GameObject at = Atome;
         Destroy(doublet);
-       
         DestroyImmediate(this);
-
-        DispachDoublet(at);
-        
- 
+        //DispachDoublet(at);
     }
 
 
