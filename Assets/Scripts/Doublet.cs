@@ -8,7 +8,7 @@ public class Doublet : MonoBehaviour {
     public GameObject  Atome;
     public GameObject doublet;
 
-    public float distance = 45; // distance from element
+    public float distance = 40; // distance from element
 
     public int NumberOfDoublet() {
 
@@ -57,7 +57,7 @@ public class Doublet : MonoBehaviour {
         float R = distance * At.transform.lossyScale.x;
 
         for ( a = 2*Mathf.PI; a > 0; a -= epsilon) {
-            Vector3 vec = center +  new Vector3(Mathf.Cos(a) * R, Mathf.Sin(a) * R, 0);
+            Vector3 vec = center + new Vector3(Mathf.Cos(a) * R, Mathf.Sin(a) * R, 0) * 1.2f;
             bool touched = false;
 
             foreach(GameObject go in otherdoublets)

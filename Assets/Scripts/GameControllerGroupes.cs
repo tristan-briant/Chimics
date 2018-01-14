@@ -38,27 +38,16 @@ public class GameControllerGroupes : GameController {
             }
             if (child.CompareTag("Doublet"))
             {
-                if(child.GetComponent<Button>())
-                    child.GetComponent<Button>().interactable = false;
+                /*if(child.GetComponent<Button>())
+                    child.GetComponent<Button>().interactable = false;*/
+                CanvasGroup canvas = child.gameObject.AddComponent<CanvasGroup>();
+                canvas.blocksRaycasts = false;
             }
 
         }
 
     }
 
-    new private void Start()
-    {
-        started = true;
-    }
-
-    private void OnEnable()
-    {
-        if (!started) return;
-
-        ResetLevel();
-        
-
-    }
 
     public override void LateUpdate()
     {
@@ -128,9 +117,6 @@ public class GameControllerGroupes : GameController {
 
         }
 
-
-
-        
         if (test)
         {
             WinLevel();
@@ -140,10 +126,6 @@ public class GameControllerGroupes : GameController {
             failCount++;
             StartCoroutine(FailAnimation());
         }
-
-
-
-
     }
 
     IEnumerator WarningAnimation()
@@ -157,17 +139,17 @@ public class GameControllerGroupes : GameController {
         ShowTip();
     }
 
-    override public IEnumerator FailAnimation()
+    /*override public IEnumerator FailAnimation()
     {
         transform.parent.parent.GetComponent<resize>().ReZoom();
         ClickableDisable();
         ResetElements();
         transform.parent.parent.Find("Fail").GetComponent<Animator>().SetTrigger("FailTrigger");
         yield return new WaitForSeconds(1.5f);
-        ClearLevel();
+        //ClearLevel();
         ClickableEnable();
         ShowTip();
-    }
+    }*/
 
     /*IEnumerator FailAnimation()
     {
@@ -200,26 +182,7 @@ public class GameControllerGroupes : GameController {
 
     override public void ResetLevel()
     {
-        
-
-        if (transform.parent)
-        {
-            Transform t = transform.parent.parent.Find("Check");
-            Animator a = t.GetComponent<Animator>();
-            if (a.isActiveAndEnabled) a.SetTrigger("reset");
-
-            t = transform.parent.parent.Find("Fail");
-            a = t.GetComponent<Animator>();
-            if (a.isActiveAndEnabled) a.SetTrigger("reset");
-
-            t = transform.parent.parent.Find("Warning");
-            a = t.GetComponent<Animator>();
-            if (a.isActiveAndEnabled) a.SetTrigger("reset");
-
-            transform.parent.parent.GetComponent<resize>().InitResize(transform);
-
-        }
-        ResetElements();
+        base.ResetLevel();
 
         Groupe[] groupes = transform.GetComponents<Groupe>();
 
@@ -228,25 +191,13 @@ public class GameControllerGroupes : GameController {
             it.Remove(0.0f);
         }
 
-        failCount = 0;
-        step = 0;
-
-        ShowTip();
+        foreach (GameObject ob in Buttons)
+        {
+            ob.SetActive(true);
+        }
         ResetButton.SetActive(false);
 
-        Controls.SetActive(true);
-
-        if (gameObject.name.Contains("Tuto"))
-        {
-            foreach (GameObject ob in Buttons)
-            {
-                ob.SetActive(false);
-            }
-        }
-        else
-        {
-            ClickableEnable();
-        }
+        //Controls.SetActive(true);
     }
 
 
@@ -257,12 +208,12 @@ public class GameControllerGroupes : GameController {
 
         Groupe[] groupes = transform.GetComponents<Groupe>();
 
-        if(groupes.Length>0)
-            groupes[groupes.Length-1].Remove(0.2f);
-        /*foreach (Groupe it in groupes)
+        /*if(groupes.Length>0)
+            groupes[groupes.Length-1].Remove(0.2f);*/
+        foreach (Groupe it in groupes)
         {
             it.Remove(0.2f);
-        }*/
+        }
 
     }
 }

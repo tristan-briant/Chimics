@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Groupe : MonoBehaviour {
 
@@ -12,11 +13,8 @@ public class Groupe : MonoBehaviour {
     public GameObject groupName;
 
     //Parametres géométriques
-    /*public int NSample = 40;
-    public float h = 0.2f;*/
     public float width = 0.3f;
    
-  
     // Couleur
     public Color color = new Color(0x60 / 255.0f, 0x60 / 255.0f, 0xDB / 255.0f, 0);
 
@@ -27,12 +25,9 @@ public class Groupe : MonoBehaviour {
     bool toBeRemoved = false;
     public float fadeDuration = 0.2f;
   
-
-
-    Vector3[] vectors;
-    Vector3[] vectorsHead;
-
     RectTransform PageRect; // besoin du niveau de zoom de la page
+
+
 
     void Awake () {
 
@@ -41,8 +36,9 @@ public class Groupe : MonoBehaviour {
         PageRect = transform.parent.parent.GetComponent<RectTransform>(); 
 
     }
-	
-	void Update () {
+
+    void Update()
+    {
 
         float t = Time.time;
         float scale = PageRect.localScale.x;  // recupère le niveau de zoom
@@ -54,32 +50,28 @@ public class Groupe : MonoBehaviour {
         }
 
 
-            if (t <= TimeEnd + 0.1f)
+        if (t <= TimeEnd + 0.1f)
         {
-
             Color c = color;
+
             if (isfadein)
                 c.a = (t - TimeStart) / (TimeEnd - TimeStart);
             else
                 c.a = (1 - (t - TimeStart) / (TimeEnd - TimeStart));
-
-
+            
             for (int i = 0; i < Segments.Length; i++)
             {
                 LineRenderer lr = Segments[i].GetComponent<LineRenderer>();
-
-                
                 lr.widthMultiplier = scale;
-
                 lr.startColor = lr.endColor = c;
             }
-
-
         }
         else
         {
             if (toBeRemoved)  // Eventually destroy the arrow if planned to be
             {
+                foreach (GameObject el in elements)
+                    el.GetComponent<ElementManager>().reset();
                 Destroy(groupe);
                 Destroy(this);
             }
@@ -109,6 +101,8 @@ public class Groupe : MonoBehaviour {
         }
         else
         {
+            foreach (GameObject el in elements)
+                el.GetComponent<ElementManager>().reset();
             Destroy(groupe);
             Destroy(this);
         }
@@ -167,9 +161,24 @@ public class Groupe : MonoBehaviour {
             lr.SetPosition(0, start);
             lr.SetPosition(1, end);
 
-        }
-        
+            //////// Les bouton pour le retirer
+            GameObject image = new GameObject();
 
+            image.AddComponent<Image>();
+            image.GetComponent<Image>().color = new Color(0, 0, 0, 0);
+
+            image.AddComponent<Button>();
+            image.GetComponent<Button>().onClick.AddListener(delegate () { Remove(0.2f); });
+
+            image.GetComponent<RectTransform>().sizeDelta = new Vector2(Vector3.Distance(start, end)+ width * PageRect.localScale.x, width * PageRect.localScale.x);
+            image.transform.position = 0.5f * (end + start);
+            float angleImage = Vector3.Angle(Vector3.right, end - start);
+            if ((end - start).y < 0) angleImage = -angleImage;
+            image.GetComponent<RectTransform>().rotation = Quaternion.Euler(0, 0, angleImage);
+
+            image.transform.SetParent(groupe.transform); //Doit être mis à la fin sinon ajouter un rectTransform ou une Image reset l'animation, pourquoi???
+
+        }
 
     }
 
