@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public class GameControllerArrow : GameController
 {
 
+
+
     void Awake()
     {
         LVM = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelManager>();
@@ -45,36 +47,17 @@ public class GameControllerArrow : GameController
         Transform sol = transform.Find("Solutions");
 
         Arrow[] lm = transform.GetComponents<Arrow>();
-        int length = lm.Length;
-
-        GameObject[] acc = new GameObject[length];
-        GameObject[] don = new GameObject[length]; ;
-
-        int count = 0;
-        foreach (Arrow iterator in lm)
+       
+        int score = 0;
+        foreach (Solutions s in sol.GetComponents<Solutions>())
         {
-            acc[count] = iterator.atome;
-            don[count++] = iterator.liaison;
+            int test = s.TestReaction(lm);
+
+            if (test > score)
+                score = test;
         }
 
-        bool win = false;
-        bool halfWin = false;
-
-        Solutions[] solutions = sol.GetComponents<Solutions>();
-        Debug.Log("nombre de sol " + solutions.Length);
-
-        foreach (Solutions s in solutions)
-        {
-            int test = s.TestReaction(acc, don);
-
-            if (test == 1)
-                win = true;
-
-            if (test == -1)
-                halfWin = true;
-        }
-
-        if (win)
+        if (score == 100)
         {
             RemoveTip();
             failCount = 0;
@@ -93,9 +76,9 @@ public class GameControllerArrow : GameController
             else
                 WinLevel();
         }
-        else if (halfWin)
+        else if (score > 0) 
         {
-            StartCoroutine(WarningAnimation("Réaction incomplète"));
+            StartCoroutine(WarningAnimation("Score : " + score + "%"));
         }
         else
         {
@@ -133,6 +116,7 @@ public class GameControllerArrow : GameController
 
             ar.atome = atome;
             ar.liaison = liaison;
+            ar.step = step;
 
             ar.DrawCurvedArrow();
 
@@ -144,6 +128,53 @@ public class GameControllerArrow : GameController
             
         }
 
+    }
+
+    public override void ShowCorrection()
+    {
+
+        Solutions[] solutions = transform.Find("Solutions").GetComponents<Solutions>();
+
+        Solutions bestSolution;
+
+
+        for (int st = 0; st <= stepNumber; st++) // Donne la correction de l'étape st
+        {
+            List<Arrow> arrows = new List<Arrow>();
+
+            foreach (Arrow ar in transform.GetComponents<Arrow>())  // On sélectionne uniquement les flèches de l'étape
+            {
+                if (ar.step == st)
+                {
+                    arrows.Add(ar);
+                }
+            }
+            
+            int test = -1;
+            bestSolution = null;
+
+            foreach (Solutions s in solutions)
+            {
+                if (s.step != st) continue;
+
+                int test0 = s.TestReaction(arrows.ToArray());
+                if (test0 > test)
+                {
+                    test = test0;
+                    bestSolution = s;
+                }
+            }
+
+            foreach(Arrow ar in arrows){
+                if (bestSolution.TestOneArrow(ar))
+                    ar.SetGood();
+                else
+                    ar.SetWrong();
+            }
+
+            bestSolution.CompleteReaction(arrows);
+            
+        }
     }
 
     override public void ResetElements()
@@ -178,14 +209,12 @@ public class GameControllerArrow : GameController
 
     override public void ClearLevel()
     {
-
         ResetElements(); // déselectionne les éléments
 
         foreach (Arrow it in transform.GetComponents<Arrow>())
         {
             it.Remove(0.1f);
         }
-
-
+        
     }
 }

@@ -27,4 +27,9 @@ public class ControlManager : MonoBehaviour
         LVM.LoadNextReaction();
     }
 
+    public void Correction()
+    {
+        LVM.CurrentReaction().GetComponent<GameController>().ShowCorrection();
+    }
+
 }

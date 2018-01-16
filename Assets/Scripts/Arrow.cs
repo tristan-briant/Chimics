@@ -14,6 +14,7 @@ public class Arrow : MonoBehaviour {
 
     public GameObject liaison; // le donneur (1ère extremité)
     public GameObject atome; // l'accepteur (2ème extrémité, la pointe)
+    public int step =0; // arrow available in step 0
 
     GameObject image;
 
@@ -86,7 +87,7 @@ public class Arrow : MonoBehaviour {
         head.useWorldSpace = false;
         head.sortingOrder = 1;
 
-        arrow.transform.SetParent(transform);
+        /*arrow.transform.SetParent(atome.transform);
         Line.transform.SetParent(arrow.transform);
         Head.transform.SetParent(arrow.transform);
 
@@ -97,7 +98,7 @@ public class Arrow : MonoBehaviour {
         image.GetComponent<Button>().onClick.AddListener(delegate () { Remove(0.2f); });
 
         image.GetComponent<RectTransform>().sizeDelta = new Vector2(0.2f, 0.1f) * PageRect.localScale.x;
-        image.transform.SetParent(arrow.transform); //Doit être mis à la fin sinon ajouter un rectTransform ou une Image reset l'animation, pourquoi???
+        image.transform.SetParent(arrow.transform); //Doit être mis à la fin sinon ajouter un rectTransform ou une Image reset l'animation, pourquoi???*/
  
     }
 
@@ -112,20 +113,30 @@ public class Arrow : MonoBehaviour {
         lr1.widthMultiplier = scale;
         lr2.widthMultiplier = scale;
 
+        float alphMultiplier = 1;
+
+        CanvasGroup[] cgs = transform.GetComponentsInParent<CanvasGroup>();
+        foreach (CanvasGroup cg in cgs) {
+            alphMultiplier *= cg.alpha;
+        }
 
         float t = Time.time;
+
+        Color c = color;
+        c.a = alphMultiplier;
 
         if (t <= TimeEnd + 0.1f)
         {
 
-            Color c = color;
-            if (isfadein)
-                c.a = (t - TimeStart) / (TimeEnd - TimeStart);
-            else
-                c.a = (1 - (t - TimeStart) / (TimeEnd - TimeStart));
 
-            lr1.startColor = lr1.endColor = c;
-            lr2.startColor = lr2.endColor = c;
+            if (isfadein)
+                c.a *= Mathf.Clamp01((t - TimeStart) / (TimeEnd - TimeStart));
+            else
+                c.a *= Mathf.Clamp01(1 - (t - TimeStart) / (TimeEnd - TimeStart));
+
+            
+            /*lr1.startColor = lr1.endColor = c;
+            lr2.startColor = lr2.endColor = c;*/
 
 
         }
@@ -141,7 +152,11 @@ public class Arrow : MonoBehaviour {
                 Destroy(this);
             }
         }
+
         
+        lr1.startColor = lr1.endColor = c;
+        lr2.startColor = lr2.endColor = c;
+
     }
 
     public void FadeIn(float duration)
@@ -177,8 +192,19 @@ public class Arrow : MonoBehaviour {
 
     public void DrawCurvedArrow()  // Une flèche courbe entre la liaison et l'atome
     {
-        
- 
+        arrow.transform.SetParent(atome.transform);
+        Line.transform.SetParent(arrow.transform);
+        Head.transform.SetParent(arrow.transform);
+
+        image.AddComponent<Image>();
+        image.GetComponent<Image>().color = new Color(0, 0, 0, 0);
+
+        image.AddComponent<Button>();
+        image.GetComponent<Button>().onClick.AddListener(delegate () { Remove(0.2f); });
+
+        image.GetComponent<RectTransform>().sizeDelta = new Vector2(0.2f, 0.1f) * PageRect.localScale.x;
+        image.transform.SetParent(arrow.transform); //Doit être mis à la fin sinon ajouter un rectTransform ou une Image reset l'animation, pourquoi???
+
         Vector3 start = liaison.transform.position;
         Vector3 end = atome.transform.position;
 
@@ -289,10 +315,10 @@ public class Arrow : MonoBehaviour {
             k = kbis;
             for (int i = 0; i < kbis; i++) vectors[i] = vectorsbis[i];
         }
-        
+
 
         lr.positionCount = k-1 ;
-
+        
         for (int i = 0; i < lr.positionCount; i++)
         {
             lr.SetPosition(i,  vectors[i]);
@@ -312,10 +338,12 @@ public class Arrow : MonoBehaviour {
         vectorsHead[1] = vectors[k - 1];
         vectorsHead[2] = vectors[k - 1] + headLengthS * Vector3FromAngle(a - headAngle * 0.5f);
 
-        for (int i = 0; i < 3; i++)
+        head.SetPositions(vectorsHead);
+
+        /*for (int i = 0; i < 3; i++)
         {
             head.SetPosition(i, vectorsHead[i]);
-        }
+        }*/
 
     }
 
@@ -342,4 +370,26 @@ public class Arrow : MonoBehaviour {
         a *= Mathf.Deg2Rad;
         return new Vector3(Mathf.Cos(a), Mathf.Sin(a),0);
     }
+
+    public void SetWrong()
+    {
+        GameObject sf = Instantiate(Resources.Load("SmallFail")) as GameObject;
+        sf.GetComponent<RectTransform>().sizeDelta = new Vector2(0.2f, 0.2f) * PageRect.localScale.x; 
+        sf.transform.SetParent(arrow.transform);
+        sf.transform.localPosition = position;
+        Canvas cg = sf.AddComponent<Canvas>();
+        cg.overrideSorting = true;
+        cg.sortingOrder = 1;
+    }
+
+    public void SetGood()
+    {
+        GameObject sf = Instantiate(Resources.Load("SmallCheck")) as GameObject;
+        sf.GetComponent<RectTransform>().sizeDelta = new Vector2(0.2f, 0.2f) * PageRect.localScale.x;
+        sf.transform.SetParent(arrow.transform);
+        sf.transform.localPosition = position;
+        Canvas cg = sf.AddComponent<Canvas>();
+        cg.overrideSorting = true;
+        cg.sortingOrder = 1;
+     }
 }

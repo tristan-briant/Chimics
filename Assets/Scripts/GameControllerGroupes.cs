@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class GameControllerGroupes : GameController {
 
     public int solution = 0;
- 
+
     bool started = false;
     public GameObject BtnValidate;
   

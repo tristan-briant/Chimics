@@ -8,7 +8,9 @@ public class GameController : MonoBehaviour {
     protected List<GameObject> accepteurs = new List<GameObject>();
     protected List<GameObject> doublets = new List<GameObject>();
     public int failCount; // nombre d'echec sur le level en cours
-    public int step;    // Pour les réaction mutli étape, n° de l'étape
+    public int step;    // Pour les réactions mutli étapes, n° de l'étape
+    public int stepNumber; // Pour les réactions mutli étapes, nombre d'étapes
+
     protected LevelManager LVM;
     public Transform Tips;
     protected Animator anim;
@@ -24,6 +26,8 @@ public class GameController : MonoBehaviour {
     {
         
     }
+
+    
 
     void Awake () {
         LVM = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelManager>();
@@ -54,6 +58,14 @@ public class GameController : MonoBehaviour {
         
     }
 
+    virtual public int Score() {
+        // Evalue le score  entre 0 et 100;
+        return 100;
+    }
+
+    virtual public void ShowCorrection() {
+        // Corrige l'exercice
+    }
 
     virtual public void UnselectElements() {
         foreach (ElementManager em in gameObject.GetComponentsInChildren<ElementManager>())
