@@ -32,4 +32,14 @@ public class ControlManager : MonoBehaviour
         LVM.CurrentReaction().GetComponent<GameController>().ShowCorrection();
     }
 
+    public void Next()
+    {
+        LVM.CurrentReaction().GetComponent<GameControllerArrow>().NextStep();
+    }
+
+    public void Previous()
+    {
+        LVM.CurrentReaction().GetComponent<GameControllerArrow>().PreviousStep();
+    }
+
 }

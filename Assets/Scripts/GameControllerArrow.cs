@@ -217,4 +217,23 @@ public class GameControllerArrow : GameController
         }
         
     }
+
+    public void NextStep()
+    {
+        if (step < stepNumber)
+        {
+            step++;
+            anim.SetTrigger("Next");
+        }
+    }
+
+    public void PreviousStep()
+    {
+        if (step >0)
+        {
+            step--;
+            anim.SetTrigger("Previous");
+        }
+    }
+
 }

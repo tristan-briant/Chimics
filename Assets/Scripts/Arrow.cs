@@ -32,7 +32,9 @@ public class Arrow : MonoBehaviour {
     // parametre d'animation (fade in and out)
     float TimeStart;
     float TimeEnd;
-    bool isfadein = true;
+    bool isFadingIn = false;
+    //bool isFadingOut = false;
+
     public bool toBeRemoved = false;
     public float fadeDuration = 0.2f;
  
@@ -54,6 +56,8 @@ public class Arrow : MonoBehaviour {
         {
             name = "arrow"
         };
+        arrow.AddComponent<CanvasGroup>();
+
         image = new GameObject()
         {
             name = "image"
@@ -102,6 +106,7 @@ public class Arrow : MonoBehaviour {
  
     }
 
+    int prevStep=0;
 
     void Update () {
         
@@ -115,9 +120,14 @@ public class Arrow : MonoBehaviour {
 
         float alphMultiplier = 1;
 
-        CanvasGroup[] cgs = transform.GetComponentsInParent<CanvasGroup>();
-        foreach (CanvasGroup cg in cgs) {
-            alphMultiplier *= cg.alpha;
+        int stepNow = GetComponentInParent<GameController>().step;
+        if (stepNow != prevStep)
+        {
+            prevStep = stepNow;
+            if (step == stepNow)
+                FadeIn(1.0f);
+           else
+                FadeOut(1.0f);
         }
 
         float t = Time.time;
@@ -127,50 +137,49 @@ public class Arrow : MonoBehaviour {
 
         if (t <= TimeEnd + 0.1f)
         {
-
-
-            if (isfadein)
+            if (isFadingIn)
                 c.a *= Mathf.Clamp01((t - TimeStart) / (TimeEnd - TimeStart));
             else
                 c.a *= Mathf.Clamp01(1 - (t - TimeStart) / (TimeEnd - TimeStart));
-
-            
-            /*lr1.startColor = lr1.endColor = c;
-            lr2.startColor = lr2.endColor = c;*/
-
-
         }
         else
         {
             if (toBeRemoved)  // Eventually destroy the arrow if planned to be
             {
-                if(atome)
+                if (atome)
                     atome.GetComponent<ElementManager>().reset();
-                if(liaison)
+                if (liaison)
                     liaison.GetComponent<ElementManager>().reset();
                 Destroy(arrow);
                 Destroy(this);
             }
+            else if (isFadingIn) c.a = 1;
+            else c.a = 0;
         }
 
         
         lr1.startColor = lr1.endColor = c;
         lr2.startColor = lr2.endColor = c;
+        arrow.GetComponent<CanvasGroup>().alpha = c.a;
 
     }
 
     public void FadeIn(float duration)
     {
+        if (isFadingIn) return; //already fading in
         TimeStart = Time.time;
         TimeEnd = TimeStart + duration;
-        isfadein = true;
+        isFadingIn = true;
+        //isFadingOut = false;
     }
 
     public void FadeOut(float duration)
     {
+        if (!isFadingIn) return; //already fading out
         TimeStart = Time.time;
         TimeEnd = TimeStart + duration;
-        isfadein = false;
+        isFadingIn = false;
+        //isFadingOut = true;
     }
 
     public void Remove(float duration = 0)
