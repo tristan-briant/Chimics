@@ -43,13 +43,46 @@ public class ActivitiesSelectorManager : MonoBehaviour {
 
     public void LoadExamSession()
     {
+        int exoNumber = 5;
+
+        List<GameObject> shortList = new List<GameObject>();
+
         GameObject[] levels = Resources.LoadAll<GameObject>("Mecanismes/Exam");
-        GameObject[] shortlist = new GameObject[1];
-        shortlist[0] = levels[0];
-        LVM.SetLevels(shortlist);
+        shortList.AddRange(levels);
+
+        for (int i = levels.Length; i > exoNumber; i--) {
+            int index = (int) Random.Range(0, i);
+            shortList.RemoveAt(index);
+        }
+
+        GameObject scoreBoard = Instantiate<GameObject>(Resources.Load<GameObject>("ScoreBoard"));
+        shortList.Add(scoreBoard);
+
+        LVM.SetLevels(shortList.ToArray());
         LVM.levelName = "Réaction";
         LVM.LoadLevel(0);
     }
+
+    public void LoadDebugSession()
+    {
+        
+        List<GameObject> all = new List<GameObject>();
+
+
+        GameObject[] exam = Resources.LoadAll<GameObject>("Mecanismes/Exam");
+        GameObject[] tuto = Resources.LoadAll<GameObject>("Mecanismes/Tutorial");
+        GameObject[] training = Resources.LoadAll<GameObject>("Mecanismes/Training");
+
+        all.AddRange(tuto);
+        all.AddRange(training);
+        all.AddRange(exam);
+
+
+        LVM.SetLevels(all.ToArray());
+        LVM.levelName = "level";
+        LVM.LoadLevel(0);
+    }
+
 
     public void BackToMenu()
     {

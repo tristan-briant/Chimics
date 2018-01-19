@@ -42,6 +42,46 @@ public class GameControllerArrow : GameController
 
     }
 
+    public override int Score()
+    {
+        Transform sol = transform.Find("Solutions");
+        int score = 0;
+
+        for (int st = 0; st <= stepNumber; st++) // Donne la correction de l'étape st
+        {
+            List<Arrow> arrows = new List<Arrow>();
+
+            foreach (Arrow ar in transform.GetComponents<Arrow>())  // On sélectionne uniquement les flèches de l'étape
+            {
+                if (ar.step == st)
+                {
+                    arrows.Add(ar);
+                }
+            }
+
+            int test = -1;
+           
+
+            foreach (Solutions s in sol.transform.GetComponents<Solutions>())
+            {
+                if (s.step != st) continue;
+
+                int test0 = s.TestReaction(arrows.ToArray());
+                if (test0 > test)
+                {
+                    test = test0;
+                 }
+            }
+
+            score += test;
+
+        }
+
+        return score/ (stepNumber+1);
+        
+    }
+
+
     override public void Validate()
     {
         Transform sol = transform.Find("Solutions");
@@ -219,9 +259,10 @@ public class GameControllerArrow : GameController
     }
 
 
-    override public void SetupLevel(bool playable)
+    override public void SetupLevel(bool notused)
     {
         base.SetupLevel(true);
+        bool playable = !corrected;
 
         FloatingButtons = GameObject.FindGameObjectWithTag("Controls");
         if (playable && training)
@@ -254,6 +295,8 @@ public class GameControllerArrow : GameController
             FloatingButtons.transform.Find("NextStep").gameObject.SetActive(false);
             FloatingButtons.transform.Find("PreviousStep").gameObject.SetActive(false);
         }
+
+        
 
         if(LVM.debug)
             FloatingButtons.transform.Find("Correction").gameObject.SetActive(true);

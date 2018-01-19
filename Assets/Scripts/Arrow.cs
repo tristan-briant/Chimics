@@ -90,19 +90,6 @@ public class Arrow : MonoBehaviour {
         head.positionCount = 3;
         head.useWorldSpace = false;
         head.sortingOrder = 1;
-
-        /*arrow.transform.SetParent(atome.transform);
-        Line.transform.SetParent(arrow.transform);
-        Head.transform.SetParent(arrow.transform);
-
-        image.AddComponent<Image>();
-        image.GetComponent<Image>().color = new Color(0, 0, 0, 0);
-       
-        image.AddComponent<Button>();
-        image.GetComponent<Button>().onClick.AddListener(delegate () { Remove(0.2f); });
-
-        image.GetComponent<RectTransform>().sizeDelta = new Vector2(0.2f, 0.1f) * PageRect.localScale.x;
-        image.transform.SetParent(arrow.transform); //Doit être mis à la fin sinon ajouter un rectTransform ou une Image reset l'animation, pourquoi???*/
  
     }
 
@@ -129,6 +116,7 @@ public class Arrow : MonoBehaviour {
            else
                 FadeOut(1.0f);
         }
+        if(step != stepNow && isFadingIn) FadeOut(0.0f);
 
         float t = Time.time;
 

@@ -22,7 +22,11 @@ public class GameController : MonoBehaviour {
     protected GameObject Controls;
 
     public GameObject Help;
-    public bool training=false;
+    public bool debug = false;
+    public bool corrected = false;
+    public bool training = false;
+
+
 
     virtual public void Start()
     {
@@ -67,7 +71,7 @@ public class GameController : MonoBehaviour {
 
     virtual public int Score() {
         // Evalue le score  entre 0 et 100;
-        return 100;
+        return 0;
     }
 
     virtual public void ShowCorrection() {
@@ -181,10 +185,17 @@ public class GameController : MonoBehaviour {
 
         if (Help != null)
         {
+            GameObject h = Instantiate<GameObject>(Help);
             LVM.Game.transform.Find("Panel/ShowHelp").gameObject.SetActive(true);
             Transform helpFrame = LVM.Game.transform.Find("HelpFrame");
-            Help.transform.SetParent(helpFrame);
-            Help.transform.localPosition = Vector3.zero;
+
+            foreach (Transform go in helpFrame.transform)
+            {
+                Destroy(go.gameObject);
+            }
+
+            h.transform.SetParent(helpFrame);
+            h.transform.localPosition = Vector3.zero;
         }
         else
         {
