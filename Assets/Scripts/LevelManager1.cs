@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LevelManager : MonoBehaviour {
+public class LevelManager1 : MonoBehaviour {
 
     public int currentLevel;
     public int currentReaction;
@@ -11,107 +11,68 @@ public class LevelManager : MonoBehaviour {
     public int completedLevel=0;
     public int maxLevel;
     public GameObject Playground;
-    public GameObject ActivitiesSelector;
+    public GameObject ReactionSelector;
+    public GameObject LevelSelector;
     public GameObject Game;
 
     [Header("Debug Mode")]
     public bool debug = false;
 
-    public Transform[] levels;
+    public Transform[][] reactions;
     public string[] LevelNames;
-    public string levelName;
     public Color[] LevelColor;
     public LevelParameters[] Parameters;
 
 
+    private void Awake()
+    {
+  
+        Transform levels = GameObject.Find("Levels").transform;
+
+        reactions = new Transform[levels.childCount][];
+        LevelNames = new string[levels.childCount];
+        LevelColor = new Color[levels.childCount];
+        Parameters = new LevelParameters[levels.childCount];
+
+
+        int n = 0;
+
+        foreach (Transform child in levels) {
+            int nreact = child.childCount;
+
+            reactions[n] = new Transform[nreact];
+            LevelNames[n] = child.name;
+            LevelColor[n] = child.GetComponent<Image>().color;
+            Parameters[n] = child.GetComponent<LevelParameters>();
+
+            for (int i = 0; i < nreact; i++) 
+            {
+                Transform r = child.GetChild(0);
+ 
+                r.SetParent(Playground.transform);
+                r.localScale = new Vector3(1, 1, 1);
+                r.localPosition = new Vector3(0, 0, 0);
+                //r.gameObject.SetActive(false);
+                reactions[n][i] = r;
+            }
+
+            n++;
+        }
+
+        
+
+    }
+
+    
+
     private void Start()
     {  
-        ActivitiesSelector.SetActive(true);
+        LevelSelector.SetActive(true);
+        ReactionSelector.SetActive(false);
         Game.SetActive(false);
     }
 
-    public void SetLevels(GameObject[] ls) {
-
-        if (levels != null)
-            foreach (Transform child in levels)
-            {
-                Destroy(child.gameObject);
-            }
-
-        levels = new Transform[ls.Length];
-
-        int n = 0;
-        foreach (GameObject level in ls)
-        {
-            Transform lv = Instantiate<GameObject>(level).transform;
-            lv.SetParent(Playground.transform);
-            lv.localScale = new Vector3(1, 1, 1);
-            lv.localPosition = new Vector3(0, 0, 0);
-            lv.gameObject.SetActive(false);
-            
-
-            levels[n++] = lv;
-        }
-    }
-
-    public void LoadLevel(int levelNumber)
-    {
-        if (levelNumber >= levels.Length)
-            return;
-         ActivitiesSelector.SetActive(false); // desactive le menu
-        Game.SetActive(true);
-
-        currentLevel = levelNumber;
-
-        foreach (Transform child in Playground.transform)
-            child.gameObject.SetActive(false);
-
-        Transform lv = levels[currentLevel];
-
-        lv.gameObject.SetActive(true);
-        GameController gc = lv.GetComponent<GameController>();
-        //gc.ResetLevel();
-        gc.SetupLevel(true);
-       
-        SetTitlePanel();
-
- 
-    }
-
-    public Transform CurrentLevel()
-    {
-        return levels[currentLevel];
-    }
-
-    public void LoadNextLevel()
-    {
-
-        if (currentLevel < levels.Length - 1)
-        {
-            /*if (CurrentLevel().gameObject.activeSelf)
-                CurrentLevel().GetComponent<GameController>().ResetLevel();*/
-
-            currentLevel++;
-            LoadLevel(currentLevel);
-        }
-
-    }
-
-    public void LoadPreviousLevel()
-    {
-        if (0 <currentLevel)
-        {
-            /*if (CurrentLevel().gameObject.activeSelf)
-                CurrentLevel().GetComponent<GameController>().ResetLevel();*/
-            currentLevel--;
-            LoadLevel(currentLevel);
-        }
-
-       
-    }
-
-
-    /*public void LoadNextReaction()
+    public void LoadNextReaction()
     {
 
         if(CurrentReaction().gameObject.activeSelf)
@@ -127,9 +88,9 @@ public class LevelManager : MonoBehaviour {
         }
 
         LoadReaction(currentReaction);
-    }*/
+    }
 
-    /*public void LoadPreviousReaction()
+    public void LoadPreviousReaction()
     {
         if (CurrentReaction().gameObject.activeSelf)
             CurrentReaction().GetComponent<GameController>().ResetLevel();
@@ -145,9 +106,9 @@ public class LevelManager : MonoBehaviour {
         }
 
         LoadReaction(currentReaction);
-    }*/
+    }
 
-    /*public void LoadLevel(int level)
+    public void LoadLevel(int level)
     {
         if(CurrentReaction().gameObject.activeSelf)
             CurrentReaction().GetComponent<GameController>().ResetLevel();
@@ -166,11 +127,11 @@ public class LevelManager : MonoBehaviour {
             LevelSelector.SetActive(false);
             ReactionSelector.SetActive(true);
             Game.SetActive(false);
-        }*/
+        }
+    }
 
 
-
-    /*public void LoadReaction(int reaction)
+    public void LoadReaction(int reaction)
     {
         if (reaction >= reactions[currentLevel].Length)
             return;
@@ -194,13 +155,13 @@ public class LevelManager : MonoBehaviour {
         ReactionSelector.SetActive(false); // desactive le menu
         Game.SetActive(true);
 
-    }*/
+    }
 
-    /*public Transform CurrentReaction()
+    public Transform CurrentReaction()
     {
         return reactions[currentLevel][currentReaction];
 
-    }*/
+    }
 
     public string LevelName() {
         // Return the name of the current level
@@ -210,25 +171,23 @@ public class LevelManager : MonoBehaviour {
 
     void SetTitlePanel()
     {
-        //LevelParameters parameters =Parameters[currentLevel];
-        string title = levelName + " " + (currentLevel + 1);
+        LevelParameters parameters =Parameters[currentLevel];
+        string title = "";
 
-        /*if (parameters.levelNameOn) title += parameters.LevelName;
+        if (parameters.levelNameOn) title += parameters.LevelName;
         if (parameters.levelNameOn && parameters.subLevelNameOn) title += " - ";
         if (parameters.subLevelNameOn) title += parameters.subLevelName;
-        if (parameters.subLevelNumberOn) title += " " + (currentReaction + 1);*/
-
-      
+        if (parameters.subLevelNumberOn) title += " " + (currentReaction + 1);
 
         Game.transform.Find("Panel/Title").GetComponent<Text>().text = title;
-        //Game.transform.Find("Panel").GetComponent<Image>().color = LevelColor[currentLevel];
+        Game.transform.Find("Panel").GetComponent<Image>().color = LevelColor[currentLevel];
 
-        if ( currentLevel== levels.Length-1)
+        if (currentReaction == reactions[currentLevel].Length - 1 && currentLevel== reactions.Length-1)
             Game.transform.Find("Panel/NextLevel").GetComponent<Button>().interactable = false;
         else
             Game.transform.Find("Panel/NextLevel").GetComponent<Button>().interactable = true;
 
-        if (currentLevel == 0)
+        if (currentReaction == 0 && currentLevel == 0)
             Game.transform.Find("Panel/PreviousLevel").GetComponent<Button>().interactable = false;
         else
             Game.transform.Find("Panel/PreviousLevel").GetComponent<Button>().interactable = true;

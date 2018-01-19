@@ -9,37 +9,37 @@ public class ControlManager : MonoBehaviour
     public LevelManager LVM;
   
     public void Validate() {
-        LVM.CurrentReaction().GetComponent<GameController>().Validate();
+        LVM.CurrentLevel().GetComponent<GameController>().Validate();
     }
 
     public void Clear()
     {
-        LVM.CurrentReaction().GetComponent<GameController>().ClearLevel();
+        LVM.CurrentLevel().GetComponent<GameController>().ClearLevel();
     }
 
     public void ResetLevel()
     {
-        LVM.CurrentReaction().GetComponent<GameController>().ResetLevel();
+        LVM.CurrentLevel().GetComponent<GameController>().ResetLevel();
     }
 
     public void NextLevel()
     {
-        LVM.LoadNextReaction();
+        LVM.LoadNextLevel();
     }
 
     public void Correction()
     {
-        LVM.CurrentReaction().GetComponent<GameController>().ShowCorrection();
+        LVM.CurrentLevel().GetComponent<GameController>().ShowCorrection();
     }
 
     public void Next()
     {
-        LVM.CurrentReaction().GetComponent<GameControllerArrow>().NextStep();
+        LVM.CurrentLevel().GetComponent<GameControllerArrow>().NextStep();
     }
 
     public void Previous()
     {
-        LVM.CurrentReaction().GetComponent<GameControllerArrow>().PreviousStep();
+        LVM.CurrentLevel().GetComponent<GameControllerArrow>().PreviousStep();
     }
 
 }

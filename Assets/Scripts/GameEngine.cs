@@ -35,7 +35,7 @@ public class GameEngine : MonoBehaviour {
 
 
     public void LoadCurrentReaction() {
-        reaction = LVM.CurrentReaction();
+        reaction = LVM.CurrentLevel();
 
         reaction.localPosition = new Vector3(0, 0, 0);
         reaction.GetComponent<Image>().enabled = false;
@@ -292,7 +292,7 @@ public class GameEngine : MonoBehaviour {
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            LVM.ReactionSelector.SetActive(true);
+            //LVM.ReactionSelector.SetActive(true);
             LVM.Game.SetActive(false);
         }
     }

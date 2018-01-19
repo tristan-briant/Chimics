@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class ActivitySelectorManager : MonoBehaviour {
+public class ThemeSelectorManager : MonoBehaviour {
 
 	
     public void LoadActivity(string name)

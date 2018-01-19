@@ -68,7 +68,7 @@ public class ReactionSelectorManager : MonoBehaviour {
             GameObject.Destroy(child.gameObject);
         }
 
-        for (int i = 0; i < LVM.reactions[LVM.currentLevel].Length; i++)
+        /*for (int i = 0; i < LVM.reactions[LVM.currentLevel].Length; i++)
         {
             GameObject go = Instantiate(button);
             go.transform.SetParent(levelList.transform);
@@ -79,7 +79,7 @@ public class ReactionSelectorManager : MonoBehaviour {
             int level = i;
             Button btn = go.GetComponent<Button>();
             btn.onClick.AddListener(delegate () { LVM.LoadReaction(level); });
-        }
+        }*/
 
         /*Text title = transform.Find("Panel").transform.Find("Text").GetComponent<Text>();
         title.text = LVM.LevelName();//+ " - Sélectionner une réaction";*/
@@ -91,6 +91,7 @@ public class ReactionSelectorManager : MonoBehaviour {
 
     public void BackToLevelSelector()
     {
+       
         gameObject.SetActive(false);
         LevelSelector.SetActive(true);
         Game.SetActive(false);

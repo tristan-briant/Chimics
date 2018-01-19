@@ -15,12 +15,14 @@ public class GameController : MonoBehaviour {
     public Transform Tips;
     protected Animator anim;
     protected GameObject[] Buttons;
+    public GameObject FloatingButtons;
     protected GameObject ResetButton;
     GameObject ValidateButton;
     GameObject ClearButton;
     protected GameObject Controls;
 
     public GameObject Help;
+    public bool training=false;
 
     virtual public void Start()
     {
@@ -29,13 +31,18 @@ public class GameController : MonoBehaviour {
 
     
 
-    void Awake () {
+    virtual public void Awake () { 
         LVM = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelManager>();
         Tips = transform.Find("Tips");
- 
+        bool gameActive = LVM.Game.activeSelf;
+        LVM.Game.SetActive(true);
+        FloatingButtons = GameObject.FindGameObjectWithTag("Controls");
         Buttons = GameObject.FindGameObjectsWithTag("Buttons");
         Controls= GameObject.FindGameObjectWithTag("Controls");
         ResetButton = GameObject.FindGameObjectWithTag("Reset");
+        //ResetButton = GameObject.Find("FloatingButtons/Reset");
+        LVM.Game.SetActive(gameActive);
+
 
         transform.localPosition = new Vector3(0, 0, 0);
 
@@ -118,7 +125,8 @@ public class GameController : MonoBehaviour {
 
         transform.parent.parent.Find("Check").GetComponent<Animator>().SetTrigger("SuccessTrigger");
 
-        ResetButton.SetActive(true);
+        //ResetButton = GameObject.FindGameObjectWithTag("Reset");
+        //ResetButton.SetActive(true);
     }
 
    
@@ -126,6 +134,20 @@ public class GameController : MonoBehaviour {
 
     virtual public void ResetLevel() {
 
+        SetupLevel(true);
+
+        ClearLevel();
+    }
+
+    virtual public void ClearLevel()
+    {
+        Debug.Log("Clear Level");
+        ResetElements(); // déselectionne les éléments
+
+    }
+
+    virtual public void SetupLevel(bool playable)  // Set up the level interactable or just to show correction
+    {
         Debug.Log("reset base");
         // On reset l'animation
         anim = GetComponent<Animator>();
@@ -133,25 +155,25 @@ public class GameController : MonoBehaviour {
             anim.SetTrigger("reset");
 
         // si on load le level on enlève un éventuel check
-        
+
         if (transform.parent)
         {
             Transform t = transform.parent.parent.Find("Check");
             Animator a = t.GetComponent<Animator>();
-			if (a.isActiveAndEnabled) a.SetTrigger("reset");
+            if (a.isActiveAndEnabled) a.SetTrigger("reset");
 
             t = transform.parent.parent.Find("Fail");
-			a = t.GetComponent<Animator>();
-			if (a.isActiveAndEnabled) a.SetTrigger("reset");
+            a = t.GetComponent<Animator>();
+            if (a.isActiveAndEnabled) a.SetTrigger("reset");
 
             t = transform.parent.parent.Find("Warning");
-			a = t.GetComponent<Animator>();
-			if (a.isActiveAndEnabled) a.SetTrigger("reset");
+            a = t.GetComponent<Animator>();
+            if (a.isActiveAndEnabled) a.SetTrigger("reset");
 
             transform.parent.parent.GetComponent<resize>().InitResize(transform);
 
         }
-        
+
         failCount = 0;
         step = 0;
 
@@ -167,19 +189,9 @@ public class GameController : MonoBehaviour {
         else
         {
             Transform helpButton = LVM.Game.transform.Find("Panel/ShowHelp");
-            if(helpButton) helpButton.gameObject.SetActive(false);
+            if (helpButton) helpButton.gameObject.SetActive(false);
         }
-
-        ClearLevel();
     }
-
-    virtual public void ClearLevel()
-    {
-        Debug.Log("Clear Level");
-        ResetElements(); // déselectionne les éléments
-
-    }
-
 
     public void ShowTip()
     {
@@ -244,7 +256,7 @@ public class GameController : MonoBehaviour {
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            LVM.ReactionSelector.SetActive(true);
+            LVM.ActivitiesSelector.SetActive(true);
             LVM.Game.SetActive(false);
         }
     }

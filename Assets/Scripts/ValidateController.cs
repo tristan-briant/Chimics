@@ -11,27 +11,27 @@ public class ValidateController : MonoBehaviour {
 
     public void ResetElements()
     {
-        LVM.CurrentReaction().GetComponent<GameController>().ResetElements();
+        LVM.CurrentLevel().GetComponent<GameController>().ResetElements();
     }
 
     public void ClearLevel()
     {
-        LVM.CurrentReaction().GetComponent<GameController>().ClearLevel();
+        LVM.CurrentLevel().GetComponent<GameController>().ClearLevel();
     }
 
     public void ClickableDisable()
     {
-        LVM.CurrentReaction().GetComponent<GameController>().ClickableDisable();
+        LVM.CurrentLevel().GetComponent<GameController>().ClickableDisable();
     }
 
     public void ClickableEnable()
     {
-        LVM.CurrentReaction().GetComponent<GameController>().ClickableEnable();
+        LVM.CurrentLevel().GetComponent<GameController>().ClickableEnable();
     }
 
     public void ShowTip()
     {
-        LVM.CurrentReaction().GetComponent<GameController>().ShowTip();
+        LVM.CurrentLevel().GetComponent<GameController>().ShowTip();
     }
 
 }

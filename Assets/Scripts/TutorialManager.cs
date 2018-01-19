@@ -9,17 +9,22 @@ public class TutorialManager : GameController
     public GameObject ReadMoreButton;
     bool started = false;
 
-    void Awake()
+    public override void LateUpdate()
+    {
+    }
+
+
+    /*void Awake()
     {
         anim = GetComponent<Animator>();
         Buttons = GameObject.FindGameObjectsWithTag("Buttons");
-        ResetButton = GameObject.FindGameObjectWithTag("Reset");
+        ResetButton = GameObject.Find("FloatingButtons/Reset");
         LVM = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelManager>();
 
         transform.GetComponent<Image>().enabled = false;
         transform.localPosition = new Vector3(0, 0, 0);
 
-    }
+    }*/
 
 
     /*override public void Start()
@@ -45,16 +50,16 @@ public class TutorialManager : GameController
     {
         Button btn = ReadMoreButton.GetComponent<Button>();
         btn.onClick.RemoveAllListeners();
-        btn.onClick.AddListener(LVM.LoadNextReaction);
+        btn.onClick.AddListener(LVM.LoadNextLevel);
     }
 
     public void LoadNext()
     {
-        LVM.LoadNextReaction();
+        LVM.LoadNextLevel();
     }
 
 
-    override public void ResetLevel()
+    /*override public void ResetLevel()
     {
 
         // On reset l'animation
@@ -93,6 +98,19 @@ public class TutorialManager : GameController
             ob.SetActive(false);
         }
 
+    }*/
+
+    public override void SetupLevel(bool playable)
+    {
+        base.SetupLevel(playable);
+
+        FloatingButtons.transform.Find("Clear").gameObject.SetActive(false);
+        FloatingButtons.transform.Find("Reset").gameObject.SetActive(false);
+        FloatingButtons.transform.Find("Validate").gameObject.SetActive(false);
+        FloatingButtons.transform.Find("NextStep").gameObject.SetActive(false);
+        FloatingButtons.transform.Find("PreviousStep").gameObject.SetActive(false);
+        FloatingButtons.transform.Find("Correction").gameObject.SetActive(false);
     }
+
 
 }

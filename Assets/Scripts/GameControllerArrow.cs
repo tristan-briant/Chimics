@@ -8,7 +8,7 @@ public class GameControllerArrow : GameController
 
 
 
-    void Awake()
+    override public void Awake()
     {
         LVM = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelManager>();
         Tips = transform.Find("Tips");
@@ -16,7 +16,7 @@ public class GameControllerArrow : GameController
         Buttons = GameObject.FindGameObjectsWithTag("Buttons");
         Controls = GameObject.FindGameObjectWithTag("Controls");
         ResetButton = GameObject.FindGameObjectWithTag("Reset");
-
+        FloatingButtons = GameObject.FindGameObjectWithTag("Controls");
 
         transform.localPosition = new Vector3(0, 0, 0);
 
@@ -128,6 +128,16 @@ public class GameControllerArrow : GameController
             
         }
 
+
+        if (stepNumber > 0)
+        {
+            if(step>0) FloatingButtons.transform.Find("PreviousStep").gameObject.SetActive(true);
+            else FloatingButtons.transform.Find("PreviousStep").gameObject.SetActive(false);
+
+            if(step<stepNumber) FloatingButtons.transform.Find("NextStep").gameObject.SetActive(true);
+            else FloatingButtons.transform.Find("NextStep").gameObject.SetActive(false);
+
+        }
     }
 
     public override void ShowCorrection()
@@ -200,10 +210,55 @@ public class GameControllerArrow : GameController
 
         ResetElements();
 
-        ResetButton.SetActive(false);
-        Controls.SetActive(true);
+        /*ResetButton.SetActive(false);
+        Controls.SetActive(true);*/
 
-        ClickableEnable();
+        //ClickableEnable();
+        SetupLevel(true);
+
+    }
+
+
+    override public void SetupLevel(bool playable)
+    {
+        base.SetupLevel(true);
+
+        FloatingButtons = GameObject.FindGameObjectWithTag("Controls");
+        if (playable && training)
+        {
+            FloatingButtons.transform.Find("Clear").gameObject.SetActive(true);
+            FloatingButtons.transform.Find("Reset").gameObject.SetActive(false);
+            FloatingButtons.transform.Find("Validate").gameObject.SetActive(true);
+        }
+
+        if (playable &&  !training)
+        {
+            FloatingButtons.transform.Find("Clear").gameObject.SetActive(true);
+            FloatingButtons.transform.Find("Reset").gameObject.SetActive(false);
+            FloatingButtons.transform.Find("Validate").gameObject.SetActive(false);
+        }
+        if (!playable) {
+            FloatingButtons.transform.Find("Clear").gameObject.SetActive(false);
+            FloatingButtons.transform.Find("Reset").gameObject.SetActive(false);
+            FloatingButtons.transform.Find("Validate").gameObject.SetActive(false);
+        }
+
+        if (stepNumber > 0)
+        {
+            anim.SetTrigger("reset");
+            FloatingButtons.transform.Find("NextStep").gameObject.SetActive(true);
+            FloatingButtons.transform.Find("PreviousStep").gameObject.SetActive(false);
+        }
+        else
+        {
+            FloatingButtons.transform.Find("NextStep").gameObject.SetActive(false);
+            FloatingButtons.transform.Find("PreviousStep").gameObject.SetActive(false);
+        }
+
+        if(LVM.debug)
+            FloatingButtons.transform.Find("Correction").gameObject.SetActive(true);
+        else
+            FloatingButtons.transform.Find("Correction").gameObject.SetActive(false);
 
     }
 
@@ -218,8 +273,11 @@ public class GameControllerArrow : GameController
         
     }
 
+    Time timeInhib;
     public void NextStep()
     {
+        anim.SetBool("Previous", false);
+        if (anim.GetBool("Next")) return; // already next
         if (step < stepNumber)
         {
             step++;
@@ -229,6 +287,8 @@ public class GameControllerArrow : GameController
 
     public void PreviousStep()
     {
+        anim.SetBool("Next", false);
+        if (anim.GetBool("Previous")) return; // already next
         if (step >0)
         {
             step--;

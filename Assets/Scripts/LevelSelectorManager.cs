@@ -63,7 +63,7 @@ public class LevelSelectorManager : MonoBehaviour {
             GameObject.Destroy(child.gameObject);
         }
 
-        for (int i = 0; i < LVM.reactions.Length; i++)
+        /*for (int i = 0; i < LVM.reactions.Length; i++)
         {
             GameObject go = Instantiate(button);
             go.transform.SetParent(levelList.transform);
@@ -75,7 +75,7 @@ public class LevelSelectorManager : MonoBehaviour {
             int level = i;
             Button btn = go.GetComponent<Button>();
             btn.onClick.AddListener(delegate () { LVM.LoadLevel(level); });
-        }
+        }*/
     }
 
 
