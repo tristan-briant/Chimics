@@ -1,11 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 
-public class ActivitiesSelectorManager : MonoBehaviour {
+public class ActivitiesNomencatureManager : MonoBehaviour {
 
     public GameObject playground;
     public GameObject levelManager;
@@ -24,38 +23,57 @@ public class ActivitiesSelectorManager : MonoBehaviour {
 
     public void LoadTutorial()
     {
-        GameObject[] levels = Resources.LoadAll<GameObject>("Mecanismes/Tutorial");
+        GameObject[] levels = Resources.LoadAll<GameObject>("Nomenclature/Tutorial");
         LVM.isExamSession = false;
 
         LVM.SetLevels(levels);
         LVM.levelName = "Didacticiel";
         LVM.LoadLevel(0);
-        
+
     }
 
-    public void LoadTrainingSession() {
-
-        GameObject[] levels = Resources.LoadAll<GameObject>("Mecanismes/Training");
+    public void LoadNameSession()
+    {
+        GameObject[] levels = Resources.LoadAll<GameObject>("Nomenclature/Names");
         LVM.isExamSession = false;
         LVM.SetLevels(levels);
+        foreach (Transform lv in LVM.levels)
+            lv.GetComponent<GameController>().training = true;
         LVM.levelName = "Réaction";
         LVM.LoadLevel(0);
     }
 
+    public void LoadGroupeSession()
+    {
+        GameObject[] levels = Resources.LoadAll<GameObject>("Nomenclature/Groupes");
+        LVM.isExamSession = false;
+        LVM.SetLevels(levels);
+        foreach (Transform lv in LVM.levels)
+            lv.GetComponent<GameController>().training = true;
+        LVM.levelName = "Réaction";
+        LVM.LoadLevel(0);
+    }
+
+    
     public void LoadExamSession()
     {
         int exoNumber = 5;
 
         List<GameObject> shortList = new List<GameObject>();
 
-        GameObject[] levels = Resources.LoadAll<GameObject>("Mecanismes/Exam");
-        shortList.AddRange(levels);
+        
+        GameObject[] groups = Resources.LoadAll<GameObject>("Nomenclature/Groupes");
+        GameObject[] names = Resources.LoadAll<GameObject>("Nomenclature/Names");
 
-        for (int i = levels.Length; i > exoNumber; i--) {
-            int index = (int) Random.Range(0, i);
+        shortList.AddRange(groups);
+        shortList.AddRange(names);
+
+
+        for (int i = groups.Length + names.Length; i > exoNumber; i--)
+        {
+            int index = (int)Random.Range(0, i);
             shortList.RemoveAt(index);
         }
-
         LVM.scoreBoard.GetComponent<ScoreBoardManager>().ResetBoard();
         LVM.isExamSession = true;
         LVM.SetLevels(shortList.ToArray());
@@ -65,18 +83,16 @@ public class ActivitiesSelectorManager : MonoBehaviour {
 
     public void LoadDebugSession()
     {
-        
+
         List<GameObject> all = new List<GameObject>();
 
 
-        GameObject[] exam = Resources.LoadAll<GameObject>("Mecanismes/Exam");
-        GameObject[] tuto = Resources.LoadAll<GameObject>("Mecanismes/Tutorial");
-        GameObject[] training = Resources.LoadAll<GameObject>("Mecanismes/Training");
+        GameObject[] groups = Resources.LoadAll<GameObject>("Nomenclature/Groupes");
+        GameObject[] names = Resources.LoadAll<GameObject>("Nomenclature/Names");
 
-        all.AddRange(tuto);
-        all.AddRange(training);
-        all.AddRange(exam);
-
+        all.AddRange(groups);
+        all.AddRange(names);
+ 
 
         LVM.SetLevels(all.ToArray());
         foreach (Transform lv in LVM.levels)

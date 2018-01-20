@@ -70,7 +70,7 @@ public class GameControllerNomenclature : GameController {
         transform.parent.parent.Find("Check").GetComponent<Animator>().SetTrigger("SuccessTrigger");
 
         transform.Find("Validate").gameObject.SetActive(false);
-        transform.Find("Next").gameObject.SetActive(true);
+        //transform.Find("Next").gameObject.SetActive(true);
     }
 
     public override void ResetLevel()
@@ -106,5 +106,53 @@ public class GameControllerNomenclature : GameController {
         }
     }
 
+
+    public override void SetupLevel(bool notused)
+    {
+        base.SetupLevel(false);
+
+        bool playable = !corrected;
+
+        FloatingButtons = GameObject.FindGameObjectWithTag("Controls");
+        FloatingButtons.SetActive(true);
+
+        if (playable && training)
+        {
+            FloatingButtons.transform.Find("Clear").gameObject.SetActive(false);
+            FloatingButtons.transform.Find("Reset").gameObject.SetActive(false);
+            FloatingButtons.transform.Find("Validate").gameObject.SetActive(false);
+
+            transform.Find("Validate").gameObject.SetActive(true);
+            transform.Find("Next").gameObject.SetActive(false);
+        }
+
+        if (playable && !training)
+        {
+            FloatingButtons.transform.Find("Clear").gameObject.SetActive(false);
+            FloatingButtons.transform.Find("Reset").gameObject.SetActive(false);
+            FloatingButtons.transform.Find("Validate").gameObject.SetActive(false);
+
+            transform.Find("Validate").gameObject.SetActive(false);
+            transform.Find("Next").gameObject.SetActive(false);
+        }
+        if (!playable)
+        {
+            FloatingButtons.transform.Find("Clear").gameObject.SetActive(false);
+            FloatingButtons.transform.Find("Reset").gameObject.SetActive(false);
+            FloatingButtons.transform.Find("Validate").gameObject.SetActive(false);
+        }
+
+        if (debug)
+        {
+            FloatingButtons.transform.Find("Correction").gameObject.SetActive(true);
+            FloatingButtons.transform.Find("Validate").gameObject.SetActive(true);
+            FloatingButtons.transform.Find("Reset").gameObject.SetActive(true);
+        }
+        else
+        {
+            FloatingButtons.transform.Find("Correction").gameObject.SetActive(false);
+        }
+
+    }
 
 }

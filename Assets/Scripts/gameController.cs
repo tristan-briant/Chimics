@@ -133,8 +133,6 @@ public class GameController : MonoBehaviour {
         //ResetButton.SetActive(true);
     }
 
-   
-
 
     virtual public void ResetLevel() {
 
@@ -269,6 +267,7 @@ public class GameController : MonoBehaviour {
         {
             LVM.ActivitiesSelector.SetActive(true);
             LVM.Game.SetActive(false);
+            LVM.scoreBoard.SetActive(false);
         }
     }
 

@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameControllerGroupes : GameController {
+public class GameControllerGroupes : GameController
+{
 
     public int solution = 0;
 
     bool started = false;
     public GameObject BtnValidate;
-  
+
     public void Awake()
     {
         transform.localPosition = new Vector3(0, 0, 0);
@@ -51,18 +52,17 @@ public class GameControllerGroupes : GameController {
 
     public override void LateUpdate()
     {
-        
-        foreach(ElementManager em in transform.GetComponentsInChildren<ElementManager>())
+        foreach (ElementManager em in transform.GetComponentsInChildren<ElementManager>())
         {
             if (em.inReaction && em.isSelected)
                 em.unSelectElement();
         }
 
-
     }
 
 
-    public void NameGroup(GameObject btn) {
+    public void NameGroup(GameObject btn)
+    {
 
         int selectedCount = 0;
         foreach (GameObject go in accepteurs)
@@ -92,40 +92,17 @@ public class GameControllerGroupes : GameController {
 
     override public void Validate()
     {
-        Transform sol = transform.Find("Solutions");
-
-        SolutionGroupes [] solutions = sol.GetComponents<SolutionGroupes>();
-        Groupe[] grs = transform.GetComponents<Groupe>();
-
-        bool test = false;
-
-        if (grs.Length == solutions.Length) {
-
-            test = true;
-
-            foreach (Groupe g in grs) {
-                bool groupeOk = false;
-
-                foreach(SolutionGroupes s in solutions)
-                {
-                    if (s.TestGroupes(g) == 1)
-                        groupeOk = true;
-                }
-
-                if (!groupeOk) test = false;
-            }
-
-        }
-
-        if (test)
+        if (Score()==100)
         {
             WinLevel();
         }
-        else
+        else 
         {
             failCount++;
-            StartCoroutine(FailAnimation());
+            if(Score() == 0) StartCoroutine(FailAnimation());
+            if (Score() > 0) StartCoroutine(WarningAnimation("complété à " + Score() + "%"));
         }
+        
     }
 
     IEnumerator WarningAnimation()
@@ -139,35 +116,8 @@ public class GameControllerGroupes : GameController {
         ShowTip();
     }
 
-    /*override public IEnumerator FailAnimation()
-    {
-        transform.parent.parent.GetComponent<resize>().ReZoom();
-        ClickableDisable();
-        ResetElements();
-        transform.parent.parent.Find("Fail").GetComponent<Animator>().SetTrigger("FailTrigger");
-        yield return new WaitForSeconds(1.5f);
-        //ClearLevel();
-        ClickableEnable();
-        ShowTip();
-    }*/
-
-    /*IEnumerator FailAnimation()
-    {
-        //BtnValidate.SetActive(false);
-
-        transform.parent.parent.GetComponent<resize>().ReZoom();
-        transform.parent.parent.Find("Fail").GetComponent<Animator>().SetTrigger("FailTrigger");
-        yield return new WaitForSeconds(1.5f);
-        BtnValidate.SetActive(true);
-        //Selector.ValidateChoice(false);
-
-
-        //ShowTip();
-    }*/
-
     override public void WinLevel()
     {
-        //BtnValidate.SetActive(false);
 
         Debug.Log("gagné");
         if (LVM.completedLevel < LVM.currentLevel + 1)
@@ -178,7 +128,6 @@ public class GameControllerGroupes : GameController {
 
         transform.parent.parent.Find("Check").GetComponent<Animator>().SetTrigger("SuccessTrigger");
     }
-
 
     override public void ResetLevel()
     {
@@ -200,6 +149,47 @@ public class GameControllerGroupes : GameController {
         //Controls.SetActive(true);
     }
 
+    public override void SetupLevel(bool notused)
+    {
+        base.SetupLevel(false);
+
+        bool playable = !corrected;
+
+        FloatingButtons = GameObject.FindGameObjectWithTag("Controls");
+        FloatingButtons.SetActive(true);
+
+        if (playable && training)
+        {
+            FloatingButtons.transform.Find("Clear").gameObject.SetActive(false);
+            FloatingButtons.transform.Find("Reset").gameObject.SetActive(false);
+            FloatingButtons.transform.Find("Validate").gameObject.SetActive(true);
+        }
+
+        if (playable && !training)
+        {
+            FloatingButtons.transform.Find("Clear").gameObject.SetActive(true);
+            FloatingButtons.transform.Find("Reset").gameObject.SetActive(false);
+            FloatingButtons.transform.Find("Validate").gameObject.SetActive(false);
+        }
+        if (!playable)
+        {
+            FloatingButtons.transform.Find("Clear").gameObject.SetActive(false);
+            FloatingButtons.transform.Find("Reset").gameObject.SetActive(false);
+            FloatingButtons.transform.Find("Validate").gameObject.SetActive(false);
+        }
+
+        if (debug)
+        {
+            FloatingButtons.transform.Find("Correction").gameObject.SetActive(true);
+            FloatingButtons.transform.Find("Validate").gameObject.SetActive(true);
+            FloatingButtons.transform.Find("Reset").gameObject.SetActive(true);
+        }
+        else
+        {
+            FloatingButtons.transform.Find("Correction").gameObject.SetActive(false);
+        }
+
+    }
 
     override public void ClearLevel()
     {
@@ -216,4 +206,93 @@ public class GameControllerGroupes : GameController {
         }
 
     }
+
+
+    public override int Score()
+    {
+        Transform sol = transform.Find("Solutions");
+ 
+        SolutionGroupes[] solutions = sol.GetComponents<SolutionGroupes>();
+        Groupe[] grs = transform.GetComponents<Groupe>();
+
+        int score = 0;
+
+        foreach (Groupe g in grs)
+        {
+            bool groupeOk = false;
+
+            foreach (SolutionGroupes s in solutions)
+            {
+                if (s.TestGroupes(g) == 1)
+                {
+                    groupeOk = true;
+                    break;
+                }
+            }
+
+            if (groupeOk) score++;
+            else score--;
+        }
+
+        if (score < 0) score = 0;
+
+        score = (100 * score) / solutions.Length;
+
+        return score;
+    }
+
+    public override void ShowCorrection()
+    {
+        Transform sol = transform.Find("Solutions");
+
+        SolutionGroupes[] solutions = sol.GetComponents<SolutionGroupes>();
+        Groupe[] grs = transform.GetComponents<Groupe>();
+
+        foreach (Groupe g in grs)
+        {
+            bool groupeOk = false;
+
+            foreach (SolutionGroupes s in solutions)
+            {
+                if (s.TestGroupes(g) == 1)
+                {
+                    groupeOk = true;
+                    break;
+                }
+            }
+
+            if (groupeOk) g.SetGood();
+            else g.SetWrong();
+        }
+
+        foreach (SolutionGroupes s in solutions)
+        {
+            bool solOk = false;
+            foreach (Groupe g in grs)
+            {
+                if (s.TestGroupes(g) == 1)
+                {
+                    solOk = true;
+                    break;
+                }
+            }
+
+            if (!solOk)
+            {
+                Groupe gr = gameObject.AddComponent<Groupe>();
+                gr.correction = true;
+                gr.width = 0.35f;
+                gr.elements = s.elements;
+                gr.groupName = s.GroupName;
+                gr.color = s.GroupName.GetComponent<Image>().color;
+                gr.DrawGroupe();
+
+            }
+        }
+
+
+    }
+
+
 }
+

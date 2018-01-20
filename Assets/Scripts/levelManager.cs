@@ -12,6 +12,7 @@ public class LevelManager : MonoBehaviour {
     public int maxLevel;
     public GameObject Playground;
     public GameObject ActivitiesSelector;
+    public GameObject scoreBoard;
     public GameObject Game;
 
     [Header("Debug Mode")]
@@ -22,11 +23,13 @@ public class LevelManager : MonoBehaviour {
     public string levelName;
     public Color[] LevelColor;
     public LevelParameters[] Parameters;
+    public bool isExamSession = false;
 
 
     private void Start()
     {  
         ActivitiesSelector.SetActive(true);
+        scoreBoard.SetActive(false);
         Game.SetActive(false);
     }
 
@@ -59,7 +62,9 @@ public class LevelManager : MonoBehaviour {
         if (levelNumber >= levels.Length)
             return;
          ActivitiesSelector.SetActive(false); // desactive le menu
+
         Game.SetActive(true);
+        scoreBoard.SetActive(false);
 
         currentLevel = levelNumber;
 
@@ -88,9 +93,6 @@ public class LevelManager : MonoBehaviour {
 
         if (currentLevel < levels.Length - 1)
         {
-            /*if (CurrentLevel().gameObject.activeSelf)
-                CurrentLevel().GetComponent<GameController>().ResetLevel();*/
-
             currentLevel++;
             LoadLevel(currentLevel);
         }
@@ -101,8 +103,6 @@ public class LevelManager : MonoBehaviour {
     {
         if (0 <currentLevel)
         {
-            /*if (CurrentLevel().gameObject.activeSelf)
-                CurrentLevel().GetComponent<GameController>().ResetLevel();*/
             currentLevel--;
             LoadLevel(currentLevel);
         }
@@ -110,97 +110,14 @@ public class LevelManager : MonoBehaviour {
        
     }
 
-
-    /*public void LoadNextReaction()
+    public void LoadScoreBoard()
     {
+        ActivitiesSelector.SetActive(false);
+        scoreBoard.SetActive(true);
+        Game.SetActive(false);
+    }
 
-        if(CurrentReaction().gameObject.activeSelf)
-            CurrentReaction().GetComponent<GameController>().ResetLevel();
-
-        if (currentReaction < reactions[currentLevel].Length - 1)
-        {
-            currentReaction++;
-        }
-        else if (currentLevel < reactions.Length - 1) {
-            currentLevel++;
-            currentReaction = 0;
-        }
-
-        LoadReaction(currentReaction);
-    }*/
-
-    /*public void LoadPreviousReaction()
-    {
-        if (CurrentReaction().gameObject.activeSelf)
-            CurrentReaction().GetComponent<GameController>().ResetLevel();
-
-        if (currentReaction > 0) 
-        {
-            currentReaction--;
-        }
-        else if (currentLevel > 0)
-        {
-            currentLevel--;
-            currentReaction = reactions[currentLevel].Length - 1;
-        }
-
-        LoadReaction(currentReaction);
-    }*/
-
-    /*public void LoadLevel(int level)
-    {
-        if(CurrentReaction().gameObject.activeSelf)
-            CurrentReaction().GetComponent<GameController>().ResetLevel();
-
-        if (level >= reactions.Length)
-            return;
-
-        currentLevel = level;
-
-        if (LevelNames[level].Contains("Tuto") || LevelName().Contains("Dida")) // Niveau de tuto On va direct au Game
-        {
-            LoadReaction(0);
-        }
-        else
-        {
-            LevelSelector.SetActive(false);
-            ReactionSelector.SetActive(true);
-            Game.SetActive(false);
-        }*/
-
-
-
-    /*public void LoadReaction(int reaction)
-    {
-        if (reaction >= reactions[currentLevel].Length)
-            return;
-
-        currentReaction = reaction;
-
-        foreach (Transform child in Playground.transform)
-            child.gameObject.SetActive(false);
-
-        Transform lv = reactions[currentLevel][currentReaction];
-
-        lv.gameObject.SetActive(true);
-        GameController gc = lv.GetComponent<GameController>();
-        if (gc)
-        {
-            gc.ResetLevel();
-        }
-        SetTitlePanel();
-        
-        LevelSelector.SetActive(false); // desactive le menu
-        ReactionSelector.SetActive(false); // desactive le menu
-        Game.SetActive(true);
-
-    }*/
-
-    /*public Transform CurrentReaction()
-    {
-        return reactions[currentLevel][currentReaction];
-
-    }*/
+  
 
     public string LevelName() {
         // Return the name of the current level
@@ -210,23 +127,29 @@ public class LevelManager : MonoBehaviour {
 
     void SetTitlePanel()
     {
-        //LevelParameters parameters =Parameters[currentLevel];
         string title = levelName + " " + (currentLevel + 1);
 
-        /*if (parameters.levelNameOn) title += parameters.LevelName;
-        if (parameters.levelNameOn && parameters.subLevelNameOn) title += " - ";
-        if (parameters.subLevelNameOn) title += parameters.subLevelName;
-        if (parameters.subLevelNumberOn) title += " " + (currentReaction + 1);*/
-
-      
-
         Game.transform.Find("Panel/Title").GetComponent<Text>().text = title;
-        //Game.transform.Find("Panel").GetComponent<Image>().color = LevelColor[currentLevel];
 
-        if ( currentLevel== levels.Length-1)
-            Game.transform.Find("Panel/NextLevel").GetComponent<Button>().interactable = false;
+        if (currentLevel == levels.Length - 1)
+        {
+            if (isExamSession)
+            {
+                Game.transform.Find("Panel/NextLevel").gameObject.SetActive(false);
+                Game.transform.Find("Panel/End").gameObject.SetActive(true);
+            }
+            else
+            {
+                Game.transform.Find("Panel/NextLevel").GetComponent<Button>().interactable = false;
+                Game.transform.Find("Panel/End").gameObject.SetActive(false);
+            }
+        }
         else
+        {
+            Game.transform.Find("Panel/NextLevel").gameObject.SetActive(true);
             Game.transform.Find("Panel/NextLevel").GetComponent<Button>().interactable = true;
+            Game.transform.Find("Panel/End").gameObject.SetActive(false);
+        }
 
         if (currentLevel == 0)
             Game.transform.Find("Panel/PreviousLevel").GetComponent<Button>().interactable = false;

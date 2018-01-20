@@ -250,10 +250,6 @@ public class GameControllerArrow : GameController
 
         ResetElements();
 
-        /*ResetButton.SetActive(false);
-        Controls.SetActive(true);*/
-
-        //ClickableEnable();
         SetupLevel(true);
 
     }
@@ -296,12 +292,18 @@ public class GameControllerArrow : GameController
             FloatingButtons.transform.Find("PreviousStep").gameObject.SetActive(false);
         }
 
-        
 
-        if(LVM.debug)
+
+        if (debug)
+        {
             FloatingButtons.transform.Find("Correction").gameObject.SetActive(true);
+            FloatingButtons.transform.Find("Validate").gameObject.SetActive(true);
+            FloatingButtons.transform.Find("Reset").gameObject.SetActive(true);
+        }
         else
+        {
             FloatingButtons.transform.Find("Correction").gameObject.SetActive(false);
+        }
 
     }
 

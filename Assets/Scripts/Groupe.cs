@@ -11,6 +11,7 @@ public class Groupe : MonoBehaviour {
     
     public GameObject[] elements;
     public GameObject groupName;
+    public bool correction = false;
 
     //Parametres géométriques
     public float width = 0.3f;
@@ -26,8 +27,7 @@ public class Groupe : MonoBehaviour {
     public float fadeDuration = 0.2f;
   
     RectTransform PageRect; // besoin du niveau de zoom de la page
-
-
+ 
 
     void Awake () {
 
@@ -131,6 +131,40 @@ public class Groupe : MonoBehaviour {
 
         Segments = new GameObject[size];
 
+        if (correction)
+        {
+            for (int i = 0; i < size; i++)
+            {
+                GameObject seg =  new GameObject();
+                seg.transform.parent = groupe.transform;
+                LineRenderer lr = seg.AddComponent<LineRenderer>();
+                lr.material = new Material(Shader.Find("Sprites/Default"));
+                //lr.material = new Material(Shader.Find("Particles/Additive"));
+                lr.startColor = lr.endColor = Color.red;
+                if (elements.Length == 1)
+                    lr.startWidth = lr.endWidth = width *  1.3f * 1.1f; // Un peu plus gros si tout seul
+                else
+                    lr.startWidth = lr.endWidth = width *  1.1f;
+                lr.numCapVertices = 10;
+                lr.positionCount = 2;
+                lr.useWorldSpace = false;
+                lr.sortingOrder = -2;
+
+                Vector3 start = elements[i].transform.position;
+                Vector3 end;
+                if (elements.Length > 1)
+                    end = elements[i + 1].transform.position;
+                else
+                    end = start;
+
+                start.z = 0;
+                end.z = 0;
+
+                lr.SetPosition(0, start);
+                lr.SetPosition(1, end);
+            }
+        }
+
         for (int i = 0; i < size; i++)
         {
             Segments[i] = new GameObject();
@@ -161,7 +195,8 @@ public class Groupe : MonoBehaviour {
             lr.SetPosition(0, start);
             lr.SetPosition(1, end);
 
-            //////// Les bouton pour le retirer
+
+            //////// Les boutons pour le retirer
             GameObject image = new GameObject();
 
             image.AddComponent<Image>();
@@ -181,6 +216,42 @@ public class Groupe : MonoBehaviour {
         }
 
     }
+
+    public void SetWrong()
+    {
+        Vector3 position = Vector3.zero;
+        foreach (GameObject el in elements) {
+            position += el.transform.position;
+        }
+        position = position / elements.Length;
+
+
+        GameObject sf = Instantiate(Resources.Load("SmallFail")) as GameObject;
+        sf.GetComponent<RectTransform>().sizeDelta = new Vector2(0.2f, 0.2f) * PageRect.localScale.x;
+        sf.transform.SetParent(groupe.transform);
+        sf.transform.localPosition = position;
+        Canvas cg = sf.AddComponent<Canvas>();
+        cg.overrideSorting = true;
+        cg.sortingOrder = 1;
+    }
+
+    public void SetGood()
+    {
+        Vector3 position = Vector3.zero;
+        foreach (GameObject el in elements)
+        {
+            position += el.transform.position;
+        }
+        position = position / elements.Length;
+        GameObject sf = Instantiate(Resources.Load("SmallCheck")) as GameObject;
+        sf.GetComponent<RectTransform>().sizeDelta = new Vector2(0.2f, 0.2f) * PageRect.localScale.x;
+        sf.transform.SetParent(groupe.transform);
+        sf.transform.localPosition = position;
+        Canvas cg = sf.AddComponent<Canvas>();
+        cg.overrideSorting = true;
+        cg.sortingOrder = 1;
+    }
+
 
     void DrawLine(Vector3 start, Vector3 end, Color color) // Juste une ligne simple (for debugging purpose)
     {

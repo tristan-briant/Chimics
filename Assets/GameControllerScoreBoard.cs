@@ -10,7 +10,7 @@ public class GameControllerScoreBoard : GameController {
 
     public override void SetupLevel(bool playable)
     {
-        base.SetupLevel(playable);
+        //base.SetupLevel(playable);
         FloatingButtons.transform.Find("Clear").gameObject.SetActive(false);
         FloatingButtons.transform.Find("Reset").gameObject.SetActive(false);
         FloatingButtons.transform.Find("Validate").gameObject.SetActive(false);
