@@ -119,5 +119,37 @@ public class LineSelectorManager : MonoBehaviour {
         }
     }
 
+    public void SetGood()
+    {
+        RectTransform PageRect = transform.parent.parent.GetComponent<RectTransform>();
+
+        GameObject sf = Instantiate(Resources.Load("SmallCheck")) as GameObject;
+        sf.GetComponent<RectTransform>().sizeDelta = new Vector2(0.2f, 0.2f) * PageRect.localScale.x;
+        sf.transform.SetParent(transform.Find("Etiquette/Name"));
+        sf.transform.localPosition = new Vector3(0, 0, 0);
+    }
+
+    public void SetWrong(GameObject id)
+    {
+        RectTransform PageRect = transform.parent.parent.GetComponent<RectTransform>();
+
+        GameObject sf = Instantiate(Resources.Load("SmallFail")) as GameObject;
+        sf.GetComponent<RectTransform>().sizeDelta = new Vector2(0.2f, 0.2f) * PageRect.localScale.x;
+        sf.transform.SetParent(transform.Find("Etiquette/Name"));
+        sf.transform.localPosition = Vector3.zero;
+
+        GameObject name = Object.Instantiate<GameObject>(id.transform.Find("Data/Name").gameObject);
+        name.transform.SetParent(transform.Find("Etiquette/Name"), false);
+        name.transform.localPosition = new Vector3(0, 40, 0);
+        name.transform.localScale = 0.5f * Vector3.one;
+        name.GetComponent<Image>().enabled = false;
+
+        foreach (Text t in name.GetComponentsInChildren<Text>())
+            t.color = Color.red;
+
+
+    }
+
+
 
 }

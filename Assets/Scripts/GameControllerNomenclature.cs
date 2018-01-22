@@ -104,6 +104,67 @@ public class GameControllerNomenclature : GameController {
 
 
         }
+
+        Transform n= transform.Find("Name").Find("Text");
+        foreach(Transform go in n.transform)
+        {
+            Destroy(go.gameObject);
+        }
+
+    }
+
+    public override int Score()
+    {
+        Transform sol = transform.Find("Solutions");
+
+        bool test = false;
+        foreach (Text solution in sol.GetComponentsInChildren<Text>())
+        {
+            if (solution.text == "") continue;
+            if (solution.text == transform.Find("Name").Find("Text").GetComponent<Text>().text)
+                test = true;
+        }
+
+        if (test) return 100;
+        else return 0;
+    }
+
+    public override void ShowCorrection()
+    {
+        if (Score() == 100)
+        {
+            Transform n = transform.Find("Name").Find("Text");
+            RectTransform PageRect = transform.parent.parent.GetComponent<RectTransform>();
+
+            GameObject sf = Instantiate(Resources.Load("SmallCheck")) as GameObject;
+            sf.GetComponent<RectTransform>().sizeDelta = new Vector2(0.2f, 0.2f) * PageRect.localScale.x;
+            sf.transform.SetParent(n.transform);
+            sf.transform.localPosition = Vector3.zero;
+        }
+        else
+        {
+            Transform n = transform.Find("Name").Find("Text");
+            RectTransform PageRect = transform.parent.parent.GetComponent<RectTransform>();
+            
+            float position = 60;
+            Text solution = transform.Find("Solutions").GetChild(0).GetComponentInChildren<Text>();
+            GameObject textSol = Instantiate<GameObject>(n.gameObject);
+            textSol.transform.SetParent(n);
+            textSol.transform.localPosition = new Vector3(0, position, 0);
+            textSol.transform.localScale = Vector3.one;
+            RectTransform t = textSol.GetComponent<RectTransform>();
+            t.sizeDelta = Vector2.zero;
+            textSol.GetComponent<Text>().text = solution.text;
+            textSol.GetComponent<Text>().color = Color.red;
+
+
+
+            GameObject sf = Instantiate(Resources.Load("SmallFail")) as GameObject;
+            sf.GetComponent<RectTransform>().sizeDelta = new Vector2(0.2f, 0.2f) * PageRect.localScale.x;
+            sf.transform.SetParent(n.transform);
+            sf.transform.localPosition = Vector3.zero;
+            
+        }
     }
 
 

@@ -10,7 +10,7 @@ public class GameControllerSpectreIR : GameController {
     bool started = false;
     public GameObject BtnValidate;
 
-    public void Awake()
+    override public void Awake()
     {
         transform.localPosition = new Vector3(0, 0, 0);
 
@@ -45,7 +45,6 @@ public class GameControllerSpectreIR : GameController {
         }
 
     }
-
 
     override public void LateUpdate()
     {
@@ -176,18 +175,60 @@ public class GameControllerSpectreIR : GameController {
 
     }
 
-    /*override public IEnumerator FailAnimation()
+    public override int Score()
     {
-        transform.parent.parent.GetComponent<resize>().ReZoom();
-        ClickableDisable();
-        ResetElements();
-        transform.parent.parent.Find("Fail").GetComponent<Animator>().SetTrigger("FailTrigger");
-        yield return new WaitForSeconds(1.5f);
-        ClearLevel();
-        ClickableEnable();
-        ShowTip();
-    }*/
+        Transform sol = transform.Find("Solutions");
 
+        SolutionSpectre[] solutions = sol.GetComponents<SolutionSpectre>();
+
+        /*******  Calcul du nombre d'item à trouver  ****/
+        int SolutionCountTotal = 0;
+        foreach (SolutionSpectre s in solutions)
+        {
+            SolutionCountTotal++; //identification du nom
+            SolutionCountTotal += s.elements.Count; //identification des liaisons
+        }
+
+        /*******  Calcul du nombre d'item trouvé par le joueur  ****/
+
+        int SolutionCountUser = 0;
+        foreach (LineSelectorManager ls in transform.GetComponentsInChildren<LineSelectorManager>())
+        {
+            foreach (SolutionSpectre s in solutions)
+            {
+                if (ls.ID == s.LineName) SolutionCountUser++; //identification du nom
+            }
+        }
+
+        foreach (GameObject go in doublets)
+        {
+            ElementManager em = go.GetComponent<ElementManager>();
+
+            foreach (SolutionSpectre s in solutions)
+            {
+                if (em.AbsorptionLine == s.Line && s.elements.Contains(em.gameObject)) //identification des liaisons
+                    SolutionCountUser++;
+            }
+        }
+
+        foreach (GameObject go in doublets)
+        {
+            ElementManager em = go.GetComponent<ElementManager>();
+
+            if (em.AbsorptionLine != null)
+            {
+                foreach (SolutionSpectre s in solutions)
+                {
+                    if (em.AbsorptionLine == s.Line && !s.elements.Contains(em.gameObject)) //identification des erreurs
+                        SolutionCountUser--;
+                }
+            }
+        }
+
+        int percent = Mathf.Clamp(10 * Mathf.FloorToInt(10 * SolutionCountUser / SolutionCountTotal), 0, 100);
+        return percent;
+
+    }
 
     override public void WinLevel()
     {
@@ -244,7 +285,7 @@ public class GameControllerSpectreIR : GameController {
         step = 0;
 
         ShowTip();
-        ResetButton.SetActive(false);
+        //ResetButton.SetActive(false);
 
         Controls.SetActive(false);
 
@@ -280,6 +321,53 @@ public class GameControllerSpectreIR : GameController {
 
     }
 
+    public override void SetupLevel(bool notused)
+    {
+        base.SetupLevel(false);
+
+        bool playable = !corrected;
+
+        FloatingButtons = GameObject.FindGameObjectWithTag("Controls");
+        FloatingButtons.SetActive(true);
+
+        if (playable && training)
+        {
+            FloatingButtons.transform.Find("Clear").gameObject.SetActive(false);
+            FloatingButtons.transform.Find("Reset").gameObject.SetActive(false);
+            FloatingButtons.transform.Find("Validate").gameObject.SetActive(false);
+
+            transform.Find("Validate").gameObject.SetActive(true);
+            transform.Find("Next").gameObject.SetActive(false);
+        }
+
+        if (playable && !training)
+        {
+            FloatingButtons.transform.Find("Clear").gameObject.SetActive(false);
+            FloatingButtons.transform.Find("Reset").gameObject.SetActive(false);
+            FloatingButtons.transform.Find("Validate").gameObject.SetActive(false);
+
+            transform.Find("Validate").gameObject.SetActive(false);
+            transform.Find("Next").gameObject.SetActive(false);
+        }
+        if (!playable)
+        {
+            FloatingButtons.transform.Find("Clear").gameObject.SetActive(false);
+            FloatingButtons.transform.Find("Reset").gameObject.SetActive(false);
+            FloatingButtons.transform.Find("Validate").gameObject.SetActive(false);
+        }
+
+        if (debug)
+        {
+            FloatingButtons.transform.Find("Correction").gameObject.SetActive(true);
+            FloatingButtons.transform.Find("Validate").gameObject.SetActive(true);
+            FloatingButtons.transform.Find("Reset").gameObject.SetActive(true);
+        }
+        else
+        {
+            FloatingButtons.transform.Find("Correction").gameObject.SetActive(false);
+        }
+    }
+
     override public void ResetElements()
     {
         foreach (GameObject go in accepteurs)
@@ -292,4 +380,49 @@ public class GameControllerSpectreIR : GameController {
 
         }
     }
+
+    public override void ShowCorrection()
+    {
+
+        Transform sol = transform.Find("Solutions");
+
+        SolutionSpectre[] solutions = sol.GetComponents<SolutionSpectre>();
+
+        foreach (SolutionSpectre s in solutions)
+        {
+
+            LineSelectorManager ls = s.Line.GetComponent<LineSelectorManager>();
+
+            if (ls.ID == s.LineName) ls.SetGood(); //identification du nom
+            else ls.SetWrong(s.LineName);
+
+        }
+
+        foreach (GameObject go in doublets)
+        {
+            ElementManager em = go.GetComponent<ElementManager>();
+
+            foreach (SolutionSpectre s in solutions)
+            {
+                if (em.AbsorptionLine == s.Line && s.elements.Contains(em.gameObject)) //identification des liaisons
+                    ;
+            }
+        }
+
+        foreach (GameObject go in doublets)
+        {
+            ElementManager em = go.GetComponent<ElementManager>();
+
+            if (em.AbsorptionLine != null)
+            {
+                foreach (SolutionSpectre s in solutions)
+                {
+                    if (em.AbsorptionLine == s.Line && !s.elements.Contains(em.gameObject)) //identification des erreurs
+                        ;
+                }
+            }
+        }
+    }
+
+
 }

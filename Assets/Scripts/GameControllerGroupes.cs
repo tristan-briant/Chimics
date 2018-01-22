@@ -131,7 +131,7 @@ public class GameControllerGroupes : GameController
 
     override public void ResetLevel()
     {
-        base.ResetLevel();
+        //base.ResetLevel();
 
         Groupe[] groupes = transform.GetComponents<Groupe>();
 
@@ -140,13 +140,7 @@ public class GameControllerGroupes : GameController
             it.Remove(0.0f);
         }
 
-        foreach (GameObject ob in Buttons)
-        {
-            ob.SetActive(true);
-        }
-        ResetButton.SetActive(false);
-
-        //Controls.SetActive(true);
+        SetupLevel(true);
     }
 
     public override void SetupLevel(bool notused)

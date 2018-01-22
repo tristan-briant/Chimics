@@ -33,7 +33,8 @@ public class Groupe : MonoBehaviour {
 
         FadeIn(fadeDuration);
   
-        PageRect = transform.parent.parent.GetComponent<RectTransform>(); 
+        PageRect = transform.parent.parent.GetComponent<RectTransform>();
+       
 
     }
 
@@ -43,28 +44,29 @@ public class Groupe : MonoBehaviour {
         float t = Time.time;
         float scale = PageRect.localScale.x;  // recupère le niveau de zoom
 
-        for (int i = 0; i < Segments.Length; i++)
+        foreach (LineRenderer lr in groupe.GetComponentsInChildren<LineRenderer>())
         {
-            LineRenderer lr = Segments[i].GetComponent<LineRenderer>();
             lr.widthMultiplier = scale;
         }
 
 
         if (t <= TimeEnd + 0.1f)
         {
-            Color c = color;
+            //Color c = color;
+            float alpha;
 
             if (isfadein)
-                c.a = (t - TimeStart) / (TimeEnd - TimeStart);
+                alpha = Mathf.Clamp01((t - TimeStart) / (TimeEnd - TimeStart));
             else
-                c.a = (1 - (t - TimeStart) / (TimeEnd - TimeStart));
-            
-            for (int i = 0; i < Segments.Length; i++)
+                alpha = Mathf.Clamp01((1 - (t - TimeStart) / (TimeEnd - TimeStart)));
+        
+            foreach(LineRenderer lr in groupe.GetComponentsInChildren<LineRenderer>())
             {
-                LineRenderer lr = Segments[i].GetComponent<LineRenderer>();
-                lr.widthMultiplier = scale;
+                Color c = lr.startColor;
+                c.a= alpha;
                 lr.startColor = lr.endColor = c;
             }
+
         }
         else
         {
@@ -141,10 +143,11 @@ public class Groupe : MonoBehaviour {
                 lr.material = new Material(Shader.Find("Sprites/Default"));
                 //lr.material = new Material(Shader.Find("Particles/Additive"));
                 lr.startColor = lr.endColor = Color.red;
+
                 if (elements.Length == 1)
-                    lr.startWidth = lr.endWidth = width *  1.3f * 1.1f; // Un peu plus gros si tout seul
+                    lr.startWidth = lr.endWidth = width * 1.3f * 1.1f; // Un peu plus gros si tout seul
                 else
-                    lr.startWidth = lr.endWidth = width *  1.1f;
+                    lr.startWidth = lr.endWidth = width * 1.1f;
                 lr.numCapVertices = 10;
                 lr.positionCount = 2;
                 lr.useWorldSpace = false;
@@ -170,8 +173,12 @@ public class Groupe : MonoBehaviour {
             Segments[i] = new GameObject();
             Segments[i].transform.parent = groupe.transform;
             LineRenderer lr = Segments[i].AddComponent<LineRenderer>();
+
+           
+
             lr.material = new Material(Shader.Find("Sprites/Default"));
             //lr.material = new Material(Shader.Find("Particles/Additive"));
+            if (correction) color.a = 1; // inutil de faire un fade in
             lr.startColor = lr.endColor = color;
             if (elements.Length == 1)
                 lr.startWidth = lr.endWidth = width * 1.3f; // Un peu plus gros si tout seul
@@ -194,7 +201,6 @@ public class Groupe : MonoBehaviour {
 
             lr.SetPosition(0, start);
             lr.SetPosition(1, end);
-
 
             //////// Les boutons pour le retirer
             GameObject image = new GameObject();
