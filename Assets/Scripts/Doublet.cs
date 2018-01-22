@@ -1,12 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System.Linq;
 
 public class Doublet : MonoBehaviour {
 
     public GameObject  Atome;
     public GameObject doublet;
+    public Color color=new Color32(34,159,9,255);
 
     public float distance = 40; // distance from element
 
@@ -26,7 +28,7 @@ public class Doublet : MonoBehaviour {
     {
         doublet = Instantiate(Resources.Load("Doublet")) as GameObject;
         doublet.name= "Doublet Sup";
-
+        doublet.transform.Find("lien").GetComponent<Image>().color = color;
         doublet.transform.SetParent(Atome.transform);
         doublet.transform.localScale = Vector3.one;
 
@@ -185,4 +187,23 @@ public class Doublet : MonoBehaviour {
         lr.SetPosition(1, end);
     }
 
+    public void SetGood()
+    {
+        RectTransform PageRect = transform.parent.parent.GetComponent<RectTransform>();
+
+        GameObject sf = Instantiate(Resources.Load("SmallCheck")) as GameObject;
+        sf.GetComponent<RectTransform>().sizeDelta = new Vector2(0.1f, 0.1f) * PageRect.localScale.x;
+        sf.transform.SetParent(doublet.transform);
+        sf.transform.localPosition = Vector3.zero;
+    }
+
+    public void SetWrong()
+    {
+        RectTransform PageRect = transform.parent.parent.GetComponent<RectTransform>();
+
+        GameObject sf = Instantiate(Resources.Load("SmallFail")) as GameObject;
+        sf.GetComponent<RectTransform>().sizeDelta = new Vector2(0.1f, 0.1f) * PageRect.localScale.x;
+        sf.transform.SetParent(doublet.transform);
+        sf.transform.localPosition = Vector3.zero;
+    }
 }

@@ -26,7 +26,7 @@ public class GameControllerArrowDoublet : GameControllerArrow {
         
     }
 
-    void UpdateArrow(GameObject acc) {
+    public void UpdateArrow(GameObject acc) {
         if (acc)
         {
             foreach (ElementManager em in acc.GetComponentsInChildren<ElementManager>())
@@ -109,52 +109,41 @@ public class GameControllerArrowDoublet : GameControllerArrow {
 
     }
 
+    public override int Score()
+    {
+        Transform sol = transform.Find("Solutions");
+        Arrow[] arrows = transform.GetComponents<Arrow>();
+
+        int score = 0;
+
+        int test = -1;
+
+        foreach (Solutions s in sol.transform.GetComponents<Solutions>())
+        {
+           
+            int test0 = s.TestReaction(arrows);
+            if (test0 > test)
+            {
+                test = test0;
+            }
+        }
+
+        score = test;
+
+ 
+        SolutionDoublets soldoub = sol.GetComponent<SolutionDoublets>();
+
+        score += (100*soldoub.TestSolution())/ soldoub.MaxScore();
+
+        Debug.Log("Score  : " + (score/2) );
+
+        return score / 2;
+    }
 
     override public void Validate()
     {
-        Transform sol = transform.Find("Solutions");
-
-        Arrow[] lm = transform.GetComponents<Arrow>();
-        int length = lm.Length;
-
-        GameObject[] acc = new GameObject[length];
-        GameObject[] don = new GameObject[length]; ;
-
-        int count = 0;
-        foreach (Arrow iterator in lm)
-        {
-            acc[count] = iterator.atome;
-            don[count++] = iterator.liaison;
-        }
-
-        bool win = false;
-        bool halfWin = false;
-
-        Solutions[] solutions = sol.GetComponents<Solutions>();
-        Debug.Log("nombre de sol " + solutions.Length);
-
-        foreach (Solutions s in solutions)
-        {
-            int test = s.TestReaction(acc, don);
-
-            if (test == 1)
-                win = true;
-
-            if (test == -1)
-                halfWin = true;
-        }
-
-        SolutionDoublets soldoub = sol.GetComponent<SolutionDoublets>();
-
-        int score = soldoub.TestSolution();
-
-        Debug.Log("Score  : " + score + " / " + soldoub.MaxScore());
-
-        if (score < soldoub.MaxScore()) {
-            win = false;
-        }
-
-        if (win)
+       
+        if(Score()==100)
         {
             RemoveTip();
             failCount = 0;
@@ -176,7 +165,7 @@ public class GameControllerArrowDoublet : GameControllerArrow {
         else
         {
             failCount++;
-            int percent = 10*Mathf.FloorToInt( 10.0f * (float)score / (float)(soldoub.MaxScore()));
+            int percent = Score();
             if (percent < 10)
                 StartCoroutine(FailAnimation());
             else if (percent < 100)
@@ -185,6 +174,112 @@ public class GameControllerArrowDoublet : GameControllerArrow {
                 StartCoroutine(WarningAnimation("Réaction incomplète"));
 
         }
+    }
+
+
+    public override void ShowCorrection()
+    {
+        SolutionDoublets soldoub = transform.GetComponentInChildren<SolutionDoublets>();
+        soldoub.CorrectDoublet();
+
+        Solutions[] solutions = transform.Find("Solutions").GetComponents<Solutions>();
+
+        Solutions bestSolution;
+
+
+        for (int st = 0; st <= stepNumber; st++) // Donne la correction de l'étape st
+        {
+            List<Arrow> arrows = new List<Arrow>();
+
+            foreach (Arrow ar in transform.GetComponents<Arrow>())  // On sélectionne uniquement les flèches de l'étape
+            {
+                if (ar.step == st)
+                {
+                    arrows.Add(ar);
+                }
+            }
+
+            int test = -1;
+            bestSolution = null;
+
+            foreach (Solutions s in solutions)
+            {
+                if (s.step != st) continue;
+
+                int test0 = s.TestReaction(arrows.ToArray());
+                if (test0 > test)
+                {
+                    test = test0;
+                    bestSolution = s;
+                }
+            }
+
+            foreach (Arrow ar in arrows)
+            {
+                if (bestSolution.TestOneArrow(ar))
+                    ar.SetGood();
+                else
+                    ar.SetWrong();
+            }
+
+            bestSolution.CompleteReaction(arrows);
+
+        }
+
+
+    }
+
+    override public void SetupLevel(bool notused)
+    {
+        base.SetupLevel(true);
+        bool playable = !corrected;
+
+        FloatingButtons = GameObject.FindGameObjectWithTag("Controls");
+        if (playable && training)
+        {
+            FloatingButtons.transform.Find("Clear").gameObject.SetActive(true);
+            FloatingButtons.transform.Find("Reset").gameObject.SetActive(false);
+            FloatingButtons.transform.Find("Validate").gameObject.SetActive(true);
+        }
+
+        if (playable && !training)
+        {
+            FloatingButtons.transform.Find("Clear").gameObject.SetActive(true);
+            FloatingButtons.transform.Find("Reset").gameObject.SetActive(false);
+            FloatingButtons.transform.Find("Validate").gameObject.SetActive(false);
+        }
+        if (!playable)
+        {
+            FloatingButtons.transform.Find("Clear").gameObject.SetActive(false);
+            FloatingButtons.transform.Find("Reset").gameObject.SetActive(false);
+            FloatingButtons.transform.Find("Validate").gameObject.SetActive(false);
+        }
+
+        if (stepNumber > 0)
+        {
+            anim.SetTrigger("reset");
+            FloatingButtons.transform.Find("NextStep").gameObject.SetActive(true);
+            FloatingButtons.transform.Find("PreviousStep").gameObject.SetActive(false);
+        }
+        else
+        {
+            FloatingButtons.transform.Find("NextStep").gameObject.SetActive(false);
+            FloatingButtons.transform.Find("PreviousStep").gameObject.SetActive(false);
+        }
+
+
+
+        if (debug)
+        {
+            FloatingButtons.transform.Find("Correction").gameObject.SetActive(true);
+            FloatingButtons.transform.Find("Validate").gameObject.SetActive(true);
+            FloatingButtons.transform.Find("Reset").gameObject.SetActive(true);
+        }
+        else
+        {
+            FloatingButtons.transform.Find("Correction").gameObject.SetActive(false);
+        }
+
     }
 
 
@@ -199,4 +294,14 @@ public class GameControllerArrowDoublet : GameControllerArrow {
                 RemoveThisDoublet(d.doublet);
         }
     }
+
+    bool IsElement(GameObject go, GameObject[] array)
+    {
+        foreach (GameObject iterator in array)
+        {
+            if (go == iterator) return true;
+        }
+        return false;
+    }
+
 }

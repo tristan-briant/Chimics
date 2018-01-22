@@ -25,6 +25,7 @@ public class ActivitiesNomencatureManager : MonoBehaviour {
     {
         GameObject[] levels = Resources.LoadAll<GameObject>("Nomenclature/Tutorial");
         LVM.isExamSession = false;
+        LVM.debug = true;
 
         LVM.SetLevels(levels);
         LVM.levelName = "Didacticiel";
@@ -36,6 +37,8 @@ public class ActivitiesNomencatureManager : MonoBehaviour {
     {
         GameObject[] levels = Resources.LoadAll<GameObject>("Nomenclature/Names");
         LVM.isExamSession = false;
+        LVM.debug = false;
+
         LVM.SetLevels(levels);
         foreach (Transform lv in LVM.levels)
             lv.GetComponent<GameController>().training = true;
@@ -47,6 +50,8 @@ public class ActivitiesNomencatureManager : MonoBehaviour {
     {
         GameObject[] levels = Resources.LoadAll<GameObject>("Nomenclature/Groupes");
         LVM.isExamSession = false;
+        LVM.debug = false;
+
         LVM.SetLevels(levels);
         foreach (Transform lv in LVM.levels)
             lv.GetComponent<GameController>().training = true;
@@ -76,6 +81,8 @@ public class ActivitiesNomencatureManager : MonoBehaviour {
         }
         LVM.scoreBoard.GetComponent<ScoreBoardManager>().ResetBoard();
         LVM.isExamSession = true;
+        LVM.debug = false;
+
         LVM.SetLevels(shortList.ToArray());
         LVM.levelName = "Réaction";
         LVM.LoadLevel(0);
@@ -97,6 +104,9 @@ public class ActivitiesNomencatureManager : MonoBehaviour {
         LVM.SetLevels(all.ToArray());
         foreach (Transform lv in LVM.levels)
             lv.GetComponent<GameController>().debug = true;
+
+        LVM.isExamSession = false;
+        LVM.debug = true;
 
         LVM.levelName = "level";
         LVM.LoadLevel(0);

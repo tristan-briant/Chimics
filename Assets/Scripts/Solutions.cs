@@ -62,7 +62,10 @@ public class Solutions : MonoBehaviour {
         if (!first) {
             Arrow ar = transform.parent.gameObject.AddComponent<Arrow>();
             ar.atome = accepteurs1[0];
-            ar.liaison = donneurs1[0];
+            if (donneurs1[0].CompareTag("Accepteur"))
+                ar.liaison = donneurs1[0].transform.Find("Doublet Sup").gameObject;
+            else
+                ar.liaison = donneurs1[0];
             ar.color = new Color(1,0,0,0);
             ar.step = step;
             ar.DrawCurvedArrow();
@@ -72,7 +75,10 @@ public class Solutions : MonoBehaviour {
         {
             Arrow ar = transform.parent.gameObject.AddComponent<Arrow>();
             ar.atome = accepteurs2[0];
-            ar.liaison = donneurs2[0];
+            if (donneurs2[0].CompareTag("Accepteur"))
+                ar.liaison = donneurs2[0].transform.Find("Doublet Sup").gameObject;
+            else
+                ar.liaison = donneurs2[0];
             ar.color = new Color(1, 0, 0, 0);
             ar.step = step;
             ar.DrawCurvedArrow();

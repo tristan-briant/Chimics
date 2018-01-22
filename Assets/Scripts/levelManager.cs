@@ -96,6 +96,11 @@ public class LevelManager : MonoBehaviour {
             currentLevel++;
             LoadLevel(currentLevel);
         }
+        else
+        {
+            currentLevel = 0;
+            LoadLevel(currentLevel);
+        }
 
     }
 
@@ -106,8 +111,12 @@ public class LevelManager : MonoBehaviour {
             currentLevel--;
             LoadLevel(currentLevel);
         }
+        else
+        {
+            currentLevel = levels.Length - 1;
+            LoadLevel(currentLevel);
+        }
 
-       
     }
 
     public void LoadScoreBoard()
@@ -116,8 +125,6 @@ public class LevelManager : MonoBehaviour {
         scoreBoard.SetActive(true);
         Game.SetActive(false);
     }
-
-  
 
     public string LevelName() {
         // Return the name of the current level
@@ -131,30 +138,41 @@ public class LevelManager : MonoBehaviour {
 
         Game.transform.Find("Panel/Title").GetComponent<Text>().text = title;
 
-        if (currentLevel == levels.Length - 1)
+        if (!debug)
         {
-            if (isExamSession)
+            if (currentLevel == levels.Length - 1)
             {
-                Game.transform.Find("Panel/NextLevel").gameObject.SetActive(false);
-                Game.transform.Find("Panel/End").gameObject.SetActive(true);
+                if (isExamSession)
+                {
+                    Game.transform.Find("Panel/NextLevel").gameObject.SetActive(false);
+                    Game.transform.Find("Panel/End").gameObject.SetActive(true);
+                }
+                else
+                {
+                    Game.transform.Find("Panel/NextLevel").GetComponent<Button>().interactable = false;
+                    Game.transform.Find("Panel/End").gameObject.SetActive(false);
+                }
             }
             else
             {
-                Game.transform.Find("Panel/NextLevel").GetComponent<Button>().interactable = false;
+                Game.transform.Find("Panel/NextLevel").gameObject.SetActive(true);
+                Game.transform.Find("Panel/NextLevel").GetComponent<Button>().interactable = true;
                 Game.transform.Find("Panel/End").gameObject.SetActive(false);
             }
+
+            if (currentLevel == 0)
+                Game.transform.Find("Panel/PreviousLevel").GetComponent<Button>().interactable = false;
+            else
+                Game.transform.Find("Panel/PreviousLevel").GetComponent<Button>().interactable = true;
         }
         else
         {
             Game.transform.Find("Panel/NextLevel").gameObject.SetActive(true);
             Game.transform.Find("Panel/NextLevel").GetComponent<Button>().interactable = true;
-            Game.transform.Find("Panel/End").gameObject.SetActive(false);
-        }
-
-        if (currentLevel == 0)
-            Game.transform.Find("Panel/PreviousLevel").GetComponent<Button>().interactable = false;
-        else
             Game.transform.Find("Panel/PreviousLevel").GetComponent<Button>().interactable = true;
+            Game.transform.Find("Panel/End").gameObject.SetActive(false);
+
+        }
 
     }
 

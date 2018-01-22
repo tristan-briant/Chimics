@@ -25,6 +25,7 @@ public class ActivitiesSpectreManager : MonoBehaviour {
     {
         GameObject[] levels = Resources.LoadAll<GameObject>("Spectre/Tutorial");
         LVM.isExamSession = false;
+        LVM.debug = false;
 
         LVM.SetLevels(levels);
         LVM.levelName = "Didacticiel";
@@ -36,17 +37,8 @@ public class ActivitiesSpectreManager : MonoBehaviour {
     {
         GameObject[] levels = Resources.LoadAll<GameObject>("Spectre/IR");
         LVM.isExamSession = false;
-        LVM.SetLevels(levels);
-        foreach (Transform lv in LVM.levels)
-            lv.GetComponent<GameController>().training = true;
-        LVM.levelName = "Réaction";
-        LVM.LoadLevel(0);
-    }
+        LVM.debug = false;
 
-    public void LoadGroupeSession()
-    {
-        GameObject[] levels = Resources.LoadAll<GameObject>("Nomenclature/Groupes");
-        LVM.isExamSession = false;
         LVM.SetLevels(levels);
         foreach (Transform lv in LVM.levels)
             lv.GetComponent<GameController>().training = true;
@@ -76,6 +68,8 @@ public class ActivitiesSpectreManager : MonoBehaviour {
         }
         LVM.scoreBoard.GetComponent<ScoreBoardManager>().ResetBoard();
         LVM.isExamSession = true;
+        LVM.debug = false;
+
         LVM.SetLevels(shortList.ToArray());
         LVM.levelName = "Réaction";
         LVM.LoadLevel(0);
@@ -98,6 +92,8 @@ public class ActivitiesSpectreManager : MonoBehaviour {
         foreach (Transform lv in LVM.levels)
             lv.GetComponent<GameController>().debug = true;
 
+        LVM.isExamSession = false;
+        LVM.debug = true;
         LVM.levelName = "level";
         LVM.LoadLevel(0);
     }

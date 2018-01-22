@@ -287,7 +287,7 @@ public class GameControllerSpectreIR : GameController {
         ShowTip();
         //ResetButton.SetActive(false);
 
-        Controls.SetActive(false);
+        //Controls.SetActive(false);
 
         if (gameObject.name.Contains("Tuto"))
         {
@@ -387,6 +387,7 @@ public class GameControllerSpectreIR : GameController {
         Transform sol = transform.Find("Solutions");
 
         SolutionSpectre[] solutions = sol.GetComponents<SolutionSpectre>();
+        RectTransform PageRect = transform.parent.parent.GetComponent<RectTransform>();
 
         foreach (SolutionSpectre s in solutions)
         {
@@ -404,8 +405,13 @@ public class GameControllerSpectreIR : GameController {
 
             foreach (SolutionSpectre s in solutions)
             {
-                if (em.AbsorptionLine == s.Line && s.elements.Contains(em.gameObject)) //identification des liaisons
-                    ;
+                if (em.AbsorptionLine == s.Line && s.elements.Contains(em.gameObject))
+                { //identification des liaisons Ok
+                    GameObject sf = Instantiate(Resources.Load("SmallCheck")) as GameObject;
+                    sf.GetComponent<RectTransform>().sizeDelta = new Vector2(0.1f, 0.1f) * PageRect.localScale.x;
+                    sf.transform.SetParent(go.transform);
+                    sf.transform.localPosition = Vector3.zero;
+                }
             }
         }
 
@@ -417,8 +423,13 @@ public class GameControllerSpectreIR : GameController {
             {
                 foreach (SolutionSpectre s in solutions)
                 {
-                    if (em.AbsorptionLine == s.Line && !s.elements.Contains(em.gameObject)) //identification des erreurs
-                        ;
+                    if (em.AbsorptionLine == s.Line && !s.elements.Contains(em.gameObject))
+                    { //identification des erreurs
+                        GameObject sf = Instantiate(Resources.Load("SmallFail")) as GameObject;
+                        sf.GetComponent<RectTransform>().sizeDelta = new Vector2(0.1f, 0.1f) * PageRect.localScale.x;
+                        sf.transform.SetParent(go.transform);
+                        sf.transform.localPosition = Vector3.zero;
+                    }
                 }
             }
         }
