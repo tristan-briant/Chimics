@@ -19,7 +19,9 @@ public class ActivitiesSelectorManager : MonoBehaviour {
     private void Start()
     {
         var rect = GetComponent<RectTransform>();
-        rect.localPosition = new Vector3(0, 0, 0);
+        rect.localPosition = Vector3.zero;
+        transform.parent.Find("WaitScreen").localPosition = Vector3.zero;
+       transform.parent.Find("WaitScreen").gameObject.SetActive(false);
     }
 
     public void LoadTutorial()
@@ -73,8 +75,11 @@ public class ActivitiesSelectorManager : MonoBehaviour {
 
     public void LoadDebugSession()
     {
-        
-        List<GameObject> all = new List<GameObject>();
+       
+        transform.parent.Find("WaitScreen").gameObject.SetActive(true);
+        StartCoroutine(LoadDebugSessionWait());
+        //gameObject.SetActive(false);
+        /*List<GameObject> all = new List<GameObject>();
 
 
         GameObject[] exam = Resources.LoadAll<GameObject>("Mecanismes/Exam");
@@ -96,8 +101,10 @@ public class ActivitiesSelectorManager : MonoBehaviour {
         LVM.debug = true;
 
         LVM.levelName = "level";
+
+        transform.parent.Find("WaitScreen").gameObject.SetActive(false);
         LVM.LoadLevel(0);
- 
+ */
     }
 
 
@@ -112,6 +119,58 @@ public class ActivitiesSelectorManager : MonoBehaviour {
         {
             BackToMenu();
         }
+    }
+
+    IEnumerator LoadDebugSessionWait()
+    {
+        yield return null;
+        List<GameObject> all = new List<GameObject>();
+
+        int k = 0;
+        GameObject[] exam = Resources.LoadAll<GameObject>("Mecanismes/Exam");
+        transform.parent.Find("WaitScreen").GetComponentInChildren<Text>().text=k.ToString(); k++;
+        yield return null;
+
+
+        GameObject[] tuto = Resources.LoadAll<GameObject>("Mecanismes/Tutorial");
+        transform.parent.Find("WaitScreen").GetComponentInChildren<Text>().text = k.ToString(); k++;
+        yield return null;
+
+        GameObject[] training = Resources.LoadAll<GameObject>("Mecanismes/Training");
+        transform.parent.Find("WaitScreen").GetComponentInChildren<Text>().text = k.ToString(); k++;
+        yield return null;
+
+        GameObject[] doublets = Resources.LoadAll<GameObject>("Mecanismes/Doublets");
+        transform.parent.Find("WaitScreen").GetComponentInChildren<Text>().text = k.ToString(); k++;
+        yield return null;
+
+
+        all.AddRange(tuto);
+        all.AddRange(training);
+        all.AddRange(exam);
+        all.AddRange(doublets);
+
+        transform.parent.Find("WaitScreen").GetComponentInChildren<Text>().text = k.ToString(); k++;
+        yield return null;
+
+
+
+        LVM.SetLevels(all.ToArray());
+        foreach (Transform lv in LVM.levels)
+            lv.GetComponent<GameController>().debug = true;
+
+        LVM.isExamSession = false;
+        LVM.debug = true;
+
+        LVM.levelName = "level";
+        transform.parent.Find("WaitScreen").GetComponentInChildren<Text>().text = k.ToString(); k++;
+        yield return null;
+
+
+
+        transform.parent.Find("WaitScreen").gameObject.SetActive(false);
+        LVM.LoadLevel(0);
+        
     }
 
 

@@ -8,6 +8,12 @@ public class ControlManager : MonoBehaviour
 {
     public LevelManager LVM;
   
+    void Start()
+    {
+        LVM = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelManager>(); 
+    }
+
+
     public void Validate() {
         LVM.CurrentLevel().GetComponent<GameController>().Validate();
     }
