@@ -61,7 +61,7 @@ public class LevelManager : MonoBehaviour {
     {
         if (levelNumber >= levels.Length)
             return;
-         ActivitiesSelector.SetActive(false); // desactive le menu
+        //ActivitiesSelector.SetActive(false); // desactive le menu
 
         Game.SetActive(true);
         scoreBoard.SetActive(false);

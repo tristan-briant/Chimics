@@ -128,32 +128,19 @@ public class ActivitiesSelectorManager : MonoBehaviour {
 
         int k = 0;
         GameObject[] exam = Resources.LoadAll<GameObject>("Mecanismes/Exam");
-        transform.parent.Find("WaitScreen").GetComponentInChildren<Text>().text=k.ToString(); k++;
-        yield return null;
-
-
+        transform.parent.Find("WaitScreen").GetComponentInChildren<Text>().text+="."; yield return null;
         GameObject[] tuto = Resources.LoadAll<GameObject>("Mecanismes/Tutorial");
-        transform.parent.Find("WaitScreen").GetComponentInChildren<Text>().text = k.ToString(); k++;
-        yield return null;
-
+        transform.parent.Find("WaitScreen").GetComponentInChildren<Text>().text += "."; yield return null;
         GameObject[] training = Resources.LoadAll<GameObject>("Mecanismes/Training");
-        transform.parent.Find("WaitScreen").GetComponentInChildren<Text>().text = k.ToString(); k++;
-        yield return null;
-
+        transform.parent.Find("WaitScreen").GetComponentInChildren<Text>().text += "."; yield return null;
         GameObject[] doublets = Resources.LoadAll<GameObject>("Mecanismes/Doublets");
-        transform.parent.Find("WaitScreen").GetComponentInChildren<Text>().text = k.ToString(); k++;
-        yield return null;
-
-
+        transform.parent.Find("WaitScreen").GetComponentInChildren<Text>().text += "."; yield return null;
         all.AddRange(tuto);
         all.AddRange(training);
         all.AddRange(exam);
         all.AddRange(doublets);
 
-        transform.parent.Find("WaitScreen").GetComponentInChildren<Text>().text = k.ToString(); k++;
-        yield return null;
-
-
+        transform.parent.Find("WaitScreen").GetComponentInChildren<Text>().text += "."; yield return null;
 
         LVM.SetLevels(all.ToArray());
         foreach (Transform lv in LVM.levels)
@@ -161,13 +148,9 @@ public class ActivitiesSelectorManager : MonoBehaviour {
 
         LVM.isExamSession = false;
         LVM.debug = true;
-
         LVM.levelName = "level";
-        transform.parent.Find("WaitScreen").GetComponentInChildren<Text>().text = k.ToString(); k++;
-        yield return null;
-
-
-
+        transform.parent.Find("WaitScreen").GetComponentInChildren<Text>().text += "."; yield return null;
+        
         transform.parent.Find("WaitScreen").gameObject.SetActive(false);
         LVM.LoadLevel(0);
         

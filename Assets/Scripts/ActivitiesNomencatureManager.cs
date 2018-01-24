@@ -35,7 +35,9 @@ public class ActivitiesNomencatureManager : MonoBehaviour {
 
     public void LoadNameSession()
     {
-        GameObject[] levels = Resources.LoadAll<GameObject>("Nomenclature/Names");
+        transform.parent.Find("NomenclatureSelector").gameObject.SetActive(true);
+        gameObject.SetActive(false);
+        /*GameObject[] levels = Resources.LoadAll<GameObject>("Nomenclature/Names");
         LVM.isExamSession = false;
         LVM.debug = false;
 
@@ -43,7 +45,7 @@ public class ActivitiesNomencatureManager : MonoBehaviour {
         foreach (Transform lv in LVM.levels)
             lv.GetComponent<GameController>().training = true;
         LVM.levelName = "Réaction";
-        LVM.LoadLevel(0);
+        LVM.LoadLevel(0);*/
     }
 
     public void LoadGroupeSession()
