@@ -244,10 +244,10 @@ public class GameController : MonoBehaviour {
     public void ClickableDisable()
     {
         GetComponent<CanvasGroup>().blocksRaycasts = false;
-        foreach (GameObject ob in Buttons)
+        /*foreach (GameObject ob in Buttons)
         {
             ob.SetActive(false);
-        }
+        }*/
 
     }
 
