@@ -33,16 +33,17 @@ public class GameController : MonoBehaviour {
         
     }
 
-    
 
-    virtual public void Awake () { 
+
+    virtual public void Awake()
+    {
         LVM = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelManager>();
         Tips = transform.Find("Tips");
         bool gameActive = LVM.Game.activeSelf;
         LVM.Game.SetActive(true);
         FloatingButtons = GameObject.FindGameObjectWithTag("Controls");
         Buttons = GameObject.FindGameObjectsWithTag("Buttons");
-        Controls= GameObject.FindGameObjectWithTag("Controls");
+        Controls = GameObject.FindGameObjectWithTag("Controls");
         ResetButton = GameObject.FindGameObjectWithTag("Reset");
         //ResetButton = GameObject.Find("FloatingButtons/Reset");
         LVM.Game.SetActive(gameActive);
@@ -58,7 +59,6 @@ public class GameController : MonoBehaviour {
         if (sol && sol.GetComponent<Text>())
             sol.GetComponent<Text>().enabled = false;
     }
-
 	
 	virtual public void LateUpdate () {
 
