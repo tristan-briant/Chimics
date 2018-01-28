@@ -31,7 +31,7 @@ public class NomencatureSelector : MonoBehaviour {
         LVM.SetLevels(levels);
         foreach (Transform lv in LVM.levels)
             lv.GetComponent<GameController>().training = true;
-        LVM.levelName = "Réaction";
+        LVM.levelName = "Molécule ";
         //gameObject.SetActive(false);
         LVM.LoadLevel(0);
     }

@@ -33,20 +33,6 @@ public class ActivitiesNomencatureManager : MonoBehaviour {
 
     }
 
-    public void LoadNameSession()
-    {
-        transform.parent.Find("NomenclatureSelector").gameObject.SetActive(true);
-        gameObject.SetActive(false);
-        /*GameObject[] levels = Resources.LoadAll<GameObject>("Nomenclature/Names");
-        LVM.isExamSession = false;
-        LVM.debug = false;
-
-        LVM.SetLevels(levels);
-        foreach (Transform lv in LVM.levels)
-            lv.GetComponent<GameController>().training = true;
-        LVM.levelName = "Réaction";
-        LVM.LoadLevel(0);*/
-    }
 
     public void LoadGroupeSession()
     {
@@ -57,7 +43,7 @@ public class ActivitiesNomencatureManager : MonoBehaviour {
         LVM.SetLevels(levels);
         foreach (Transform lv in LVM.levels)
             lv.GetComponent<GameController>().training = true;
-        LVM.levelName = "Réaction";
+        LVM.levelName = "Molécule ";
         LVM.LoadLevel(0);
     }
 
@@ -86,7 +72,7 @@ public class ActivitiesNomencatureManager : MonoBehaviour {
         LVM.debug = false;
 
         LVM.SetLevels(shortList.ToArray());
-        LVM.levelName = "Réaction";
+        LVM.levelName = "Molécule ";
         LVM.LoadLevel(0);
     }
 
@@ -110,7 +96,7 @@ public class ActivitiesNomencatureManager : MonoBehaviour {
         LVM.isExamSession = false;
         LVM.debug = true;
 
-        LVM.levelName = "level";
+        LVM.levelName = "";
         LVM.LoadLevel(0);
     }
 

@@ -134,6 +134,7 @@ public class LevelManager : MonoBehaviour {
 
     void SetTitlePanel()
     {
+        if (debug) levelName = CurrentLevel().name;
         string title = levelName + " " + (currentLevel + 1);
 
         Game.transform.Find("Panel/Title").GetComponent<Text>().text = title;

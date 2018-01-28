@@ -27,15 +27,7 @@ public class GameControllerNomenclature : GameController {
 
     override public void Validate()
     {
-        Transform sol = transform.Find("Solutions");
-
-        bool test = false;
-        foreach (Text solution in sol.GetComponentsInChildren<Text>()) {
-            if (solution.text == transform.Find("Name").Find("Text").GetComponent<Text>().text)
-                test = true;
-        }
-         
-        if(test)
+        if(Score()==100)
         {
             WinLevel();
         }
