@@ -263,6 +263,8 @@ public class GameControllerArrow : GameController
         FloatingButtons = GameObject.FindGameObjectWithTag("Controls");
         if (playable && training)
         {
+            GetComponent<CanvasGroup>().blocksRaycasts = true;
+
             FloatingButtons.transform.Find("Clear").gameObject.SetActive(true);
             FloatingButtons.transform.Find("Reset").gameObject.SetActive(false);
             FloatingButtons.transform.Find("Validate").gameObject.SetActive(true);
@@ -270,11 +272,15 @@ public class GameControllerArrow : GameController
 
         if (playable &&  !training)
         {
+            GetComponent<CanvasGroup>().blocksRaycasts = true;
+
             FloatingButtons.transform.Find("Clear").gameObject.SetActive(true);
             FloatingButtons.transform.Find("Reset").gameObject.SetActive(false);
             FloatingButtons.transform.Find("Validate").gameObject.SetActive(false);
         }
         if (!playable) {
+            GetComponent<CanvasGroup>().blocksRaycasts = false;
+
             FloatingButtons.transform.Find("Clear").gameObject.SetActive(false);
             FloatingButtons.transform.Find("Reset").gameObject.SetActive(false);
             FloatingButtons.transform.Find("Validate").gameObject.SetActive(false);

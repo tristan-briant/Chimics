@@ -106,4 +106,13 @@ public class ActivitiesNomencatureManager : MonoBehaviour {
         SceneManager.LoadScene("Themes");
     }
 
+    public void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            BackToMenu();
+        }
+    }
+
+
 }

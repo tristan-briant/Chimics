@@ -25,7 +25,6 @@ public class LevelManager : MonoBehaviour {
     public LevelParameters[] Parameters;
     public bool isExamSession = false;
 
-
     private void Start()
     {  
         ActivitiesSelector.SetActive(true);
@@ -66,7 +65,8 @@ public class LevelManager : MonoBehaviour {
         Game.SetActive(true);
         scoreBoard.SetActive(false);
 
-        currentLevel = levelNumber;
+        if(levelNumber>=0)  // if levelnumber =-1 reload level
+            currentLevel = levelNumber;
 
         foreach (Transform child in Playground.transform)
             child.gameObject.SetActive(false);
@@ -79,8 +79,6 @@ public class LevelManager : MonoBehaviour {
         gc.SetupLevel(true);
        
         SetTitlePanel();
-
- 
     }
 
     public Transform CurrentLevel()

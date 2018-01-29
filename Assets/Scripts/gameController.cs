@@ -121,14 +121,15 @@ public class GameController : MonoBehaviour {
     virtual public void WinLevel(){
 
         Debug.Log("gagné");
-
+        //corrected = true;
+        ClickableDisable();
         if (LVM.completedLevel < LVM.currentLevel + 1)
             {
                 LVM.completedLevel = LVM.currentLevel + 1;
             }
 
         transform.parent.parent.Find("Check").GetComponent<Animator>().SetTrigger("SuccessTrigger");
-
+       
         //ResetButton = GameObject.FindGameObjectWithTag("Reset");
         //ResetButton.SetActive(true);
     }
@@ -244,16 +245,20 @@ public class GameController : MonoBehaviour {
     public void ClickableDisable()
     {
         GetComponent<CanvasGroup>().blocksRaycasts = false;
-        /*foreach (GameObject ob in Buttons)
+        Buttons = GameObject.FindGameObjectsWithTag("Buttons");
+
+        foreach (GameObject ob in Buttons)
         {
             ob.SetActive(false);
-        }*/
+        }
 
     }
 
     public void ClickableEnable()
     {
         GetComponent<CanvasGroup>().blocksRaycasts = true;
+        Buttons = GameObject.FindGameObjectsWithTag("Buttons");
+
         foreach (GameObject ob in Buttons)
         {
             ob.SetActive(true);
@@ -265,7 +270,7 @@ public class GameController : MonoBehaviour {
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            LVM.ActivitiesSelector.SetActive(true);
+            //LVM.ActivitiesSelector.SetActive(true);
             LVM.Game.SetActive(false);
             LVM.scoreBoard.SetActive(false);
         }
