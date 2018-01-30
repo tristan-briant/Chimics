@@ -37,47 +37,104 @@ public class ActivitiesSelectorManager : MonoBehaviour {
 
     public void LoadTrainingSession() {
 
-        GameObject[] levels = Resources.LoadAll<GameObject>("Mecanismes/Training");
+        List<GameObject> levels = new List<GameObject>();
+
+        if (Resources.Load("Mecanismes/Training/List"))
+        {
+            Debug.Log("list");
+            TextAsset tt = Resources.Load("Mecanismes/Training/List") as TextAsset;
+
+            List<string> fLines = new List<string>();
+            fLines.AddRange(tt.text.Split(new char[] { '\r', '\n' }));
+
+            List<string> fLinesNoempty = new List<string>();
+            foreach (string l in fLines)
+                if (l != "")
+                    fLinesNoempty.Add(l);
+
+            LVM.SetLevels(fLinesNoempty.ToArray());
+        }
+        else
+        {
+            levels.AddRange(Resources.LoadAll<GameObject>("Mecanismes/Training/List"));
+            LVM.SetLevels(levels.ToArray());
+
+        }
+
+        
         LVM.isExamSession = false;
         LVM.debug = false;
-        LVM.SetLevels(levels);
+        
         LVM.levelName = "Réaction";
-        LVM.LoadLevel(0);
     }
 
     public void LoadExamSession()
     {
         int exoNumber = 5;
-        
 
-        List<GameObject> shortList = new List<GameObject>();
+        List<string> shortList = new List<string>();
+        List<string> fLines = new List<string>();
+        TextAsset tt;
 
-        GameObject[] exam = Resources.LoadAll<GameObject>("Mecanismes/Exam");
-        GameObject[] doublets = Resources.LoadAll<GameObject>("Mecanismes/Doublets");
+        tt = Resources.Load("Mecanismes/Exam/List") as TextAsset;
+        fLines.AddRange(tt.text.Split(new char[] { '\r', '\n' }));
+        tt = Resources.Load("Mecanismes/Doublets/List") as TextAsset;
+        fLines.AddRange(tt.text.Split(new char[] { '\r', '\n' }));
 
 
-        shortList.AddRange(exam);
-        shortList.AddRange(doublets);
+        List<GameObject> levels = new List<GameObject>();
 
+        foreach (string l in fLines)
+            if (l != "")
+                shortList.Add(l);
 
-        for (int i = shortList.Count; i > exoNumber; i--) {
-            int index = (int) Random.Range(0, i);
+        LVM.isExamSession = true;
+        LVM.debug = false;
+
+        for (int i = shortList.Count; i > exoNumber; i--)
+        {
+            int index = (int)Random.Range(0, i);
             shortList.RemoveAt(index);
         }
-
         LVM.scoreBoard.GetComponent<ScoreBoardManager>().ResetBoard();
         LVM.isExamSession = true;
         LVM.debug = false;
+
         LVM.SetLevels(shortList.ToArray());
-        LVM.levelName = "Réaction";
-        LVM.LoadLevel(0);
+        LVM.levelName = "Réaction ";
+
     }
 
     public void LoadDebugSession()
     {
-       
-        transform.parent.Find("WaitScreen").gameObject.SetActive(true);
-        StartCoroutine(LoadDebugSessionWait());
+        List<string> shortList = new List<string>();
+        List<string> fLines = new List<string>();
+        TextAsset tt;
+
+         tt = Resources.Load("Mecanismes/Exam/List") as TextAsset;
+        fLines.AddRange(tt.text.Split(new char[] { '\r', '\n' }));
+        tt = Resources.Load("Mecanismes/Doublets/List") as TextAsset;
+        fLines.AddRange(tt.text.Split(new char[] { '\r', '\n' }));
+
+
+        List<GameObject> levels = new List<GameObject>();
+
+        foreach (string l in fLines)
+            if (l != "")
+                shortList.Add(l);
+
+        LVM.isExamSession = false;
+        LVM.debug = true;
+        
+        LVM.scoreBoard.GetComponent<ScoreBoardManager>().ResetBoard();
+        LVM.isExamSession = true;
+        LVM.debug = false;
+
+        LVM.SetLevels(shortList.ToArray());
+        LVM.levelName = "Réaction ";
+
+        //transform.parent.Find("WaitScreen").gameObject.SetActive(true);
+        //StartCoroutine(LoadDebugSessionWait());
         //gameObject.SetActive(false);
         /*List<GameObject> all = new List<GameObject>();
 

@@ -29,6 +29,7 @@ public class GameControllerNomenclature : GameController {
     {
         if(Score()==100)
         {
+            corrected = true;
             WinLevel();
         }
         else

@@ -24,12 +24,16 @@ public class LevelManager : MonoBehaviour {
     public Color[] LevelColor;
     public LevelParameters[] Parameters;
     public bool isExamSession = false;
+    public bool training = false;
 
     private void Start()
     {  
         ActivitiesSelector.SetActive(true);
         scoreBoard.SetActive(false);
         Game.SetActive(false);
+        GameObject.Find("/Canvas/WaitScreen").transform.localPosition = Vector3.zero;
+        GameObject.Find("/Canvas/WaitScreen").gameObject.SetActive(false);
+
     }
 
     public void SetLevels(GameObject[] ls) {
@@ -45,6 +49,7 @@ public class LevelManager : MonoBehaviour {
         int n = 0;
         foreach (GameObject level in ls)
         {
+            Debug.Log(level);
             Transform lv = Instantiate<GameObject>(level).transform;
             lv.SetParent(Playground.transform);
             lv.localScale = new Vector3(1, 1, 1);
@@ -54,6 +59,24 @@ public class LevelManager : MonoBehaviour {
 
             levels[n++] = lv;
         }
+
+        LoadLevel(0);
+
+    }
+
+    public void SetLevels(string[] lnames)
+    {
+
+
+        if (levels != null)
+            foreach (Transform child in levels)
+            {
+                Destroy(child.gameObject);
+            }
+
+        GameObject.Find("/Canvas").transform.Find("WaitScreen").gameObject.SetActive(true);
+        StartCoroutine(LoadSessionWait(lnames));
+
     }
 
     public void LoadLevel(int levelNumber)
@@ -172,6 +195,39 @@ public class LevelManager : MonoBehaviour {
             Game.transform.Find("Panel/End").gameObject.SetActive(false);
 
         }
+
+    }
+
+
+    IEnumerator LoadSessionWait(string[] lnames)
+    {
+        yield return null;
+        List<GameObject> all = new List<GameObject>();
+
+        levels = new Transform[lnames.Length];
+        int total = lnames.Length;
+        int n = 0;
+
+        foreach(string name in lnames)
+        {
+
+            GameObject level = Resources.Load(name) as GameObject;
+           
+            Transform lv = Instantiate<GameObject>(level).transform;
+            lv.SetParent(Playground.transform);
+            lv.localScale = new Vector3(1, 1, 1);
+            lv.localPosition = new Vector3(0, 0, 0);
+            lv.gameObject.SetActive(false);
+            lv.GetComponent<GameController>().training = training;
+
+            GameObject.Find("/Canvas/WaitScreen").GetComponentInChildren<Slider>().value = (float)n/total ;
+            yield return null;
+            levels[n++] = lv;
+
+        }
+
+        GameObject.Find("/Canvas/WaitScreen").gameObject.SetActive(false);
+        LoadLevel(0);
 
     }
 
