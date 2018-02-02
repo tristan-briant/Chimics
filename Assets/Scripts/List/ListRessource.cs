@@ -1,14 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
 using System.IO;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
 
 public class ListRessource : MonoBehaviour {
 
    
     string fileName = "List.txt";
 
+#if UNITY_EDITOR
 
     // Use this for initialization
     void Start () {
@@ -37,6 +42,7 @@ public class ListRessource : MonoBehaviour {
 
         sr.Close();
     }
-	
-	
+
+#endif
+
 }

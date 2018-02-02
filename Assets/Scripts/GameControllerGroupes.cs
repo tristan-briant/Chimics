@@ -11,7 +11,7 @@ public class GameControllerGroupes : GameController
     bool started = false;
     public GameObject BtnValidate;
 
-    public void Awake()
+    override public void Awake()
     {
         transform.localPosition = new Vector3(0, 0, 0);
 

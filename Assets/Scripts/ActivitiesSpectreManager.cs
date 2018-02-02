@@ -19,6 +19,8 @@ public class ActivitiesSpectreManager : MonoBehaviour {
     {
         var rect = GetComponent<RectTransform>();
         rect.localPosition = new Vector3(0, 0, 0);
+        gameObject.SetActive(false);
+
     }
 
     public void LoadTutorial()
@@ -101,7 +103,8 @@ public class ActivitiesSpectreManager : MonoBehaviour {
 
     public void BackToMenu()
     {
-        SceneManager.LoadScene("Themes");
+        gameObject.SetActive(false);
+        //SceneManager.LoadScene("Themes");
     }
 
 }

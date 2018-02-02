@@ -21,7 +21,8 @@ public class ActivitiesSelectorManager : MonoBehaviour {
         var rect = GetComponent<RectTransform>();
         rect.localPosition = Vector3.zero;
         transform.parent.Find("WaitScreen").localPosition = Vector3.zero;
-       transform.parent.Find("WaitScreen").gameObject.SetActive(false);
+         transform.parent.Find("WaitScreen").gameObject.SetActive(false);
+        gameObject.SetActive(false);
     }
 
     public void LoadTutorial()
@@ -107,11 +108,11 @@ public class ActivitiesSelectorManager : MonoBehaviour {
 
     public void LoadDebugSession()
     {
-        List<string> shortList = new List<string>();
+        /*List<string> shortList = new List<string>();
         List<string> fLines = new List<string>();
         TextAsset tt;
 
-         tt = Resources.Load("Mecanismes/Exam/List") as TextAsset;
+        tt = Resources.Load("Mecanismes/Exam/List") as TextAsset;
         fLines.AddRange(tt.text.Split(new char[] { '\r', '\n' }));
         tt = Resources.Load("Mecanismes/Doublets/List") as TextAsset;
         fLines.AddRange(tt.text.Split(new char[] { '\r', '\n' }));
@@ -122,52 +123,49 @@ public class ActivitiesSelectorManager : MonoBehaviour {
         foreach (string l in fLines)
             if (l != "")
                 shortList.Add(l);
+                */
 
-        LVM.isExamSession = false;
+
+        List<string> levelList = new List<string>();
+
+        levelList.AddRange(GetLevelList("Mecanismes/Exam"));
+        levelList.AddRange(GetLevelList("Mecanismes/Doublets"));
+
+        LVM.isExamSession = true;
         LVM.debug = true;
         
         LVM.scoreBoard.GetComponent<ScoreBoardManager>().ResetBoard();
-        LVM.isExamSession = true;
-        LVM.debug = false;
+        //LVM.isExamSession = true;
+        //LVM.debug = false;
 
-        LVM.SetLevels(shortList.ToArray());
+        LVM.SetLevels(levelList.ToArray());
         LVM.levelName = "Réaction ";
 
-        //transform.parent.Find("WaitScreen").gameObject.SetActive(true);
-        //StartCoroutine(LoadDebugSessionWait());
-        //gameObject.SetActive(false);
-        /*List<GameObject> all = new List<GameObject>();
+    }
 
 
-        GameObject[] exam = Resources.LoadAll<GameObject>("Mecanismes/Exam");
-        GameObject[] tuto = Resources.LoadAll<GameObject>("Mecanismes/Tutorial");
-        GameObject[] training = Resources.LoadAll<GameObject>("Mecanismes/Training");
-        GameObject[] doublets = Resources.LoadAll<GameObject>("Mecanismes/Doublets");
+    string[] GetLevelList(string path)
+    {
+        List<string> fLines = new List<string>();
+        List<string> shortList = new List<string>();
 
-        all.AddRange(tuto);
-        all.AddRange(training);
-        all.AddRange(exam);
-        all.AddRange(doublets);
+        TextAsset tt = Resources.Load(path + "/List") as TextAsset;
+        fLines.AddRange(tt.text.Split(new char[] { '\r', '\n' }));
 
+        foreach (string l in fLines)
+            if (l != "")
+                shortList.Add(l);
 
-        LVM.SetLevels(all.ToArray());
-        foreach (Transform lv in LVM.levels)
-            lv.GetComponent<GameController>().debug = true;
+        return shortList.ToArray();
 
-        LVM.isExamSession = false;
-        LVM.debug = true;
-
-        LVM.levelName = "level";
-
-        transform.parent.Find("WaitScreen").gameObject.SetActive(false);
-        LVM.LoadLevel(0);
- */
     }
 
 
     public void BackToMenu()
     {
-        SceneManager.LoadScene("Themes");
+        gameObject.SetActive(false);
+
+    //  SceneManager.LoadScene("Themes");
     }
 
     public void Update()

@@ -74,7 +74,7 @@ public class LevelManager : MonoBehaviour {
                 Destroy(child.gameObject);
             }
 
-        GameObject.Find("/Canvas").transform.Find("WaitScreen").gameObject.SetActive(true);
+
         StartCoroutine(LoadSessionWait(lnames));
 
     }
@@ -201,7 +201,11 @@ public class LevelManager : MonoBehaviour {
 
     IEnumerator LoadSessionWait(string[] lnames)
     {
+        Transform waitScreen = GameObject.Find("/Canvas").transform.Find("WaitScreen");
+        waitScreen.gameObject.SetActive(true);
+        waitScreen.GetComponentInChildren<Slider>().value = 0;
         yield return null;
+
         List<GameObject> all = new List<GameObject>();
 
         levels = new Transform[lnames.Length];
@@ -219,14 +223,15 @@ public class LevelManager : MonoBehaviour {
             lv.localPosition = new Vector3(0, 0, 0);
             lv.gameObject.SetActive(false);
             lv.GetComponent<GameController>().training = training;
+            lv.GetComponent<GameController>().debug = debug;
 
-            GameObject.Find("/Canvas/WaitScreen").GetComponentInChildren<Slider>().value = (float)n/total ;
+            waitScreen.GetComponentInChildren<Slider>().value = (float)n/total ;
             yield return null;
             levels[n++] = lv;
 
         }
 
-        GameObject.Find("/Canvas/WaitScreen").gameObject.SetActive(false);
+        waitScreen.gameObject.SetActive(false);
         LoadLevel(0);
 
     }

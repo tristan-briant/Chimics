@@ -169,6 +169,10 @@ public class GameControllerNomenclature : GameController {
 
         FloatingButtons = GameObject.FindGameObjectWithTag("Controls");
         FloatingButtons.SetActive(true);
+        foreach (Transform but in FloatingButtons.transform)
+            but.gameObject.SetActive(false);
+
+
 
         if (playable && training)
         {

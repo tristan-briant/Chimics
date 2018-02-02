@@ -21,8 +21,6 @@ public class resize : MonoBehaviour
     float ZoomBest;
     float ZoomTarget;
 
-    Vector2 positionTarget=new Vector2(0,0);
-
     float SpeedZoom = 0.1f;
 
     private void Awake()

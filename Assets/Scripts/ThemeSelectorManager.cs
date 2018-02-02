@@ -5,7 +5,12 @@ using UnityEngine.SceneManagement;
 
 public class ThemeSelectorManager : MonoBehaviour {
 
-	
+    public void Start()
+    {
+        transform.localPosition = Vector3.zero;
+    }
+
+
     public void LoadActivity(string name)
     {
         SceneManager.LoadScene(name);

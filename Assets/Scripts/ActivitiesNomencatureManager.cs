@@ -19,6 +19,8 @@ public class ActivitiesNomencatureManager : MonoBehaviour {
     {
         var rect = GetComponent<RectTransform>();
         rect.localPosition = new Vector3(0, 0, 0);
+        gameObject.SetActive(false);
+
     }
 
     public void LoadTutorial()
@@ -133,7 +135,8 @@ public class ActivitiesNomencatureManager : MonoBehaviour {
 
     public void BackToMenu()
     {
-        SceneManager.LoadScene("Themes");
+        //SceneManager.LoadScene("Themes");
+        gameObject.SetActive(false);
     }
 
     public void Update()
