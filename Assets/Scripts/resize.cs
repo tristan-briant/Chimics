@@ -134,6 +134,8 @@ public class resize : MonoBehaviour
         bg.GetComponent<SpriteRenderer>().size = (parentRect.rect.size + new Vector2(0, 2 * 100)) / s; 
 
         pageRect.sizeDelta = new Vector2(reactionRect.sizeDelta.x * reactionRect.localScale.x,reactionRect.sizeDelta.y * reactionRect.localScale.y);
+
+        ClampPage();
     }
 
     public void ChangeZoom(float z)

@@ -49,7 +49,6 @@ public class LevelManager : MonoBehaviour {
         int n = 0;
         foreach (GameObject level in ls)
         {
-            Debug.Log(level);
             Transform lv = Instantiate<GameObject>(level).transform;
             lv.SetParent(Playground.transform);
             lv.localScale = new Vector3(1, 1, 1);
