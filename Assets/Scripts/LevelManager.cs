@@ -141,7 +141,7 @@ public class LevelManager : MonoBehaviour {
 
     public void LoadScoreBoard()
     {
-        ActivitiesSelector.SetActive(false);
+        //ActivitiesSelector.SetActive(false);
         scoreBoard.SetActive(true);
         Game.SetActive(false);
     }
