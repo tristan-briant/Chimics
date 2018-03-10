@@ -49,12 +49,9 @@ public class NomencatureSelector : MonoBehaviour {
 
         }
         LVM.isExamSession = false;
+        LVM.training = true;
         LVM.debug = false;
 
-
-
-        foreach (Transform lv in LVM.levels)
-            lv.GetComponent<GameController>().training = true;
         LVM.levelName = "Molécule ";
         //gameObject.SetActive(false);
         //LVM.LoadLevel(0);
