@@ -11,6 +11,7 @@ public class ScoreBoardManager : MonoBehaviour {
 
     public GameObject ScoreButton;
     public GameObject reviewButton;
+    bool started = false;
 
 
     private void Awake()
@@ -22,6 +23,31 @@ public class ScoreBoardManager : MonoBehaviour {
     {
         var rect = GetComponent<RectTransform>();
         rect.localPosition = new Vector3(0, 0, 0);
+        started = true;
+    }
+
+    private void OnEnable()
+    {
+        int score = 0;
+        LVM.Game.SetActive(true);
+
+        for (int i = 0; i < LVM.levels.Length; i++)
+        {
+            Transform level = LVM.levels[i];
+            level.gameObject.SetActive(true);
+            score += level.GetComponent<GameController>().Score();
+            //level.GetComponent<GameController>().ShowCorrection();
+            //level.GetComponent<GameController>().corrected = true;
+            level.GetComponent<GameController>().ClickableDisable();
+            level.gameObject.SetActive(false);
+        }
+
+        LVM.Game.SetActive(false);
+
+        score = score / (LVM.levels.Length);
+
+        ScoreButton.GetComponent<Button>().interactable = false;
+        ScoreButton.transform.Find("Text").GetComponent<Text>().text = "Score : " + score + "%";
     }
 
 
