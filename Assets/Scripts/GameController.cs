@@ -247,10 +247,11 @@ public class GameController : MonoBehaviour {
         GetComponent<CanvasGroup>().blocksRaycasts = false;
         Buttons = GameObject.FindGameObjectsWithTag("Buttons");
 
-        foreach (GameObject ob in Buttons)
+        FloatingButtons.SetActive(false);
+        /*foreach (GameObject ob in Buttons)
         {
             ob.SetActive(false);
-        }
+        }*/
 
     }
 
@@ -259,10 +260,11 @@ public class GameController : MonoBehaviour {
         GetComponent<CanvasGroup>().blocksRaycasts = true;
         Buttons = GameObject.FindGameObjectsWithTag("Buttons");
 
-        foreach (GameObject ob in Buttons)
+        /*foreach (GameObject ob in Buttons)
         {
             ob.SetActive(true);
-        }
+        }*/
+        FloatingButtons.SetActive(true);
     }
 
 

@@ -28,6 +28,7 @@ public class ScoreBoardManager : MonoBehaviour {
 
     private void OnEnable()
     {
+        if(!started) return;
         int score = 0;
         LVM.Game.SetActive(true);
 

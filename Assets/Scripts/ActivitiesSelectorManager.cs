@@ -65,6 +65,7 @@ public class ActivitiesSelectorManager : MonoBehaviour {
         
         LVM.isExamSession = false;
         LVM.debug = false;
+        LVM.training = true;
         
         LVM.levelName = "Réaction";
     }
@@ -100,6 +101,7 @@ public class ActivitiesSelectorManager : MonoBehaviour {
         LVM.scoreBoard.GetComponent<ScoreBoardManager>().ResetBoard();
         LVM.isExamSession = true;
         LVM.debug = false;
+        LVM.training = false;
 
         LVM.SetLevels(shortList.ToArray());
         LVM.levelName = "Réaction ";
