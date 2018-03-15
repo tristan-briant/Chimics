@@ -234,7 +234,8 @@ public class GameControllerArrowDoublet : GameControllerArrow {
         base.SetupLevel(true);
         bool playable = !corrected;
 
-        FloatingButtons = GameObject.FindGameObjectWithTag("Controls");
+        FloatingButtons.SetActive(true);
+
         if (playable && training)
         {
             FloatingButtons.transform.Find("Clear").gameObject.SetActive(true);

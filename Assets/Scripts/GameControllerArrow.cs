@@ -13,10 +13,14 @@ public class GameControllerArrow : GameController
         LVM = GameObject.FindGameObjectWithTag("LevelManager").GetComponent<LevelManager>();
         Tips = transform.Find("Tips");
 
-        Buttons = GameObject.FindGameObjectsWithTag("Buttons");
-        Controls = GameObject.FindGameObjectWithTag("Controls");
-        ResetButton = GameObject.FindGameObjectWithTag("Reset");
-        FloatingButtons = GameObject.FindGameObjectWithTag("Controls");
+        //Buttons = GameObject.FindGameObjectsWithTag("Buttons");
+        //Controls = GameObject.FindGameObjectWithTag("Controls");
+        //ResetButton = GameObject.FindGameObjectWithTag("Reset");
+        //bool gameActive = LVM.Game.activeSelf;
+        //LVM.Game.SetActive(true);
+        //FloatingButtons = GameObject.FindGameObjectWithTag("Controls");
+        FloatingButtons = LVM.Game.transform.Find("FloatingButtons").gameObject;
+        //LVM.Game.SetActive(gameActive);
 
         transform.localPosition = new Vector3(0, 0, 0);
 
@@ -260,7 +264,8 @@ public class GameControllerArrow : GameController
         base.SetupLevel(true);
         bool playable = !corrected;
 
-        FloatingButtons = GameObject.FindGameObjectWithTag("Controls");
+        FloatingButtons.SetActive(true);
+
         if (playable && training)
         {
             GetComponent<CanvasGroup>().blocksRaycasts = true;
@@ -273,7 +278,6 @@ public class GameControllerArrow : GameController
         if (playable &&  !training)
         {
             GetComponent<CanvasGroup>().blocksRaycasts = true;
-
             FloatingButtons.transform.Find("Clear").gameObject.SetActive(true);
             FloatingButtons.transform.Find("Reset").gameObject.SetActive(false);
             FloatingButtons.transform.Find("Validate").gameObject.SetActive(false);

@@ -41,12 +41,13 @@ public class GameController : MonoBehaviour {
         Tips = transform.Find("Tips");
         bool gameActive = LVM.Game.activeSelf;
         LVM.Game.SetActive(true);
-        FloatingButtons = GameObject.FindGameObjectWithTag("Controls");
+        //FloatingButtons = GameObject.FindGameObjectWithTag("Controls");
         Buttons = GameObject.FindGameObjectsWithTag("Buttons");
         Controls = GameObject.FindGameObjectWithTag("Controls");
         ResetButton = GameObject.FindGameObjectWithTag("Reset");
         //ResetButton = GameObject.Find("FloatingButtons/Reset");
         LVM.Game.SetActive(gameActive);
+        FloatingButtons = LVM.Game.transform.Find("FloatingButtons").gameObject;
 
 
         transform.localPosition = new Vector3(0, 0, 0);
