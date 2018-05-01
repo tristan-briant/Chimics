@@ -273,9 +273,10 @@ public class GameController : MonoBehaviour {
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
+            /*Debug.Log("esc !");
             //LVM.ActivitiesSelector.SetActive(true);
             LVM.Game.SetActive(false);
-            LVM.scoreBoard.SetActive(false);
+            LVM.scoreBoard.SetActive(false);*/
         }
     }
 

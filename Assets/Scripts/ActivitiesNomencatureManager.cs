@@ -139,13 +139,13 @@ public class ActivitiesNomencatureManager : MonoBehaviour {
         gameObject.SetActive(false);
     }
 
-    public void Update()
+    /*public void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             BackToMenu();
         }
-    }
+    }*/
 
 
 }

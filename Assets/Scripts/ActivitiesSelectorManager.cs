@@ -36,6 +36,47 @@ public class ActivitiesSelectorManager : MonoBehaviour {
         
     }
 
+    public void LoadLevel(int lv)
+    {
+        string path="";
+        List<GameObject> levels = new List<GameObject>();
+
+        if (lv == 1) path = "Mecanismes/Training/";
+        if (lv == 2) path = "Mecanismes/Niveau 2/";
+        if (lv == 3) path = "Mecanismes/Niveau 3/";
+        if (lv == 4) path = "Mecanismes/Doublets/";
+
+
+        if (Resources.Load(path+"List"))
+        {
+            Debug.Log("list");
+            TextAsset tt = Resources.Load(path+"List") as TextAsset;
+
+            List<string> fLines = new List<string>();
+            fLines.AddRange(tt.text.Split(new char[] { '\r', '\n' }));
+
+            List<string> fLinesNoempty = new List<string>();
+            foreach (string l in fLines)
+                if (l != "")
+                    fLinesNoempty.Add(l);
+
+            LVM.SetLevels(fLinesNoempty.ToArray());
+        }
+        else
+        {
+            levels.AddRange(Resources.LoadAll<GameObject>(path+"List"));
+            LVM.SetLevels(levels.ToArray());
+
+        }
+
+
+        LVM.isExamSession = false;
+        LVM.debug = false;
+        LVM.training = true;
+
+        LVM.levelName = "Réaction";
+    }
+
     public void LoadTrainingSession() {
 
         List<GameObject> levels = new List<GameObject>();
@@ -78,7 +119,9 @@ public class ActivitiesSelectorManager : MonoBehaviour {
         List<string> fLines = new List<string>();
         TextAsset tt;
 
-        tt = Resources.Load("Mecanismes/Exam/List") as TextAsset;
+        tt = Resources.Load("Mecanismes/Niveau 2/List") as TextAsset;
+        fLines.AddRange(tt.text.Split(new char[] { '\r', '\n' }));
+        tt = Resources.Load("Mecanismes/Niveau 3/List") as TextAsset;
         fLines.AddRange(tt.text.Split(new char[] { '\r', '\n' }));
         tt = Resources.Load("Mecanismes/Doublets/List") as TextAsset;
         fLines.AddRange(tt.text.Split(new char[] { '\r', '\n' }));
@@ -170,20 +213,12 @@ public class ActivitiesSelectorManager : MonoBehaviour {
     //  SceneManager.LoadScene("Themes");
     }
 
-    public void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            BackToMenu();
-        }
-    }
 
     IEnumerator LoadDebugSessionWait()
     {
         yield return null;
         List<GameObject> all = new List<GameObject>();
 
-        int k = 0;
         GameObject[] exam = Resources.LoadAll<GameObject>("Mecanismes/Exam");
         transform.parent.Find("WaitScreen").GetComponentInChildren<Text>().text+="."; yield return null;
         GameObject[] tuto = Resources.LoadAll<GameObject>("Mecanismes/Tutorial");

@@ -18,9 +18,20 @@ public class ThemeSelectorManager : MonoBehaviour {
 
     public void Update()
     {
-        
-        if (Input.GetKeyDown(KeyCode.Escape))
-            Application.Quit();
-    }
 
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            
+            for(int k=transform.parent.childCount-1;k>0; k--)
+            {
+                if (transform.parent.GetChild(k).gameObject.activeSelf == true)
+                {
+                    transform.parent.GetChild(k).gameObject.SetActive(false);
+                    return;
+                }
+            }
+            Application.Quit();
+        }
+    }
+   
 }
